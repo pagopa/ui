@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import { Icon } from "@/components/icons/icon"
 import {
   Alert,
   AlertAction,
@@ -28,10 +32,10 @@ const severityByVariant: Record<AlertVariant, AlertSeverity> = {
 }
 
 const iconBySeverity = {
-  error: "report",
-  warning: "warning",
-  info: "info",
-  success: "check_circle",
+  error: ReportIcon,
+  warning: WarningIcon,
+  info: InfoFilledIcon,
+  success: CheckCircleIcon,
 } as const
 
 const sourceAlerts = [
@@ -76,10 +80,7 @@ function SourceAlert({
       data-testid={testId}
     >
       <AlertIcon data-testid={testId ? `${testId}-icon` : undefined}>
-        <PagoPAIcon
-          name={iconBySeverity[severity]}
-          {...(severity === "info" ? { filled: true } : {})}
-        />
+        <Icon source={iconBySeverity[severity]} />
       </AlertIcon>
       <AlertContent>
         <AlertCopy data-testid={testId ? `${testId}-copy` : undefined}>
@@ -99,8 +100,8 @@ function SourceAlert({
               // ::after expansion, so the card keeps the source 166px rhythm
               // instead of inflating by the transparent 1px button border.
               direction === "vertical"
-                ? "relative min-h-0 w-full justify-start border-0 px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
-                : "relative min-h-0 border-0 px-0 py-0 text-current after:absolute after:inset-x-0 after:-inset-y-3"
+                ? "pui:relative pui:min-h-0 pui:w-full pui:justify-start pui:border-0 pui:px-0 pui:py-0 pui:text-current pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
+                : "pui:relative pui:min-h-0 pui:border-0 pui:px-0 pui:py-0 pui:text-current pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
             }
             onClick={onAction}
             data-testid={testId ? `${testId}-action` : undefined}
@@ -145,7 +146,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: (args) => (
     <SourceAlert
@@ -154,7 +155,7 @@ export const Playground: Story = {
       title="Aggiornamento disponibile"
       description="Le nuove informazioni sono state salvate correttamente."
       actionLabel="Continua"
-      className="w-68 max-w-full"
+      className="pui:w-68 pui:max-w-full"
     />
   ),
   play: async ({ canvasElement }) => {
@@ -167,19 +168,19 @@ export const AllStatuses: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-fit max-w-full gap-4">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="pui:grid pui:w-fit pui:max-w-full pui:gap-4">
+      <div className="pui:grid pui:grid-cols-4 pui:gap-4">
         {sourceAlerts.map(({ severity, variant }) => (
           <SourceAlert
             key={`${severity}-vertical`}
             variant={variant}
             direction="vertical"
             testId={`alert-${severity}-vertical`}
-            className="w-68"
+            className="pui:w-68"
           />
         ))}
       </div>
-      <div className="grid w-[852px] max-w-full gap-4">
+      <div className="pui:grid pui:w-[852px] pui:max-w-full pui:gap-4">
         {sourceAlerts.map(({ severity, variant }) => (
           <SourceAlert
             key={`${severity}-horizontal`}
@@ -217,7 +218,7 @@ export const WithAction: Story = {
       description="Tra 5 minuti verrai disconnesso per inattività."
       actionLabel="Resta connesso"
       onAction={continueSession}
-      className="w-80 max-w-full"
+      className="pui:w-80 pui:max-w-full"
     />
   ),
   play: async ({ canvasElement }) => {

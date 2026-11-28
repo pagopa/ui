@@ -3,9 +3,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PaymentModule } from "@/components/composites"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { ButtonGroup, Chip } from "@/components/inputs"
+import { PaymentModule } from "@/components/composites/payment-module"
+import { Icon } from "@/components/icons/icon"
+import { Default as DownloadIcon } from "@/components/icons/generated/download"
+import { ButtonGroup } from "@/components/inputs/actions"
+import { Chip } from "@/components/inputs/chips"
 import { Button } from "@/components/primitives/button"
 
 import { SourceFrame } from "./support/source-frame"
@@ -62,7 +64,7 @@ export const Playground: Story = {
       <ButtonGroup aria-label="Azioni del pagamento">
         <Button type="button" variant="ghost">
           Scarica documento
-          <PagoPAIcon name="download" className="size-6" />
+          <Icon source={DownloadIcon} className="pui:size-6" />
         </Button>
         <Button type="button">Paga 744,00 €</Button>
       </ButtonGroup>
@@ -91,11 +93,11 @@ export const ActionMobile: Story = {
   args: {
     suggestion: { label: "Sei già cliente" },
     actions: (
-      <ButtonGroup aria-label="Azioni del pagamento" orientation="vertical" className="w-full">
+      <ButtonGroup aria-label="Azioni del pagamento" orientation="vertical" className="pui:w-full">
         <Button type="button">Paga 744,00 €</Button>
         <Button type="button" variant="ghost">
           Scarica documento
-          <PagoPAIcon name="download" className="size-6" />
+          <Icon source={DownloadIcon} className="pui:size-6" />
         </Button>
       </ButtonGroup>
     ),
@@ -168,7 +170,7 @@ export const MultiPayment: Story = {
 }
 
 export const Loading: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { loading: true },
   play: async ({ canvasElement }) => {

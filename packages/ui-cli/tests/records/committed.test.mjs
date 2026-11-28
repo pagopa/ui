@@ -1,7 +1,7 @@
-// The committed records: the four documents the repository reviews in git. The
+// The committed records: the three documents the repository reviews in git. The
 // seams are the reader's own — where a record is read from by default, the
-// override that wins over it, the memory that makes a second read identical,
-// the one record that may be absent, and the one error a corrupt one raises.
+// override that wins over it, the memory that makes a second read identical, and
+// the one error a corrupt or absent one raises.
 // Nothing here asserts how the reader parses: a refactor that keeps these
 // behaviours must keep these tests green.
 import assert from "node:assert/strict"
@@ -10,7 +10,6 @@ import { test } from "node:test"
 import {
   CommittedRecordError,
   committedFile,
-  readCases,
   readDevicePolicy,
   readInventory,
   readRegistry,
@@ -20,7 +19,6 @@ import { fixtureTree } from "../helpers/cli.mjs"
 const INVENTORY = "src/catalog/figma/inventory.json"
 const REGISTRY = "src/catalog/figma/registry.json"
 const POLICY = "src/catalog/figma/device-policy.json"
-const CASES = "src/catalog/figma/parity-cases.json"
 
 const inventory = {
   fileKey: "file",
@@ -87,17 +85,6 @@ test("the same record under two roots is two reads, not one", () => {
   } finally {
     one.dispose()
     other.dispose()
-  }
-})
-
-test("an optional record is null when its file is absent and its value when present", () => {
-  const fixture = fixtureTree({}, "records-optional-")
-  try {
-    assert.equal(readCases(fixture.root), null)
-    fixture.write({ [CASES]: [] })
-    assert.deepEqual(readCases(fixture.root), [])
-  } finally {
-    fixture.dispose()
   }
 })
 

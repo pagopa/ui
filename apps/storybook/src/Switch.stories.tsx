@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { SwitchField } from "@/components/inputs/switch-field"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as Mobile2Icon } from "@/components/icons/generated/mobile-2"
 import { Button } from "@/components/primitives/button"
 import { Switch } from "@/components/primitives/switch"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -43,24 +44,24 @@ export const SourcePrimitiveStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
   render: () => (
-    <form aria-label="Elementi Switch nativi" className="grid gap-4">
-      <label className="flex items-center gap-3">
+    <form aria-label="Elementi Switch nativi" className="pui:grid pui:gap-4">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="active" defaultChecked />
         Aggiornamenti attivi
       </label>
-      <label className="flex items-center gap-3">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="reminders" />
         Promemoria facoltativi
       </label>
-      <label className="flex items-center gap-3">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="locked" defaultChecked disabled />
         Aggiornamenti non modificabili
       </label>
-      <label className="flex items-center gap-3">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="unavailable" disabled />
         Promemoria non disponibili
       </label>
-      <label className="flex items-center gap-3">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="loading" defaultChecked loading />
         Aggiornamento in corso
       </label>
@@ -106,24 +107,24 @@ export const SourcePrimitiveFidelity: Story = {
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
   render: () => (
-    <form aria-label="Varianti sorgente dello Switch" className="grid gap-4">
-      <label className="flex items-center gap-3" data-switch-case="unchecked-default">
+    <form aria-label="Varianti sorgente dello Switch" className="pui:grid pui:gap-4">
+      <label className="pui:flex pui:items-center pui:gap-3" data-switch-case="unchecked-default">
         <Switch name="uncheckedDefault" />
         Predefinito non selezionato
       </label>
-      <label className="flex items-center gap-3" data-switch-case="checked-default">
+      <label className="pui:flex pui:items-center pui:gap-3" data-switch-case="checked-default">
         <Switch name="checkedDefault" defaultChecked />
         Predefinito selezionato
       </label>
-      <label className="flex items-center gap-3" data-switch-case="unchecked-disabled">
+      <label className="pui:flex pui:items-center pui:gap-3" data-switch-case="unchecked-disabled">
         <Switch name="uncheckedDisabled" disabled />
         Non selezionato, non disponibile
       </label>
-      <label className="flex items-center gap-3" data-switch-case="checked-disabled">
+      <label className="pui:flex pui:items-center pui:gap-3" data-switch-case="checked-disabled">
         <Switch name="checkedDisabled" defaultChecked disabled />
         Selezionato, non disponibile
       </label>
-      <label className="flex items-center gap-3" data-switch-case="loading">
+      <label className="pui:flex pui:items-center pui:gap-3" data-switch-case="loading">
         <Switch name="loading" defaultChecked loading />
         Caricamento
       </label>
@@ -134,11 +135,11 @@ export const SourcePrimitiveFidelity: Story = {
 export const SourcePrimitiveFocusUnchecked: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("295:1360") } },
   render: () => (
-    <form aria-label="Switch non selezionato con focus" className="grid gap-4">
-      <div className="w-fit p-1" data-switch-frame="focus-unchecked">
-        <label className="flex items-center gap-3">
+    <form aria-label="Switch non selezionato con focus" className="pui:grid pui:gap-4">
+      <div className="pui:w-fit pui:p-1" data-switch-frame="focus-unchecked">
+        <label className="pui:flex pui:items-center pui:gap-3">
           <Switch name="focusedUnchecked" />
-          <span className="sr-only">Non selezionato con focus</span>
+          <span className="pui:sr-only">Non selezionato con focus</span>
         </label>
       </div>
     </form>
@@ -155,11 +156,11 @@ export const SourcePrimitiveFocusUnchecked: Story = {
 export const SourcePrimitiveFocusChecked: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("295:1360") } },
   render: () => (
-    <form aria-label="Switch selezionato con focus" className="grid gap-4">
-      <div className="w-fit p-1" data-switch-frame="focus-checked">
-        <label className="flex items-center gap-3">
+    <form aria-label="Switch selezionato con focus" className="pui:grid pui:gap-4">
+      <div className="pui:w-fit pui:p-1" data-switch-frame="focus-checked">
+        <label className="pui:flex pui:items-center pui:gap-3">
           <Switch name="focusedChecked" defaultChecked />
-          <span className="sr-only">Selezionato con focus</span>
+          <span className="pui:sr-only">Selezionato con focus</span>
         </label>
       </div>
     </form>
@@ -181,8 +182,8 @@ export const SourcePrimitiveHoverUnchecked: Story = {
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
   render: () => (
-    <form aria-label="Switch non selezionato in hover" className="grid gap-4">
-      <label className="flex items-center gap-3">
+    <form aria-label="Switch non selezionato in hover" className="pui:grid pui:gap-4">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="hoverUnchecked" checked={false} onCheckedChange={() => undefined} />
         Non selezionato in hover
       </label>
@@ -203,8 +204,8 @@ export const SourcePrimitiveHoverChecked: Story = {
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
   render: () => (
-    <form aria-label="Switch selezionato in hover" className="grid gap-4">
-      <label className="flex items-center gap-3">
+    <form aria-label="Switch selezionato in hover" className="pui:grid pui:gap-4">
+      <label className="pui:flex pui:items-center pui:gap-3">
         <Switch name="hoverChecked" checked onCheckedChange={() => undefined} />
         Selezionato in hover
       </label>
@@ -221,7 +222,10 @@ export const SourcePrimitiveHoverChecked: Story = {
 export const SourceSwitches: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("349:4683") } },
   render: () => (
-    <form aria-label="Stati degli aggiornamenti" className="grid w-80 max-w-full gap-4">
+    <form
+      aria-label="Stati degli aggiornamenti"
+      className="pui:grid pui:w-80 pui:max-w-full pui:gap-4"
+    >
       <SwitchField label="Aggiornamenti attivi" name="active" defaultChecked />
       <SwitchField label="Promemoria facoltativi" name="reminders" />
       <SwitchField
@@ -271,7 +275,10 @@ export const SourceSwitches: Story = {
 function LoadingPreference() {
   const [loading, setLoading] = React.useState(true)
   return (
-    <form aria-label="Aggiornamento della preferenza" className="grid w-80 max-w-full gap-4">
+    <form
+      aria-label="Aggiornamento della preferenza"
+      className="pui:grid pui:w-80 pui:max-w-full pui:gap-4"
+    >
       <SwitchField
         label="Ricevi aggiornamenti"
         name="updates"
@@ -315,12 +322,12 @@ export const LoadingPreservesSelection: Story = {
 export const RichSourceOptions: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("349:4683") } },
   render: () => (
-    <form aria-label="Preferenze complete" className="grid w-80 max-w-full">
+    <form aria-label="Preferenze complete" className="pui:grid pui:w-80 pui:max-w-full">
       <SwitchField
         label="Aggiornamenti della pratica"
         name="updates"
         defaultChecked
-        leadingIcon={<PagoPAIcon name="mobile_2" decorative={false} label="Dispositivo mobile" />}
+        leadingIcon={<Icon source={Mobile2Icon} decorative={false} label="Dispositivo mobile" />}
         description="Ricevi una comunicazione quando cambia lo stato."
         learnMore={{ label: "Approfondisci gli aggiornamenti", href: "/servizi/aggiornamenti" }}
       />
@@ -328,7 +335,7 @@ export const RichSourceOptions: Story = {
         label="Notifiche non disponibili"
         name="unavailable"
         disabled
-        leadingIcon={<PagoPAIcon name="mobile_2" />}
+        leadingIcon={<Icon source={Mobile2Icon} />}
         description="La preferenza non può essere modificata."
         learnMore={{ label: "Informazioni sulle notifiche", href: "/servizi/notifiche" }}
       />
@@ -336,7 +343,7 @@ export const RichSourceOptions: Story = {
         label="Conferma degli avvisi"
         name="confirmation"
         required
-        leadingIcon={<PagoPAIcon name="mobile_2" />}
+        leadingIcon={<Icon source={Mobile2Icon} />}
         description="Conferma la ricezione degli avvisi."
         error="La conferma è obbligatoria."
       />
@@ -399,7 +406,7 @@ export const KeyboardFocusStates: Story = {
   tags: ["color-pinned"],
   parameters: { design: { type: "figma", url: figmaEmbedUrl("295:1360") } },
   render: () => (
-    <div className="grid w-80 max-w-full">
+    <div className="pui:grid pui:w-80 pui:max-w-full">
       <SwitchField label="Aggiornamenti attivi" defaultChecked />
       <SwitchField label="Promemoria disattivati" />
     </div>
@@ -435,20 +442,20 @@ export const NarrowRichSource: Story = {
   render: () => {
     const placements: ("start" | "end")[] = ["start", "end"]
     return (
-      <div className="grid gap-6">
+      <div className="pui:grid pui:gap-6">
         {[240, 320].flatMap((width) =>
           placements.map((placement) => (
             <section
               key={`${width}-${placement}`}
               aria-label={`Preferenze nel layout ${placement} da ${width} px`}
-              className="grid max-w-full"
+              className="pui:grid pui:max-w-full"
               style={{ width }}
             >
               <SwitchField
                 label="AggiornamentiDellePratichePerLePubblicheAmministrazioni"
                 defaultChecked
                 indicatorPlacement={placement}
-                leadingIcon={<PagoPAIcon name="mobile_2" />}
+                leadingIcon={<Icon source={Mobile2Icon} />}
                 description="ComunicazioniRelativeAgliAggiornamentiDeiServiziDellaPubblicaAmministrazione"
                 learnMore={{
                   label: "InformazioniSugliAggiornamentiDellePraticheAmministrative",
@@ -504,8 +511,11 @@ export const NarrowRichSource: Story = {
 function RepositioningPreference() {
   const [placement, setPlacement] = React.useState<"start" | "end">("start")
   return (
-    <form aria-label="Preferenze con indicatore iniziale" className="grid w-80 max-w-full gap-4">
-      <section aria-label="Preferenza principale" className="grid">
+    <form
+      aria-label="Preferenze con indicatore iniziale"
+      className="pui:grid pui:w-80 pui:max-w-full pui:gap-4"
+    >
+      <section aria-label="Preferenza principale" className="pui:grid">
         <SwitchField
           label="Comunicazioni del servizio"
           name="updates"
@@ -514,7 +524,7 @@ function RepositioningPreference() {
           description="Ricevi gli aggiornamenti della pratica."
         />
       </section>
-      <section aria-label="Preferenza con errore" className="grid">
+      <section aria-label="Preferenza con errore" className="pui:grid">
         <SwitchField
           label="Conferma delle comunicazioni"
           name="confirmation"
@@ -532,12 +542,12 @@ function RepositioningPreference() {
         disabled
       />
       <SwitchField
-        label={<span className="sr-only">Preferenza senza titolo visibile</span>}
+        label={<span className="pui:sr-only">Preferenza senza titolo visibile</span>}
         name="withoutTitle"
         indicatorPlacement="start"
       />
       <SwitchField
-        label={<span className="sr-only">Preferenza con sola descrizione</span>}
+        label={<span className="pui:sr-only">Preferenza con sola descrizione</span>}
         name="descriptionOnly"
         indicatorPlacement="start"
         description="Ricevi soltanto gli avvisi essenziali."
@@ -725,7 +735,7 @@ function SourceStartOption({
       label={
         <>
           Label
-          <span className="sr-only">{` ${state}`}</span>
+          <span className="pui:sr-only">{` ${state}`}</span>
         </>
       }
       description="Label"
@@ -740,16 +750,19 @@ function SourceStartOption({
 
 export const FidelityStartStates: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("295:1360") },
   },
   render: () => (
-    <form aria-label="SwitchField control-before-copy source states" className="grid w-80 gap-4">
+    <form
+      aria-label="SwitchField control-before-copy source states"
+      className="pui:grid pui:w-80 pui:gap-4"
+    >
       {sourceStartStates.map((state) => (
         // Source rows are 150x42 (64px with the 2px helper gap); the 44px
         // native target is reserved separately from the copy stack.
-        <div key={state.id} className="w-[150px] max-w-full">
+        <div key={state.id} className="pui:w-[150px] pui:max-w-full">
           <SourceStartOption {...state} />
         </div>
       ))}
@@ -768,8 +781,10 @@ export const FidelityStartStates: Story = {
       await expect(control.getBoundingClientRect().width).toBe(56)
       await expect(control.getBoundingClientRect().height).toBe(44)
       const row = canvasElement.querySelector<HTMLElement>(`.${state.caseClass}`)
-      const title = row?.querySelector<HTMLElement>(`label[for="${state.id}"] > span.min-w-0`)
-      const description = row?.querySelector<HTMLElement>("p.text-caption.text-muted-foreground")
+      const title = row?.querySelector<HTMLElement>(`label[for="${state.id}"] > span.pui\\:min-w-0`)
+      const description = row?.querySelector<HTMLElement>(
+        "p.pui\\:text-caption.pui\\:text-muted-foreground",
+      )
       const track = control.querySelector<HTMLElement>("[data-slot=switch-track]")
       if (!row || !title || !description || !track) {
         throw new Error("The source control and copy geometry must render")
@@ -854,10 +869,10 @@ function SourceRichOption({
       label={
         <>
           Label
-          <span className="sr-only">{` ${state}`}</span>
+          <span className="pui:sr-only">{` ${state}`}</span>
         </>
       }
-      leadingIcon={<PagoPAIcon name="mobile_2" />}
+      leadingIcon={<Icon source={Mobile2Icon} />}
       description="Add a supporting description"
       learnMore={{ label: "Scopri di più", href: "/servizi/aggiornamenti" }}
       unavailable={unavailable}
@@ -870,7 +885,7 @@ export const FidelityRichStates: Story = {
   tags: ["color-pinned"],
   parameters: { design: { type: "figma", url: figmaEmbedUrl("349:4683") } },
   render: () => (
-    <form aria-label="SwitchField rich source states" className="grid w-80 max-w-full">
+    <form aria-label="SwitchField rich source states" className="pui:grid pui:w-80 pui:max-w-full">
       {sourceRichStates.map((state) => (
         <SourceRichOption key={state.id} {...state} />
       ))}

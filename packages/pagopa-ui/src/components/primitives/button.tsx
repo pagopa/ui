@@ -3,46 +3,50 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/cn"
+
+import { type ElementProps } from "./props"
 import { SpinnerIndicator } from "./spinner-indicator"
 
 // Outlined strokes are inset rings so they sit inside the padding like the
 // source's inside stroke. Forced colors drops box shadows, so a real border
 // keeps every button's edge visible there.
 const buttonVariants = cva(
-  "group/button inline-flex min-w-0 max-w-full shrink-0 items-center justify-center rounded-lg border-transparent bg-clip-padding text-button whitespace-normal [overflow-wrap:anywhere] transition-[color,background-color,border-color] outline-none select-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:inset-ring-destructive forced-colors:border [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "group/button pui:inline-flex pui:min-w-0 pui:max-w-full pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:border-transparent pui:bg-clip-padding pui:text-button pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:transition-[color,background-color,border-color] pui:outline-none pui:select-none pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:disabled:pointer-events-none pui:disabled:opacity-50 pui:aria-invalid:border-destructive pui:aria-invalid:inset-ring-destructive pui:forced-colors:border pui:[&_svg]:pointer-events-none pui:[&_svg]:shrink-0 pui:[&_svg:not(.pagopa-icon)]:size-5",
   {
     variants: {
       variant: {
         default:
-          "bg-primary px-6 text-primary-foreground hover:bg-primary-hover active:bg-primary-active aria-invalid:inset-ring",
+          "pui:bg-primary pui:px-6 pui:text-primary-foreground pui:hover:bg-primary-hover pui:active:bg-primary-active pui:aria-invalid:inset-ring",
         outline:
-          "bg-transparent px-6 text-primary inset-ring-2 inset-ring-primary hover:bg-accent active:bg-accent-active forced-colors:border-2",
-        secondary: "border bg-secondary px-4 text-secondary-foreground hover:bg-secondary-hover",
-        ghost: "border px-4 text-primary hover:bg-accent active:bg-accent-active",
+          "pui:bg-transparent pui:px-6 pui:text-primary pui:inset-ring-2 pui:inset-ring-primary pui:hover:bg-accent pui:active:bg-accent-active pui:forced-colors:border-2",
+        secondary:
+          "pui:border pui:bg-secondary pui:px-4 pui:text-secondary-foreground pui:hover:bg-secondary-hover",
+        ghost:
+          "pui:border pui:px-4 pui:text-primary pui:hover:bg-accent pui:active:bg-accent-active",
         destructive:
-          "bg-destructive px-6 text-destructive-foreground hover:bg-destructive-hover focus-visible:outline-destructive aria-invalid:inset-ring",
+          "pui:bg-destructive pui:px-6 pui:text-destructive-foreground pui:hover:bg-destructive-hover pui:focus-visible:outline-destructive pui:aria-invalid:inset-ring",
         "outline-destructive":
-          "bg-transparent px-6 text-destructive inset-ring-2 inset-ring-destructive hover:bg-error-soft focus-visible:outline-destructive forced-colors:border-2",
+          "pui:bg-transparent pui:px-6 pui:text-destructive pui:inset-ring-2 pui:inset-ring-destructive pui:hover:bg-error-soft pui:focus-visible:outline-destructive pui:forced-colors:border-2",
         "ghost-destructive":
-          "border bg-transparent px-4 text-destructive hover:bg-error-soft focus-visible:outline-destructive",
+          "pui:border pui:bg-transparent pui:px-4 pui:text-destructive pui:hover:bg-error-soft pui:focus-visible:outline-destructive",
         contrast:
-          "bg-contrast px-6 text-contrast-foreground hover:bg-accent active:bg-accent-active aria-invalid:inset-ring",
+          "pui:bg-contrast pui:px-6 pui:text-contrast-foreground pui:hover:bg-accent pui:active:bg-accent-active pui:aria-invalid:inset-ring",
         "outline-contrast":
-          "bg-transparent px-6 text-contrast inset-ring-2 inset-ring-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast forced-colors:border-2",
+          "pui:bg-transparent pui:px-6 pui:text-contrast pui:inset-ring-2 pui:inset-ring-contrast pui:hover:bg-contrast/10 pui:active:bg-contrast/20 pui:focus-visible:outline-contrast pui:forced-colors:border-2",
         "ghost-contrast":
-          "border bg-transparent px-4 text-contrast hover:bg-contrast/10 active:bg-contrast/20 focus-visible:outline-contrast",
-        link: "border px-4 text-primary underline-offset-4 hover:underline",
+          "pui:border pui:bg-transparent pui:px-4 pui:text-contrast pui:hover:bg-contrast/10 pui:active:bg-contrast/20 pui:focus-visible:outline-contrast",
+        link: "pui:border pui:px-4 pui:text-primary pui:underline-offset-4 pui:hover:underline",
       },
       size: {
-        default: "min-h-12 gap-2 [&_svg:not([class*='size-'])]:size-6",
-        xs: "min-h-8 gap-1 px-3 text-label-mini-sb",
-        sm: "min-h-10 gap-1.5 px-3.5 text-label-mini-sb",
-        lg: "min-h-12 gap-2 px-6 text-body-big-sb",
-        icon: "size-11 p-0 [&_svg:not([class*='size-'])]:size-6",
+        default: "pui:min-h-12 pui:gap-2 pui:[&_svg:not(.pagopa-icon)]:size-6",
+        xs: "pui:min-h-8 pui:gap-1 pui:px-3 pui:text-label-mini-sb",
+        sm: "pui:min-h-10 pui:gap-1.5 pui:px-3.5 pui:text-label-mini-sb",
+        lg: "pui:min-h-12 pui:gap-2 pui:px-6 pui:text-body-big-sb",
+        icon: "pui:size-11 pui:p-0 pui:[&_svg:not(.pagopa-icon)]:size-6",
         "icon-xs":
-          "size-6 rounded-md in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm": "size-7 rounded-md in-data-[slot=button-group]:rounded-lg",
-        "icon-lg": "size-12",
+          "pui:size-6 pui:rounded-md pui:in-data-[slot=button-group]:rounded-lg pui:[&_svg:not(.pagopa-icon)]:size-3",
+        "icon-sm": "pui:size-7 pui:rounded-md pui:in-data-[slot=button-group]:rounded-lg",
+        "icon-lg": "pui:size-12",
       },
     },
     defaultVariants: {
@@ -51,6 +55,25 @@ const buttonVariants = cva(
     },
   },
 )
+
+/** Props of the `Button`. */
+export type ButtonProps = ElementProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    /** Shows a spinner and blocks interaction until the action resolves. @default false */
+    loading?: boolean
+    /** Renders the label as a placeholder bar while the content loads. @default false */
+    skeleton?: boolean
+    /**
+     * Whether replacing the element with `render` keeps native `<button>`
+     * behaviour. @default true
+     */
+    nativeButton?: boolean
+    /**
+     * Whether a disabled button stays in the tab order, so a busy action still
+     * announces itself. @default false
+     */
+    focusableWhenDisabled?: boolean
+  }
 
 function Button({
   className,
@@ -61,11 +84,7 @@ function Button({
   loading = false,
   skeleton = false,
   ...props
-}: ButtonPrimitive.Props &
-  VariantProps<typeof buttonVariants> & {
-    loading?: boolean
-    skeleton?: boolean
-  }) {
+}: ButtonProps) {
   const busy = loading || skeleton
   return (
     <ButtonPrimitive
@@ -77,23 +96,29 @@ function Button({
       // A busy action keeps its place in the tab order and announces its state:
       // dropping the focus would strand keyboard and screen reader users.
       focusableWhenDisabled={!disabled && busy}
-      className={cn(buttonVariants({ variant, size, className }), busy && "pointer-events-none")}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        busy && "pui:pointer-events-none",
+      )}
       {...props}
     >
       {loading ? (
-        <SpinnerIndicator dataSlot="button-loading-spinner" className="size-6 text-current" />
+        <SpinnerIndicator
+          dataSlot="button-loading-spinner"
+          className="pui:size-6 pui:text-current"
+        />
       ) : null}
       {skeleton ? (
         <>
-          <span className="sr-only">{children}</span>
+          <span className="pui:sr-only">{children}</span>
           <span
             data-slot="button-skeleton"
             aria-hidden="true"
-            className="h-4 w-23 rounded-full bg-skeleton-strong opacity-30 forced-colors:forced-color-adjust-none forced-colors:bg-[CanvasText]"
+            className="pui:h-4 pui:w-23 pui:rounded-full pui:bg-skeleton-strong pui:opacity-30 pui:forced-colors:forced-color-adjust-none pui:forced-colors:bg-[CanvasText]"
           />
         </>
       ) : loading ? (
-        <span className="sr-only">{children}</span>
+        <span className="pui:sr-only">{children}</span>
       ) : (
         children
       )}

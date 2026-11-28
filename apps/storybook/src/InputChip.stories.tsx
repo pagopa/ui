@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   render: (args) => (
-    <div className="flex flex-wrap gap-3">
+    <div className="pui:flex pui:flex-wrap pui:gap-3">
       <InputChip {...args} />
       <InputChip>Commercio</InputChip>
     </div>
@@ -47,14 +47,14 @@ export const NeutralSolid: Story = {
     onRemove: fn(),
   },
   render: (args) => (
-    <div data-fidelity-variant="422-16019" className="w-[93px]">
+    <div data-fidelity-variant="422-16019" className="pui:w-[93px]">
       <InputChip {...args} />
     </div>
   ),
 }
 
 export const Removable: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { onRemove: fn() },
   play: async ({ canvasElement, args }) => {

@@ -4,6 +4,7 @@ import { defineCommand, type CommandDef, type SubCommandsDef } from "citty"
 
 import { checkA11yConformance } from "../checks/a11y-conformance.ts"
 import { checkClientDirectives } from "../checks/client-directives.ts"
+import { checkConsumerDx } from "../checks/consumer-dx.ts"
 import { checkCssBudget, measureCss } from "../checks/css-budget.ts"
 import { checkDocLinks } from "../checks/doc-links.ts"
 import { checkFoundation, measureFoundation } from "../checks/foundation.ts"
@@ -13,10 +14,10 @@ import { checkPlugin } from "../checks/plugin.ts"
 import { checkPublicTokens } from "../checks/public-tokens.ts"
 import { formatCheck, passed, type CheckReport } from "../checks/report.ts"
 import { checkTextDefaults } from "../checks/text-defaults.ts"
+import { checkUtilityPrefix } from "../checks/utility-prefix.ts"
 import { checkTokens } from "../figma/tokens.ts"
 import { integer, text } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
-import { evidenceGate, parityGate } from "./parity-gates.ts"
 import { unresolvedCliTokens } from "./resolve.ts"
 
 export const budgetArg = {
@@ -51,6 +52,11 @@ export function checkCommands(
         checkTokens(ctx.workspace()),
       ),
       "client-directives": clientDirectivesCommand(ctx),
+      "consumer-dx": gate(
+        "consumer-dx",
+        "Enforce the consumer DX contract on the public components",
+        () => checkConsumerDx(ctx.workspace()),
+      ),
       css: cssCommand(ctx),
       docs: gate("docs", "Resolve documentation links, path claims and commands", () =>
         checkDocLinks(ctx.workspace(), {
@@ -86,8 +92,11 @@ export function checkCommands(
           printReport(ctx, checkTextDefaults(ctx.workspace(), { max: integer(max, "--max") })),
         ),
       }),
-      parity: parityGate(ctx),
-      evidence: evidenceGate(ctx),
+      "utility-prefix": gate(
+        "utility-prefix",
+        "Reject a utility class spelled without the pui: prefix",
+        () => checkUtilityPrefix(ctx.workspace()),
+      ),
       ...extra,
     },
   })

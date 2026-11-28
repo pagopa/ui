@@ -70,6 +70,9 @@ later, independent step with its own trigger. Concretely:
 4. **TypeScript 7 with the TypeScript 6 API.** The compiler that runs the tasks
    is TypeScript 7 (`@typescript/native`); the `typescript` name carries the 6
    API so that `@nx/js/typescript` and every API-consuming tool keeps working.
+   **Amended (2026-11-26):** the workspace declares one compiler instead of
+   bridging two, and it is the stable TypeScript 6 line — see
+   [ADR-0010](./0010-single-typescript-compiler.md).
 5. **Release through Nx.** Version plans (`pnpm nx release plan`) describe the
    change; the DX release manager opens the "Version Packages" pull request and
    tags the release. At the time of this decision, publication was deferred

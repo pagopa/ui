@@ -2,7 +2,9 @@
 
 import { cn } from "@/lib/cn"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Left as ArrowLeftIcon } from "@/components/icons/generated/arrow"
+import { Default as ChevronRightIcon } from "@/components/icons/generated/chevron"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
 export interface BreadcrumbItem {
@@ -10,16 +12,8 @@ export interface BreadcrumbItem {
   href?: string
 }
 
-/**
- * Navigation path to the current page, or a single back link in the compact layout.
- *
- * Figma: Breadcrumbs (node 123:7768)
- */
-function Breadcrumb({
-  className,
-  "aria-label": ariaLabelProp,
-  ...props
-}: {
+/** Props of the navigation path or its compact back link. */
+export type BreadcrumbProps = {
   /** Additional classes for the navigation element. */
   className?: string
   /** Name of the navigation landmark. @default messages.breadcrumb.ariaLabel */
@@ -39,41 +33,47 @@ function Breadcrumb({
       back: { label: string; href: string }
       items?: never
     }
-)) {
+)
+
+/**
+ * Navigation path to the current page, or a single back link in the compact layout.
+ *
+ * Figma: Breadcrumbs (node 123:7768)
+ */
+function Breadcrumb({ className, "aria-label": ariaLabelProp, ...props }: BreadcrumbProps) {
   const t = useMessages("breadcrumb")
   const ariaLabel = ariaLabelProp ?? t.ariaLabel
   const Link = useLinkComponent()
   const compact = props.layout === "compact"
   const items = props.layout === "compact" ? [props.back] : props.items
   return (
-    <nav aria-label={ariaLabel} className={className}>
-      <ol className="flex min-w-0 flex-wrap items-center gap-1.5 text-body">
+    <nav data-slot="breadcrumb" aria-label={ariaLabel} className={className}>
+      <ol className="pui:flex pui:min-w-0 pui:flex-wrap pui:items-center pui:gap-1.5 pui:text-body">
         {items.map((item, index) => {
           const current = !compact && index === items.length - 1
           return (
             <li
               key={`${item.label}-${index}`}
-              className="flex min-w-0 max-w-full items-center gap-1.5"
+              className="pui:flex pui:min-w-0 pui:max-w-full pui:items-center pui:gap-1.5"
             >
               {index > 0 ? (
-                <PagoPAIcon
-                  name="chevron"
-                  variant="right"
+                <Icon
+                  source={ChevronRightIcon}
                   size={16}
-                  className="breadcrumb-separator text-foreground opacity-80"
+                  className="breadcrumb-separator pui:text-foreground pui:opacity-80"
                 />
               ) : null}
               {!current && item.href ? (
                 <Link
                   href={item.href}
                   className={cn(
-                    "relative inline-flex min-w-0 items-center gap-1 rounded-sm text-body-sb text-foreground underline-offset-4 [overflow-wrap:anywhere] after:absolute after:inset-x-0 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                    "pui:relative pui:inline-flex pui:min-w-0 pui:items-center pui:gap-1 pui:rounded-sm pui:text-body-sb pui:text-foreground pui:underline-offset-4 pui:[overflow-wrap:anywhere] pui:after:absolute pui:after:inset-x-0 pui:hover:text-primary pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring",
                     // Invisible 44px target over the source row: 22 + 2 × 12 (Extended), 24 + 2 × 10 (Compact).
-                    compact ? "after:-inset-y-2.5" : "after:-inset-y-3",
+                    compact ? "pui:after:-inset-y-2.5" : "pui:after:-inset-y-3",
                   )}
                 >
                   {compact ? (
-                    <PagoPAIcon name="arrow" variant="left" className="breadcrumb-back-icon" />
+                    <Icon source={ArrowLeftIcon} className="breadcrumb-back-icon" />
                   ) : null}
                   {item.label}
                 </Link>
@@ -81,8 +81,8 @@ function Breadcrumb({
                 <span
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-w-0 items-center [overflow-wrap:anywhere]",
-                    current ? "text-muted-foreground" : "text-body-sb text-foreground",
+                    "pui:inline-flex pui:min-w-0 pui:items-center pui:[overflow-wrap:anywhere]",
+                    current ? "pui:text-muted-foreground" : "pui:text-body-sb pui:text-foreground",
                   )}
                 >
                   {item.label}

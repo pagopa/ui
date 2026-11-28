@@ -44,10 +44,10 @@ time; `delta.md` holds the queue read and the decision procedure.
 Use `pnpm ui-cli figma brief --queue --refresh` for the delta's own briefs, and
 the node brief again when a node's context changes.
 
-Record decisions through `figma registry set`
-(`catalogue/statuses.md`). Cases, rules and guides travel
-with the implementation. Source/render inspection and the parity loop in `visual-parity.md` remain
-required; a draft is not coverage.
+Record decisions through `record` (`catalogue/statuses.md`), one atomic run per
+node. Cases, rules and guides travel with the implementation. Source/render
+inspection and the alignment loop in `visual-parity.md` remain required
+([commands](commands.md)); a draft is not coverage.
 Changes to comparison tools, the public API, tokens or these instructions
 require an explicit decision; a mismatch alone is not permission to relax them.
 If commits were requested, keep one commit per node on this branch, with the
@@ -65,22 +65,23 @@ workflow's baselines are reviewed and the visual check reruns.
 
 ### Before / after media
 
-After authorized delivery, with a clean committed tree and Storybook answering:
+Nothing captures this pair for you: there is no saved case to plan from, so the
+session that changed the render is the session that shows it. When the pull
+request needs the pair, capture it while both revisions are at hand.
 
-```sh
-pnpm ui-cli figma handoff media --pr <n> --base <ref> --dry-run --json
-pnpm ui-cli figma handoff media --pr <n> --base <ref> --json
-```
-
-The CLI selects changed mapped nodes/cases, captures base and head with the same
-story, viewport and clip, restores source files, attaches one comment and checks
-the uploaded URLs. Identical frames become a line rather than a pair. It reads
-`STORYBOOK_URL` when a session serves its own Storybook on another port.
+1. Name the nodes whose render moved — the ones the diagnostic reported
+   residues for, plus any whose story you touched.
+2. For each, capture the story at the same width, viewport and root on the base
+   revision and on the head revision: `git stash` or a scratch checkout of the
+   base, Storybook answering on its own port, the same story id, one screenshot
+   each. Read `STORYBOOK_URL` when a session serves Storybook elsewhere than
+   `http://localhost:6006`.
+3. Attach the pair to the pull request, one comment per node, and state the
+   width used. Identical frames do not need a pair: say the render did not move.
 
 **Done when** every node whose render moved has a verified before/after pair,
-every unchanged render is explained, and the working tree is restored.
-Inspect the result: the helper does not replay arbitrary saved `fill`, `click`
-or focus-selector interactions, nor discover all indirect token/artwork
-dependants. For those cases, reproduce the saved state and capture both
-revisions explicitly; report missing pairs as unverified. Generated comment
-text does not replace the decision/reason report.
+every unchanged render is explained, and the working tree is restored. A saved
+`fill`, `click` or focus-selector state is not replayed for you — reproduce it
+before each capture — and indirect token or artwork dependants are not
+discovered; report a missing pair as unverified rather than omitting it. The
+comment text does not replace the decision/reason report.

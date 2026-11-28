@@ -3,8 +3,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { HeaderAlert } from "@/components/feedback"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { HeaderAlert } from "@/components/feedback/header-alert"
+import { Icon } from "@/components/icons/icon"
+import { Default as CachedIcon } from "@/components/icons/generated/cached"
 import { Button } from "@/components/primitives/button"
 
 const meta = {
@@ -36,7 +37,7 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 export const AllTones: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <div>
@@ -60,9 +61,9 @@ function SourceUnitAction() {
     <Button
       type="button"
       variant="ghost"
-      className="relative min-h-0 px-0 py-0 after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:min-h-0 pui:px-0 pui:py-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
-      <PagoPAIcon name="cached" size={24} className="shrink-0" />
+      <Icon source={CachedIcon} size={24} className="pui:shrink-0" />
       <span>Cambia unità</span>
     </Button>
   )

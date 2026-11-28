@@ -21,13 +21,13 @@ function Spinner({ size = "md", variant = "primary", label, className }: Spinner
       data-slot="spinner"
       role={statusLabel ? "status" : undefined}
       aria-hidden={statusLabel ? undefined : true}
-      className={cn("inline-flex items-center gap-2", className)}
+      className={cn("pui:inline-flex pui:items-center pui:gap-2", className)}
     >
       <SpinnerIndicator
         variant={variant}
-        className={cn(size === "sm" && "size-5", size === "lg" && "size-12")}
+        className={cn(size === "sm" && "pui:size-5", size === "lg" && "pui:size-12")}
       />
-      {statusLabel ? <span className="sr-only">{statusLabel}</span> : null}
+      {statusLabel ? <span className="pui:sr-only">{statusLabel}</span> : null}
     </span>
   )
 }

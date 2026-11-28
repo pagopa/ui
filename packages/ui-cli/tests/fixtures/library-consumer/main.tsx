@@ -6,6 +6,7 @@ import * as React from "react"
 import { createRoot } from "react-dom/client"
 import avatarLogo from "./avatar-source-logo.png"
 import {
+  Accordion,
   Autocomplete,
   AuthenticationCodeInput,
   Avatar,
@@ -17,7 +18,9 @@ import {
   DatePicker,
   DatePickerField,
   Dialog,
+  DialogClose,
   Drawer,
+  DrawerClose,
   iconNames,
   Image,
   InputChip,
@@ -44,9 +47,13 @@ import {
   TabsList,
   TabsTrigger,
   TextareaField,
+  TimelineDrawer,
+  Tooltip,
   type DatePickerRange,
   UIProvider,
 } from "__PAGOPA_UI_PACKAGE__"
+import { Feedback as EntryFeedback } from "__PAGOPA_UI_PACKAGE__/icons"
+import Feedback from "__PAGOPA_UI_PACKAGE__/icons/feedback"
 import "__PAGOPA_UI_PACKAGE__/styles.css"
 
 const sourceIconVariants = [
@@ -428,7 +435,7 @@ function ConsumerAvatars() {
       <Button variant="outline" onClick={() => setLoading((current) => !current)}>
         {loading ? "Completa caricamento" : "Carica identità"}
       </Button>
-      <div style={{ background: "var(--navy)", borderRadius: 8, padding: 16 }}>
+      <div style={{ background: "var(--pui-navy)", borderRadius: 8, padding: 16 }}>
         <Avatar
           alt="Servizio culturale inverso installato"
           icon={<PagoPAIcon name="theater_comedy" size={33} />}
@@ -638,7 +645,7 @@ function ConsumerProducts() {
               Richiedi l'accesso agli{" "}
               <a
                 href="#consumer-product-admins"
-                style={{ color: "var(--primary)", textDecoration: "underline" }}
+                style={{ color: "var(--pui-primary)", textDecoration: "underline" }}
               >
                 Amministratori del prodotto
               </a>
@@ -807,7 +814,9 @@ function ConsumerResponsiveScopes() {
     >
       {/* The list is its own scroll area: wider than this column at 320 it must
           fall back to the start, or the centred overflow hides the first tab
-          off the unreachable left edge. */}
+          off the unreachable left edge. The overrides carry the library's
+          `pui:` prefix: a bare utility no longer wins over the prefixed
+          default the component owns. */}
       <div
         data-testid="consumer-scrollable-tabs"
         style={{ width: 240, maxWidth: "100%", minWidth: 0 }}
@@ -816,7 +825,7 @@ function ConsumerResponsiveScopes() {
           <TabsList
             variant="line"
             aria-label="Sezioni del servizio"
-            className="w-full overflow-x-auto"
+            className="pui:w-full pui:overflow-x-auto"
           >
             <TabsTrigger value="attivi">Attivi</TabsTrigger>
             <TabsTrigger value="archiviati">Archiviati</TabsTrigger>
@@ -861,6 +870,191 @@ function ConsumerResponsiveScopes() {
   )
 }
 
+// The controlled lifecycle of the packed overlays: an async handler decides
+// when the panel opens, a close action inside the panel closes it, and the
+// caller reads the panel through the contract it forwarded.
+function ConsumerOverlays() {
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+  const [popoverOpen, setPopoverOpen] = React.useState(false)
+  const [tooltipOpen, setTooltipOpen] = React.useState(false)
+  const [timelineOpen, setTimelineOpen] = React.useState(false)
+  const [panel, setPanel] = React.useState<HTMLDivElement | null>(null)
+  const [popoverPanel, setPopoverPanel] = React.useState<HTMLDivElement | null>(null)
+  const [tooltipBubble, setTooltipBubble] = React.useState<HTMLDivElement | null>(null)
+  const [timelinePanel, setTimelinePanel] = React.useState<HTMLDivElement | null>(null)
+  const tooltipAnchor = React.useRef<HTMLButtonElement>(null)
+
+  async function openDialog() {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 60))
+    setLoading(false)
+    setDialogOpen(true)
+  }
+
+  // Every panel reads the same way: the class the caller set and the standard
+  // attribute it forwarded, or the absence of a panel to read.
+  const panelContract = (element: HTMLDivElement | null) =>
+    element
+      ? `${element.classList.contains("max-w-md") ? "classe" : "senza classe"}/${element.dataset.panelContract ?? "senza attributo"}`
+      : "nessun pannello"
+
+  const contract = panelContract(panel)
+
+  return (
+    <section aria-label="Pannelli controllati" style={{ display: "grid", gap: 16 }}>
+      <Button
+        id="consumer-controlled-dialog-open"
+        variant="outline"
+        onClick={openDialog}
+        loading={loading}
+      >
+        Apri il dialogo controllato
+      </Button>
+      <Button
+        id="consumer-controlled-drawer-open"
+        variant="outline"
+        onClick={() => setDrawerOpen(true)}
+      >
+        Apri il pannello controllato
+      </Button>
+      <Button
+        id="consumer-controlled-popover-open"
+        variant="outline"
+        onClick={() => setPopoverOpen(true)}
+      >
+        Apri il popover controllato
+      </Button>
+      <Button
+        ref={tooltipAnchor}
+        id="consumer-controlled-tooltip-open"
+        variant="outline"
+        onClick={() => setTooltipOpen(true)}
+      >
+        Mostra il suggerimento controllato
+      </Button>
+      <Button
+        id="consumer-controlled-timeline-open"
+        variant="outline"
+        onClick={() => setTimelineOpen(true)}
+      >
+        Apri la cronologia controllata
+      </Button>
+      <output aria-label="Stato del dialogo">{dialogOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del pannello">{drawerOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del popover">{popoverOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato del suggerimento">{tooltipOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Stato della cronologia">{timelineOpen ? "aperto" : "chiuso"}</output>
+      <output aria-label="Contratto del pannello">{contract}</output>
+      <output aria-label="Contratto del popover">{panelContract(popoverPanel)}</output>
+      <output aria-label="Contratto del suggerimento">{panelContract(tooltipBubble)}</output>
+      <output aria-label="Contratto della cronologia">{panelContract(timelinePanel)}</output>
+      <Dialog
+        ref={setPanel}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        title="Dialogo controllato"
+        description="Il pacchetto installato segue lo stato del consumatore."
+        className="max-w-md"
+        data-panel-contract="dialog"
+        footer={<DialogClose variant="outline">Chiudi dal piè di pagina</DialogClose>}
+      >
+        <p>Corpo del dialogo controllato.</p>
+      </Dialog>
+      <Drawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title="Pannello controllato"
+        description="Il pacchetto installato segue lo stato del consumatore."
+        direction="bottom"
+        footer={<DrawerClose variant="outline">Chiudi il pannello</DrawerClose>}
+      >
+        <p>Corpo del pannello controllato.</p>
+      </Drawer>
+      <Popover
+        ref={setPopoverPanel}
+        open={popoverOpen}
+        onOpenChange={setPopoverOpen}
+        label="Popover controllato"
+        className="max-w-md"
+        data-panel-contract="popover"
+      >
+        <p>Dettagli contestuali controllati.</p>
+      </Popover>
+      <Tooltip
+        ref={setTooltipBubble}
+        anchor={tooltipAnchor}
+        open={tooltipOpen}
+        onOpenChange={setTooltipOpen}
+        className="max-w-md"
+        data-panel-contract="tooltip"
+      >
+        Suggerimento controllato dal consumatore
+      </Tooltip>
+      <TimelineDrawer
+        ref={setTimelinePanel}
+        open={timelineOpen}
+        onOpenChange={setTimelineOpen}
+        title="Cronologia controllata"
+        items={[
+          { id: "created", title: "Creazione", dot: "outlined" },
+          { id: "reviewed", title: "Revisione", dot: "filled" },
+        ]}
+        className="max-w-md"
+        data-panel-contract="timeline-drawer"
+      />
+    </section>
+  )
+}
+
+// The controlled disclosure: the caller owns the open sections, so URL state or
+// a form opens one, and the caller reads the root through the contract it
+// forwarded.
+function ConsumerDisclosure() {
+  const [value, setValue] = React.useState<string[]>(["uno"])
+  const [root, setRoot] = React.useState<HTMLDivElement | null>(null)
+  const contract = root
+    ? `${root.classList.contains("max-w-md") ? "classe" : "senza classe"}/${
+        root.dataset.disclosureContract ?? "senza attributo"
+      }`
+    : "nessun elemento"
+
+  return (
+    <section aria-label="Sezioni dal pacchetto" style={{ display: "grid", gap: 16 }}>
+      <Button id="consumer-disclosure-open" variant="outline" onClick={() => setValue(["due"])}>
+        Passa alla seconda domanda
+      </Button>
+      <output aria-label="Sezioni aperte">{value.length > 0 ? value.join(", ") : "nessuna"}</output>
+      <output aria-label="Contratto delle sezioni">{contract}</output>
+      <Accordion
+        ref={setRoot}
+        aria-label="Domande del pacchetto"
+        items={[
+          { id: "uno", title: "Come si paga?", content: "Con l'app oppure allo sportello." },
+          { id: "due", title: "Dove trovo la ricevuta?", content: "Nell'area riservata." },
+          { id: "tre", title: "Il pagamento è sicuro?", content: "I dati sono cifrati." },
+        ]}
+        value={value}
+        onValueChange={setValue}
+        className="max-w-md"
+        data-disclosure-contract="accordion"
+      />
+      <Accordion
+        aria-label="Sezioni aperte all'avvio"
+        items={[
+          { id: "a", title: "Prima sezione", content: "Prima risposta." },
+          { id: "b", title: "Seconda sezione", content: "Seconda risposta." },
+          { id: "c", title: "Terza sezione", content: "Terza risposta." },
+        ]}
+        defaultValue={["a", "b"]}
+        multiple
+        data-testid="consumer-disclosure-default"
+      />
+    </section>
+  )
+}
+
 function Consumer() {
   const [activations, setActivations] = React.useState(0)
   const [submitted, setSubmitted] = React.useState("")
@@ -901,7 +1095,7 @@ function Consumer() {
         </div>
         <div
           data-testid="consumer-spinner-contrast-surface"
-          style={{ width: "fit-content", backgroundColor: "var(--primary)", padding: 8 }}
+          style={{ width: "fit-content", backgroundColor: "var(--pui-primary)", padding: 8 }}
         >
           <Spinner variant="contrast" />
         </div>
@@ -940,6 +1134,8 @@ function Consumer() {
       <output aria-label="Dati inviati" style={{ overflowWrap: "anywhere" }}>
         {submitted}
       </output>
+      <ConsumerOverlays />
+      <ConsumerDisclosure />
       <Dialog
         trigger={
           <Button id="consumer-dialog-trigger" variant="outline">
@@ -977,7 +1173,7 @@ function Consumer() {
       <ConsumerCalendars />
       <PagoPAIcon name="info" decorative={false} label="Informazioni" />
       <PagoPAPictogram name="Hourglass" background="light" />
-      <div style={{ background: "var(--navy)", padding: 16 }}>
+      <div style={{ background: "var(--pui-navy)", padding: 16 }}>
         <PagoPAPictogram name="Hourglass" background="dark" />
       </div>
       <section
@@ -986,15 +1182,21 @@ function Consumer() {
           display: "grid",
           gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
           gap: 16,
-          color: "var(--primary)",
+          color: "var(--pui-primary)",
         }}
       >
+        {/* The icon family ships on its own entry, so a consumer that names one
+            icon bundles that component and no other artwork. */}
+        <div style={{ display: "flex", gap: 8, color: "var(--pui-primary)" }}>
+          <Feedback aria-hidden width={24} height={24} />
+          <EntryFeedback aria-hidden width={24} height={24} />
+        </div>
         {iconCases.map(({ name, variant }) => (
           <div
             key={`${name}-${variant ?? "default"}`}
             style={
               name === "IO logo" && variant === "light"
-                ? { background: "var(--navy)", padding: 8, forcedColorAdjust: "none" }
+                ? { background: "var(--pui-navy)", padding: 8, forcedColorAdjust: "none" }
                 : undefined
             }
           >

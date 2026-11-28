@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ArrowRightIcon } from "@/components/icons/generated/arrow"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import {
   Card,
@@ -71,8 +72,8 @@ function ProductCard({
     <div
       data-slot="product-logo"
       className={cn(
-        "flex size-16 shrink-0 items-center justify-center rounded-lg bg-card p-2 ring-1 ring-border [&>*]:max-h-full [&>*]:max-w-full",
-        image && "absolute -bottom-8 left-6",
+        "pui:flex pui:size-16 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-lg pui:bg-card pui:p-2 pui:ring-1 pui:ring-border pui:[&>*]:max-h-full pui:[&>*]:max-w-full",
+        image && "pui:absolute pui:-bottom-8 pui:left-6",
       )}
     >
       {logo}
@@ -81,34 +82,36 @@ function ProductCard({
   const actionVariant = image ? "outline" : "default"
   // No `font-medium`: the source action is Titillio/500 = our 600, and the
   // Button/anchor base already carries the token weight (CSS 500 renders Regular).
-  const actionClassName = "min-h-12 min-w-0 max-w-full px-6 whitespace-normal"
+  const actionClassName = "pui:min-h-12 pui:min-w-0 pui:max-w-full pui:px-6 pui:whitespace-normal"
   const actionContent = (
     <>
       {actionLabel}
-      {!image ? <PagoPAIcon name="arrow" variant="right" /> : null}
+      {!image ? <Icon source={ArrowRightIcon} /> : null}
     </>
   )
   return (
     <Card
       variant={image ? "product-image" : "product"}
-      className={cn("h-full", className)}
+      className={cn("pui:h-full", className)}
       {...props}
     >
       {image ? (
-        <div className="relative -mt-6">
-          <div className="aspect-[272/191] [&>*]:size-full [&>*]:rounded-none [&_img]:size-full [&_img]:object-cover">
+        <div className="pui:relative pui:-mt-6">
+          <div className="pui:aspect-[272/191] pui:[&>*]:size-full pui:[&>*]:rounded-none pui:[&_img]:size-full pui:[&_img]:object-cover">
             {image}
           </div>
           {logoContent}
         </div>
       ) : null}
-      <CardHeader className={cn(image && logo && "pt-6")}>
-        <div className="flex min-w-0 items-center gap-2.5">
+      <CardHeader className={cn(image && logo && "pui:pt-6")}>
+        <div className="pui:flex pui:min-w-0 pui:items-center pui:gap-2.5">
           {!image ? logoContent : null}
-          <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
-            {eyebrow ? <p className="text-caption-sb text-primary">{eyebrow}</p> : null}
+          <div className="pui:flex pui:min-w-0 pui:flex-1 pui:flex-col pui:items-start pui:gap-1">
+            {eyebrow ? <p className="pui:text-caption-sb pui:text-primary">{eyebrow}</p> : null}
             {chip ? (
-              <div className="flex min-w-0 max-w-full wrap-anywhere [&>*]:max-w-full">{chip}</div>
+              <div className="pui:flex pui:min-w-0 pui:max-w-full pui:wrap-anywhere pui:[&>*]:max-w-full">
+                {chip}
+              </div>
             ) : null}
             <CardTitle render={<Title />}>{title}</CardTitle>
           </div>
@@ -117,7 +120,7 @@ function ProductCard({
       </CardHeader>
       {children ? <CardContent>{children}</CardContent> : null}
       {onAction || href !== undefined ? (
-        <CardFooter className="mt-auto">
+        <CardFooter className="pui:mt-auto">
           {href !== undefined ? (
             <Link
               href={href}

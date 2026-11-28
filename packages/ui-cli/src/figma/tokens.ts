@@ -28,8 +28,9 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
-import { readJson, writeJson } from "../lib/json.ts"
+import { formatJson, readJson, writeJson } from "../lib/json.ts"
 import type { Workspace } from "../adapters/workspace.ts"
+import { cssDeclarations, normalizeValue } from "../checks/foundation-styles.ts"
 import { report, type CheckReport } from "../checks/report.ts"
 import { parseSchema } from "../lib/validate.ts"
 import {
@@ -49,6 +50,8 @@ interface TokenPaths {
   css: string
   tokensCss: string
   inventory: string
+  semanticInventory: string
+  dtcg: string
   textClasses: string
   styles: string
 }
@@ -60,6 +63,8 @@ function tokenPaths(workspace: Workspace): TokenPaths {
     css: path.join(workspace.tokensRoot, "src/figma.generated.css"),
     tokensCss: path.join(workspace.tokensRoot, "src/tokens.generated.css"),
     inventory: path.join(workspace.tokensRoot, "src/figma-tokens.generated.ts"),
+    semanticInventory: path.join(workspace.tokensRoot, "src/pui-tokens.generated.ts"),
+    dtcg: path.join(workspace.tokensRoot, "src/tokens.dtcg.generated.json"),
     textClasses: path.join(workspace.tokensRoot, "src/figma-text-classes.generated.ts"),
     styles: path.join(workspace.root, "src/index.css"),
   }
@@ -239,7 +244,7 @@ export function updateTokens(workspace: Workspace, input: string): string {
   return [result.message, ...result.details.map((line) => `  ${line}`)].join("\n")
 }
 
-function messageOf(error: unknown): string {
+export function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
@@ -257,16 +262,14 @@ function runTokens(
     const foundations = readFoundations(paths)
     const { manifest, report: changes } = curatedManifest(snapshot, foundations, workspace, paths)
     validateManifest(manifest, fileKey)
-    const css = emitCss(manifest)
-    const tokensCss = emitRootCss(manifest)
-    const inventory = emitInventory(manifest)
-    const textClasses = emitTextClasses(manifest)
     fs.mkdirSync(path.dirname(paths.manifest), { recursive: true })
     writeJson(paths.manifest, manifest)
-    fs.writeFileSync(paths.css, css)
-    fs.writeFileSync(paths.tokensCss, tokensCss)
-    fs.writeFileSync(paths.inventory, inventory)
-    fs.writeFileSync(paths.textClasses, textClasses)
+    fs.writeFileSync(paths.css, emitCss(manifest))
+    fs.writeFileSync(paths.inventory, emitInventory(manifest))
+    fs.writeFileSync(paths.textClasses, emitTextClasses(manifest))
+    for (const [file, content] of tokenContract(manifest, paths).files) {
+      fs.writeFileSync(file, content)
+    }
     const unresolved = Object.keys(snapshot.unresolved ?? {}).filter(
       (name) => !excludedReason(name),
     ).length
@@ -281,11 +284,12 @@ function runTokens(
 
   const manifest = parseSchema(TokenManifestSchema, readJson(paths.manifest), paths.manifest)
   validateManifest(manifest, fileKey)
+  const contract = tokenContract(manifest, paths)
   for (const [file, expected] of [
     [paths.css, emitCss(manifest)],
-    [paths.tokensCss, emitRootCss(manifest)],
     [paths.inventory, emitInventory(manifest)],
     [paths.textClasses, emitTextClasses(manifest)],
+    ...contract.files,
   ]) {
     const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null
     if (current !== expected) {
@@ -300,6 +304,20 @@ function runTokens(
     throw new Error(
       `${paths.styles} references tokens that the manifest does not define:\n` +
         missing.map((name) => `  ${name}`).join("\n"),
+    )
+  }
+  const published = new Set(contract.tokens.map((token) => token.cssName))
+  const unpublished = [
+    ...new Set(
+      [...fs.readFileSync(paths.styles, "utf8").matchAll(/var\(\s*(--pui-[a-z0-9-]+)/g)].map(
+        (match) => match[1],
+      ),
+    ),
+  ].filter((reference) => !published.has(reference))
+  if (unpublished.length) {
+    throw new Error(
+      `${paths.styles} references semantic tokens that ${SEMANTIC_ROOT} does not declare:\n` +
+        unpublished.map((name) => `  ${name}`).join("\n"),
     )
   }
   const counts: Record<string, number> = {}
@@ -491,10 +509,11 @@ function themeEntries(
     .sort((a, b) => Number(a.value) - Number(b.value) || entryId(a).localeCompare(entryId(b)))
 }
 
-// The public token block on its own: the `:root` custom properties of the
-// manifest, without the Tailwind theme that stays internal. `emitCss` starts
-// with it and the standalone tokens stylesheet is exactly it.
-export function emitRootCss(manifest: Manifest): string {
+// The internal Figma layer: the `:root` custom properties of the manifest,
+// without the Tailwind theme that follows them. `emitCss` starts with it, and
+// the semantic block of `index.css` reads it; the published token contract
+// resolves its own values, so a consumer never receives one of these names.
+function primitiveRootLines(manifest: Manifest): string[] {
   const groups: Record<string, ManifestEntry[]> = {
     COLOR: [],
     FLOAT: [],
@@ -502,12 +521,7 @@ export function emitRootCss(manifest: Manifest): string {
     TYPOGRAPHY: [],
   }
   for (const entry of allEntries(manifest)) groups[entry.type].push(entry)
-  const lines = [
-    "/* Generated by packages/ui-cli/src/figma/tokens.ts from packages/tokens/src/manifest.json — do not edit. */",
-    `/* Figma file ${manifest.fileKey} tokens, synced ${manifest.syncedAt} (${manifest.source.method}). */`,
-    "",
-    ":root {",
-  ]
+  const lines = [":root {"]
   for (const entry of groups.COLOR) {
     lines.push(`  /* ${entry.name} */`, ...declaration(entryCssName(entry), cssValue(entry)))
   }
@@ -520,8 +534,247 @@ export function emitRootCss(manifest: Manifest): string {
     lines.push(`  /* ${entry.name} */`, ...declaration(entryCssName(entry), cssValue(entry)))
   }
   lines.push("}")
+  return lines
+}
+
+function tokenFileHeader(manifest: Manifest): string {
+  return [
+    "/* Generated by packages/ui-cli/src/figma/tokens.ts from packages/tokens/src/manifest.json — do not edit. */",
+    `/* Figma file ${manifest.fileKey} tokens, synced ${manifest.syncedAt} (${manifest.source.method}). */`,
+  ].join("\n")
+}
+
+export function emitRootCss(manifest: Manifest): string {
+  return `${[tokenFileHeader(manifest), "", ...primitiveRootLines(manifest)].join("\n")}\n`
+}
+
+// -------------------------------------------------------- semantic contract --
+
+// The public tokens are the custom properties of the UI root, published under
+// one vendor-neutral namespace so a Figma rename can never move them: the
+// declaration, not the Figma variable name, is the contract (ADR-0013). The
+// block is the stylesheet's own, so the Figma references it carries stay
+// validated against the manifest and the published value is generated from
+// them rather than typed twice.
+const SEMANTIC_ROOT = ".pagopa-ui-root"
+const SEMANTIC_PREFIX = "--pui-"
+
+// The block sits in the base layer and its selector is written with `:where()`,
+// so it adds no specificity a host has to outrank (ADR-0011). Read the last
+// compound of the context instead of the raw one: the block is the contract
+// whether or not it is layered and wrapped.
+const atSemanticRoot = (context: string): boolean => {
+  const last = context.split(" ").at(-1) ?? ""
+  return (last.startsWith(":where(") ? last.slice(":where(".length, -1) : last) === SEMANTIC_ROOT
+}
+
+export type SemanticTokenType = "color" | "dimension" | "shadow"
+
+export type SemanticToken = {
+  /** The published custom property: `--pui-<role>`. */
+  cssName: string
+  /** The role the name carries, without the namespace. */
+  name: string
+  type: SemanticTokenType
+  /**
+   * The value the contract publishes, resolved through the manifest, and the
+   * one the DTCG projection carries: the three projections say the same thing.
+   */
+  value: string
+}
+
+export function semanticTokens(
+  manifest: Manifest,
+  stylesheet: string,
+  file: string,
+): SemanticToken[] {
+  const declarations = cssDeclarations(stylesheet).filter(
+    (declaration) => atSemanticRoot(declaration.context) && declaration.property.startsWith("--"),
+  )
+  if (!declarations.length) {
+    throw new Error(`${file}: ${SEMANTIC_ROOT} declares no custom property to publish`)
+  }
+  const outside = declarations.filter((rule) => !rule.property.startsWith(SEMANTIC_PREFIX))
+  if (outside.length) {
+    throw new Error(
+      `${file}: ${SEMANTIC_ROOT} publishes ${SEMANTIC_PREFIX}* only, so a Figma ` +
+        `name cannot leak into the contract:\n` +
+        outside.map((rule) => `  ${rule.property}`).join("\n"),
+    )
+  }
+  const primitives = new Map(
+    allEntries(manifest).map((entry) => [`--${entryCssName(entry)}`, entry] as const),
+  )
+  const seen = new Set<string>()
+  return declarations.map((rule) => {
+    if (seen.has(rule.property)) throw new Error(`${file}: ${rule.property} is declared twice`)
+    seen.add(rule.property)
+    const declaration = normalizeValue(rule.value)
+    const resolved = resolvedValue(declaration, primitives, rule.property)
+    return {
+      cssName: rule.property,
+      name: rule.property.slice(SEMANTIC_PREFIX.length),
+      type: semanticType(declaration, primitives),
+      value: resolveMix(resolved, rule.property),
+    }
+  })
+}
+
+function semanticType(value: string, primitives: Map<string, ManifestEntry>): SemanticTokenType {
+  const reference = REFERENCE.exec(value)
+  if (reference) {
+    const entry = primitives.get(reference[1])
+    if (!entry) throw new Error(`${value}: the contract has no token to take a type from`)
+    if (entry.type === "COLOR") return "color"
+    if (entry.type === "EFFECT") return "shadow"
+    return "dimension"
+  }
+  if (/#[\da-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i.test(value))
+    return "color"
+  return "dimension"
+}
+
+// The public file stands alone: a host reads the contract without importing the
+// internal primitive layer, so every Figma reference is resolved here.
+function resolvedValue(
+  value: string,
+  primitives: Map<string, ManifestEntry>,
+  cssName: string,
+): string {
+  return value.replace(/var\(\s*(--figma-[a-z0-9-]+)\s*\)/g, (_, name: string) => {
+    const entry = primitives.get(name)
+    if (!entry) throw new Error(`${cssName}: ${name} is not a generated token`)
+    return cssValue(entry)
+  })
+}
+
+// `color-mix(in srgb, A 8%, B)` composites A over B in gamma-encoded sRGB, which
+// is what the browser paints. A token published to a host page carries the
+// colour it computes, never the computation: the contract reads the same
+// wherever it is loaded, DTCG can express it, and a consumer needs no
+// `color-mix` support to read one opaque surface.
+const MIX = /color-mix\(\s*in srgb\s*,\s*([^,()]+?)\s*,\s*([^,()]+?)\s*\)/g
+
+interface MixOperand {
+  channels: number[]
+  weight: number | null
+}
+
+function mixOperand(text: string, cssName: string): MixOperand {
+  const match = /^(#[0-9a-f]{6})\s*(?:(\d+(?:\.\d+)?)%)?$/i.exec(text.trim())
+  if (!match) {
+    throw new Error(
+      `${cssName}: only an opaque hex colour composites in srgb, not "${text.trim()}" — ` +
+        "publish the colour the mix computes",
+    )
+  }
+  return {
+    channels: [1, 3, 5].map((offset) => Number.parseInt(match[1].slice(offset, offset + 2), 16)),
+    weight: match[2] === undefined ? null : Number(match[2]) / 100,
+  }
+}
+
+// One side omits its percentage and takes the remainder; both omit it and the
+// mix is even; both carry one and CSS normalises them to their sum.
+function mixShare(first: MixOperand, second: MixOperand): number {
+  if (first.weight === null) return second.weight === null ? 0.5 : 1 - second.weight
+  if (second.weight === null) return first.weight
+  const total = first.weight + second.weight
+  return total === 0 ? 0.5 : first.weight / total
+}
+
+function resolveMix(value: string, cssName: string): string {
+  return value.replace(MIX, (_, first: string, second: string) => {
+    const a = mixOperand(first, cssName)
+    const b = mixOperand(second, cssName)
+    const share = mixShare(a, b)
+    const channels = a.channels.map((channel, index) =>
+      Math.round(channel * share + b.channels[index] * (1 - share)),
+    )
+    return `#${channels.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`
+  })
+}
+
+// A value that is nothing but a reference has no type of its own: the token it
+// points at decides. Anything else is classified from its syntax.
+const REFERENCE = /^var\(\s*(--[a-z0-9-]+)\s*\)$/
+
+// The contract is derived from the stylesheet on every run, in both modes: the
+// semantic block is the reviewed source, the three generated files its
+// projections.
+function tokenContract(
+  manifest: Manifest,
+  paths: TokenPaths,
+): { tokens: SemanticToken[]; files: [string, string][] } {
+  const tokens = semanticTokens(manifest, fs.readFileSync(paths.styles, "utf8"), paths.styles)
+  return {
+    tokens,
+    files: [
+      [paths.tokensCss, emitContractCss(tokens)],
+      [paths.semanticInventory, emitSemanticInventory(tokens)],
+      [paths.dtcg, formatJson(emitDtcg(tokens))],
+    ],
+  }
+}
+
+export function emitContractCss(tokens: SemanticToken[]): string {
+  const lines = [
+    "/* Generated by packages/ui-cli/src/figma/tokens.ts from the semantic block of",
+    "   packages/pagopa-ui/src/index.css — do not edit. */",
+    "/* The public token contract: the --pui-* values a host reads and overrides.",
+    "   They follow the role, so a Figma variable rename never moves them, and",
+    "   every Figma reference is resolved here: the file stands alone, with no",
+    "   internal primitive layer beside it. */",
+    ":root {",
+    ...tokens.flatMap((token) => declaration(token.cssName.slice(2), token.value)),
+    "}",
+  ]
   return `${lines.join("\n")}\n`
 }
+
+export function emitSemanticInventory(tokens: SemanticToken[]): string {
+  const lines = [
+    "// Generated by packages/ui-cli/src/figma/tokens.ts from the semantic block of",
+    "// packages/pagopa-ui/src/index.css — do not edit.",
+    'export type SemanticTokenType = "color" | "dimension" | "shadow"',
+    "",
+    // An interface, not a type alias: the workspace linter rewrites the one
+    // into the other, and the committed projection must survive `lint --fix`.
+    "export interface SemanticToken {",
+    "  cssName: string",
+    "  name: string",
+    "  type: SemanticTokenType",
+    "  value: string",
+    "}",
+    "",
+    "export const semanticTokens: SemanticToken[] = [",
+  ]
+  for (const token of tokens) {
+    lines.push("  {")
+    lines.push(`    cssName: ${JSON.stringify(token.cssName)},`)
+    lines.push(`    name: ${JSON.stringify(token.name)},`)
+    lines.push(`    type: ${JSON.stringify(token.type)},`)
+    lines.push(`    value: ${JSON.stringify(token.value)},`)
+    lines.push("  },")
+  }
+  lines.push("]", "")
+  return lines.join("\n")
+}
+
+// The projection carries the semantic contract alone: every `$value` is the
+// value the CSS projection publishes, so a host that reads the file needs no
+// alias resolution and no vocabulary but the role names (ADR-0013 §3, RD1).
+export function emitDtcg(tokens: SemanticToken[]): unknown {
+  const pui: Record<string, { $type: string; $value: string }> = {}
+  for (const token of tokens) pui[token.name] = { $type: token.type, $value: token.value }
+  return { $description: DTCG_DESCRIPTION, pui }
+}
+
+const DTCG_DESCRIPTION =
+  "The pagopa/ui token contract in Design Tokens Community Group format. " +
+  "Every entry is a published `--pui-*` role with the value it declares; " +
+  "the primitive layer a role is derived from is build-time only and is not " +
+  "part of this file."
 
 function emitCss(manifest: Manifest): string {
   const entries = allEntries(manifest)
@@ -1083,4 +1336,134 @@ function styleReferences(paths: TokenPaths): string[] {
     throw new Error(`${paths.styles}: missing the generated tokens import`)
   }
   return [...new Set([...source.matchAll(/var\((--figma-[a-z0-9-]+)/g)].map((match) => match[1]))]
+}
+
+// ---------------------------------------------------------------- drift --
+
+export type TokenDriftEntry = { id: string; name: string; type: string; value: unknown }
+export type TokenDriftChange = { id: string; name: string; from: unknown; to: unknown }
+export type TokenDriftRename = { id: string; from: string; to: string }
+
+export type TokenDrift = {
+  added: TokenDriftEntry[]
+  changed: TokenDriftChange[]
+  renamed: TokenDriftRename[]
+  removed: { id: string; name: string }[]
+  /** Names outside the canonical namespaces: a live variable nobody curated. */
+  unmapped: string[]
+  /** Values the manifest cannot express, with the reason the curation gave. */
+  unreadable: string[]
+}
+
+/** The committed manifest, or nothing when the package has not pinned one yet. */
+export function readTokenManifest(workspace: Workspace): Manifest | null {
+  const file = tokenPaths(workspace).manifest
+  if (!fs.existsSync(file)) return null
+  return parseSchema(TokenManifestSchema, readJson(file), file)
+}
+
+const sameTokenValue = (a: unknown, b: unknown): boolean =>
+  JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
+
+/**
+ * The variables a live read carries, compared with the committed manifest
+ * through the same curation `update tokens` runs: the exclusion patterns and
+ * the canonical namespaces decide what is a token, the id — not the name —
+ * decides identity, and a rename keeps the id and the css name. An entry lands
+ * in one vector: a renamed variable is not also reported as changed, because
+ * the next run compares its value under the new name.
+ */
+export function compareTokenDrift(manifest: Manifest | null, snapshot: TokenSnapshot): TokenDrift {
+  const committed = manifest?.variables ?? {}
+  const byId = new Map<string, PriorToken>()
+  const byName = new Map<string, PriorToken>()
+  for (const [id, entry] of Object.entries(committed)) {
+    byId.set(id, entry)
+    byName.set(entry.name, entry)
+  }
+  const state = emptyCuration()
+  const unreadable: string[] = []
+  for (const [name, raw] of Object.entries(snapshot.variables ?? {})) {
+    try {
+      curateVariable(name, raw, snapshot.ids ?? {}, byId, byName, state)
+    } catch (error) {
+      unreadable.push(`${name}: ${messageOf(error)}`)
+    }
+  }
+  const live = state.variables
+  const liveNames = new Set(Object.values(live).map((entry) => entry.name))
+  const added: TokenDriftEntry[] = []
+  const changed: TokenDriftChange[] = []
+  const renamed: TokenDriftRename[] = []
+  for (const [id, entry] of Object.entries(live)) {
+    // A live read without a published key falls back to `local:<name>`; the
+    // committed name is what says the two are the same variable.
+    const prior = committed[id] ?? byName.get(entry.name)
+    if (!prior) {
+      added.push({ id, name: entry.name, type: entry.type, value: entry.value })
+      continue
+    }
+    if (prior.name !== entry.name) {
+      renamed.push({ id: prior.id ?? id, from: prior.name, to: entry.name })
+      continue
+    }
+    if (prior.type !== entry.type || !sameTokenValue(prior.value, entry.value))
+      changed.push({ id: prior.id ?? id, name: entry.name, from: prior.value, to: entry.value })
+  }
+  const liveIds = new Set(Object.keys(live))
+  const removed = Object.entries(committed)
+    .filter(([id, entry]) => !liveIds.has(id) && !liveNames.has(entry.name))
+    .map(([id, entry]) => ({ id, name: entry.name }))
+  const sortBy = <T>(entries: T[], label: (entry: T) => string): T[] =>
+    [...entries].sort((a, b) => label(a).localeCompare(label(b)))
+  return {
+    added: sortBy(added, (entry) => entry.name),
+    changed: sortBy(changed, (entry) => entry.name),
+    renamed: sortBy(renamed, (entry) => entry.from),
+    removed: sortBy(removed, (entry) => entry.name),
+    unmapped: [...state.unmapped].sort(),
+    unreadable: [...unreadable].sort(),
+  }
+}
+
+export function tokenDriftCount(drift: TokenDrift): number {
+  return (
+    drift.added.length +
+    drift.changed.length +
+    drift.renamed.length +
+    drift.removed.length +
+    drift.unmapped.length +
+    drift.unreadable.length
+  )
+}
+
+const describeValue = (value: unknown): string =>
+  typeof value === "string" ? value : JSON.stringify(value ?? null)
+
+/** The run's report: one count line, then one line per variable that moved. */
+export function formatTokenDrift(drift: TokenDrift): string[] {
+  if (!tokenDriftCount(drift))
+    return ["token drift: none — the variables match the committed manifest"]
+  const counts = [
+    ["added", drift.added.length],
+    ["changed", drift.changed.length],
+    ["renamed", drift.renamed.length],
+    ["removed", drift.removed.length],
+  ]
+    .filter(([, count]) => count)
+    .map(([label, count]) => `${count} ${label}`)
+    .join(", ")
+  const lines = [`token drift: ${counts}`]
+  for (const entry of drift.added)
+    lines.push(`  added ${entry.name} (${entry.id}) = ${describeValue(entry.value)}`)
+  for (const change of drift.changed)
+    lines.push(
+      `  changed ${change.name}: ${describeValue(change.from)} -> ${describeValue(change.to)}`,
+    )
+  for (const rename of drift.renamed)
+    lines.push(`  renamed ${rename.from} -> ${rename.to} (${rename.id})`)
+  for (const entry of drift.removed) lines.push(`  removed ${entry.name} (${entry.id})`)
+  if (drift.unmapped.length) lines.push(`  unmapped: ${drift.unmapped.join(", ")}`)
+  if (drift.unreadable.length) lines.push(`  unreadable: ${drift.unreadable.join(", ")}`)
+  return lines
 }

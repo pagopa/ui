@@ -3,11 +3,11 @@ import * as React from "react"
 import { enUS } from "react-day-picker/locale"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { DatePicker } from "@/components/inputs"
+import { DatePicker } from "@/components/inputs/date-picker"
 import { Breadcrumb } from "@/components/navigation/breadcrumb"
 import { Footer } from "@/components/navigation/footer"
 import { Pagination } from "@/components/navigation/pagination"
-import { Dialog } from "@/components/overlays"
+import { Dialog } from "@/components/overlays/dialog"
 import { Button } from "@/components/primitives/button"
 import { UIProvider, enMessages, itMessages, type LinkComponentProps } from "@/lib/ui-provider"
 
@@ -48,7 +48,7 @@ export const RouterLinkStory: Story = {
   name: "RouterLink",
   render: () => (
     <UIProvider linkComponent={RouterLink}>
-      <div className="grid gap-8">
+      <div className="pui:grid pui:gap-8">
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
@@ -96,7 +96,7 @@ export const English: Story = {
   name: "English",
   render: () => (
     <UIProvider locale="en-US" messages={enMessages} calendarLocale={enUS}>
-      <div className="grid gap-8">
+      <div className="pui:grid pui:gap-8">
         <Dialog trigger={<Button>Open dialog</Button>} title="Payment details">
           <Pagination currentPage={2} totalPages={5} onPageChange={fn()} />
         </Dialog>

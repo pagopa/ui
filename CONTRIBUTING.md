@@ -37,7 +37,7 @@ in `mise.toml`/`mise.lock`; only the `infra/` projects need them.
    pnpm nx run-many -t build
    ```
 
-4. Start the documentation and visual-check surface:
+4. Start the documentation surface:
 
    ```bash
    pnpm nx run pagopa-ui-storybook:storybook
@@ -62,8 +62,10 @@ foundations are `packages/tokens`; its checks and Figma tooling are
 workspace root. The paths below are inside `packages/pagopa-ui` unless they
 name another package.
 
-The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
-(shadcn wrappers), with Storybook as its documentation surface.
+The design system uses TypeScript 6 — one compiler, the stable line, per
+[ADR-0010](./docs/decisions/0010-single-typescript-compiler.md) —, Tailwind CSS
+v4 and Base UI primitives (shadcn wrappers), with Storybook as its documentation
+surface.
 
 - `src/components/primitives` — Base UI primitives; `icons` — the public icon
   and pictogram components, re-exporting the generated catalogue from
@@ -71,7 +73,7 @@ The design system uses TypeScript 7, Tailwind CSS v4 and Base UI primitives
 - `src/components/{inputs,navigation,feedback,content,data-display,composites,overlays}`
   — the families.
 - `src/pagopa-ui.ts` — the public entry point.
-- `src/catalog/figma` — inventory, registry, story titles, parity cases, device policy,
+- `src/catalog/figma` — inventory, registry, story titles, device policy,
   exceptions.
 - `src/index.css` — the semantic aliases and the stylesheet entry; `src/library.css`
   — the published scan surface of the stylesheet, whose size
@@ -98,9 +100,13 @@ Its hosting target is Azure Static Web App.
 
 `infra/` holds the infrastructure as code for project resources and execution
 environments. `docs/` holds technical documentation, architecture,
-[ADRs](https://adr.github.io/), standards, reports and plans. Deferred decisions
-and their triggers are in [docs/decisions](./docs/decisions/). Consumer
-documentation belongs to the package README or to an application under `apps/`.
+[ADRs](https://adr.github.io/), standards, reports and plans;
+[docs/README.md](./docs/README.md) is its navigation surface, and every document
+of the tree is reachable from it. Deferred decisions and their triggers are in
+[docs/decisions](./docs/decisions/). Consumer documentation belongs to the
+package README or to an application under `apps/`. The [glossary
+map](./GLOSSARY.md) separates the Figma-alignment vocabulary from the consumer
+design-system one.
 
 ### Repository infrastructure
 
@@ -132,7 +138,9 @@ Use `pnpm nx show projects` to list projects and
 - `pnpm nx run pagopa-ui-storybook:test:stories` — the stories in Firefox and WebKit;
   `pnpm nx run pagopa-ui-storybook:test:webkit` — the stories in WebKit alone, the pass a
   pull request runs; `pnpm nx run pagopa-ui-storybook:test:coverage` — the stories in
-  Chromium with v8 coverage and the gates.
+  Chromium with v8 coverage and the gates. Every one of them takes
+  `-- --shard=<index>/<count>`, which runs one slice of the collected story
+  files: the nightly workflow spreads the full pass over four runners.
 - `pnpm nx run pagopa-ui-storybook:test:changed` — only the tests affected since the last
   successful run of the same command; for iterating, the chain stays the gate
   ([baseline](./packages/ui-cli/README.md#the-changed-only-test-loop)).
@@ -144,11 +152,12 @@ Use `pnpm nx show projects` to list projects and
   CSS and TypeScript (`check:tokens`, hung under `test`).
 - `pnpm nx run pagopa-ui-cli:test` — the `node --test`
   suites of the tooling and of its fixtures.
-- `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check;
-  `foundation:check` — the component class contract. The artwork and the tokens
-  validate themselves: `pagopa-ui-artwork:test` and `pagopa-ui-tokens:test`.
-  `pagopa-ui:update:stories` refreshes the committed Storybook titles the
-  inventory story links read; `check:catalogue` fails when they are stale.
+- `pnpm nx run pagopa-ui:check:catalogue` — hermetic catalogue check, which
+  warns when the committed Storybook titles the inventory story links read are
+  behind: the drift refresh regenerates them and `pagopa-ui:update:stories` does
+  it on demand; `foundation:check` — the component class contract. The artwork
+  and the tokens validate themselves: `pagopa-ui-artwork:test` and
+  `pagopa-ui-tokens:test`.
 - `pnpm nx run pagopa-ui:layers:check` — the import layers of the
   [`pagopa-ui-standards`](./.agents/skills/pagopa-ui-standards/references/definition-of-done.md)
   definition of done; `pnpm nx run pagopa-ui:docs` — document links and the
@@ -160,7 +169,8 @@ Use `pnpm nx show projects` to list projects and
   (`dist/` inside `apps/storybook`) out of the stories the application carries.
 - `pnpm ui-cli parity check`,
   `pnpm ui-cli figma devices`
-  — parity tools, see the
+  — the parity diagnostic — it compares a node's numeric source with its story
+  and records nothing — and the device policy, see the
   [`figma-to-code`](./.agents/skills/figma-to-code/SKILL.md) skill.
 
 ### Workspace commands
@@ -235,11 +245,52 @@ a guide, with or without Figma:
 > Re-review node `<nodeId>`: compare the story with the current source, fix what
 > drifted, and tell me the decision and the residues.
 
-> Run a parity wave on the next three pending nodes.
+> Run a parity check on the next three pending nodes.
 
 Every session ends with a report — the decision per node, the residues and their
 reasons, the commands with their results — and stops before commit, push or pull
 request unless you ask for them.
+
+## Third-party skills
+
+Two skills come from publishers outside this repository — `modern-web-guidance`
+for the platform itself, `shadcn` for the primitives. Each is committed as a
+thin `SKILL.md` entrypoint and nothing else: the corpus it delegates to (36k
+lines of guides, rule files and assets) stays out of the tree.
+
+[`skills-lock.json`](./skills-lock.json) pins both — the source repository, the
+commit and a content hash over the pinned tree — and one command restores them
+and verifies them against that pin:
+
+```bash
+pnpm skills:restore
+```
+
+It downloads the pinned copies into `.agents/skills/`, fails instead of
+rewriting the lockfile when a hash disagrees (`--frozen-lockfile`), and puts the
+two entrypoints back so the tree stays consistent. Restored files are
+gitignored: `git status` stays quiet whether or not the corpus is on disk. To
+look without restoring, `npx -y skills@1.9.0 list` reports what is installed,
+`npx -y skills@1.9.0 list --json` each skill's status, and
+`npx -y skills@1.9.0 experimental_install --dry-run` what a restore would do.
+
+The entrypoints delegate, so they work with nothing restored:
+`modern-web-guidance` reads its corpus through
+`pnpx modern-web-guidance@latest search|retrieve`, `shadcn` reads its live
+documentation through `npx shadcn@latest docs`. Both need outbound network
+access. They are also the repository's own text, so `skills list` reports the
+pinned skills as `modified`: the hash pins the publisher's tree, not the
+entrypoint. `npx -y skills@1.9.0 update <name> -p` moves the pin to a newer
+commit and rewrites the lockfile — re-apply the entrypoint on top and commit
+both.
+
+What stays vendored, and why the lockfile cannot retrieve it:
+
+| Skill                                                                | Why it stays                                                                                                                                                                  |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pagopa-ui-standards`, `figma-to-code`, `start-figma-to-code`        | written here; there is no upstream to pin                                                                                                                                     |
+| `figma-to-ui`, in `packages/pagopa-ui/skills/`                       | written here and shipped in the package for its consumers; there is no upstream to pin                                                                                        |
+| the `nx-*` and `link-workspace-packages` skills in `.github/skills/` | generated by `pnpm nx configure-ai-agents` from the Nx plugins in `nx.json`; the `skills` CLI installs from an agentskills repository, so it cannot retrieve generator output |
 
 ## Skill evals
 
@@ -331,7 +382,11 @@ scores the same.
    `nx release` carry it to the changelog and to the published package. An
    export change also updates the committed API report with
    `pnpm nx run pagopa-ui:api:update`; the `etc/pagopa-ui.api.md` diff is what
-   the pull request reviews, and `api:check` fails until it is committed.
+   the pull request reviews, and `api:check` fails until it is committed. The
+   report is not the only guard: `consumer:typecheck` compiles
+   `packages/pagopa-ui/consumer-fixture/` against `dist/types` alone, wrapping
+   every exported component with its own props type, so an export a consumer
+   cannot name breaks that task instead of the report.
 
 ## Git hooks
 
@@ -359,14 +414,18 @@ and the changelog entry; merging that one tags the release.
 The design-system package is `@pagopa/ui` and publishes to GitHub Packages
 (`https://npm.pkg.github.com`), not npmjs. Nx infers its
 `nx-release-publish` target from the non-private package manifest, while
-`project.json` pins that target to GitHub Packages. `release.yaml` supplies the
-GitHub token with `packages: write`. The normal release flow publishes only
-after a version plan is merged; `workflow_dispatch` is an explicit recovery
-path that publishes all projects with a publish target.
+`project.json` pins that target to GitHub Packages. The package is MIT licensed
+and carries `publishConfig.access: "public"`; the same
+`release.yaml` job publishes with the repository's own `GITHUB_TOKEN` — no
+additional secret — under a `packages: write` permission. The normal release
+flow publishes only after a version plan is merged; `workflow_dispatch` is an
+explicit recovery path that publishes all projects with a publish target.
 
 Package visibility and consumer access are managed in GitHub Packages.
-The first publication is still pending; consumer installation is documented in
-the [root README](./README.md#install).
+A public GitHub Packages package still requires an authenticated install, so
+consumers need the `.npmrc` and token documented in the
+[root README](./README.md#install).
+The first publication is still pending.
 
 ## CI
 
@@ -387,83 +446,105 @@ project in its area as affected. Projects with a `Dockerfile` are inferred by
   plan warning. The app's `build` runs here too, so the documentation is proven
   to build on every pull request that touches the package.
 - `deep-checks.yml` — the suites that need a browser, in three parallel jobs: the
-  coverage gates on Chromium, the WebKit pass and the packed artifact consumer. On
-  pull requests for the affected projects, where WebKit is the extra engine;
-  nightly on everything, which adds Firefox. Draft pull requests are skipped
-  until they are ready for review. A merge to `main` runs nothing: the diff it
-  carries is the one the pull request already proved, and the nightly is the
-  whole-repository pass.
-- `visual.yml` — the visual regression on the whole catalogue: the nightly and
-  the **Version Packages** pull request, so a publish is never gated on a scoped
-  guess. `visual:update` captures a diff's images, `visual:check` opts a pull
-  request into the comparison.
-- `figma-drift.yml` — the weekly drift snapshot and its review pull request.
+  coverage gates on Chromium, the WebKit pass and the packed artifact consumer.
+  On pull requests for the affected projects, where WebKit is the extra engine
+  and the story pass runs only the story files the diff reaches; nightly on
+  everything, which adds Firefox and splits the story pass into four shards.
+  Draft pull requests are skipped until they are ready for review. A merge to
+  `main` runs nothing: the diff it carries is the one the pull request already
+  proved, and the nightly is the whole-repository pass.
+- `chromatic.yml` — the visual diff, run by Chromatic. It is opt-in through the
+  `CHROMATIC_PROJECT_TOKEN` secret: the first step publishes whether the token
+  exists and every later step is conditional on it, so without one the job is
+  green and says so in a notice. See [Visual regression](#visual-regression).
+- `figma-drift.yml` — the weekly drift snapshot, component and token, and its
+  review pull request.
 - `release.yaml` — the DX release manager, on `main`.
 
-Deep checks and visual regression attach seven-day `nx-profile-*` artifacts,
-including on failed runs. Their Chrome-trace JSON records each Nx task's duration
-(`dur` in microseconds) and status; visual artifacts also carry the actual scope.
-An affected run with no tasks is an empty sample, not a speed improvement.
-Compare runs with the same event, engine and non-empty scope, alongside GitHub's
-setup/job timings, before changing parallelism. No coverage threshold, engine,
-scope fallback or baseline review is relaxed by this instrumentation; sharding
-remains an experiment, not an assumed win.
+Deep checks attach seven-day `nx-profile-*` artifacts, including on failed runs,
+and the Chromatic run attaches the one its Storybook build wrote. Their
+Chrome-trace JSON records each Nx task's duration (`dur` in microseconds) and
+status. An affected run with no tasks is an empty sample, not a speed
+improvement. Compare runs with the same event, engine and non-empty scope,
+alongside GitHub's setup/job timings, before changing parallelism. No coverage
+threshold, engine, scope fallback or baseline review is relaxed by this
+instrumentation. The story
+shards are the one parallelism the workflows assume: four of them for the whole
+catalogue and one for a pull request, where the affected files already fit one
+runner and a shard no file reaches would be an empty run. Whether four is the
+right count is what those timings answer.
 
 ### The release pull request
 
 The **Version Packages** pull request and the commit it lands on `main` are not
 changes: they carry the version, the changelog and the consumed version plan,
 and nothing else. The code being published was proven on the pull request that
-produced it, so the release skips the code review, the story preview and the
-deep checks. A skipped job reports `skipped`, which merges cleanly; a
-path-filtered workflow would leave a required check pending instead.
+produced it, so the release skips the code review and the story preview: a
+skipped job reports `skipped`, which merges cleanly where a path-filtered
+workflow would leave a required check pending instead. It does not skip the deep
+checks, which run there at the whole-catalogue scope of the nightly, because
+what the release guards is the publish and a publish answers to every story.
 
-The visual regression is the one check that runs there, because that pull
-request is the last moment before `@pagopa/ui` is published: it captures the
-whole catalogue, at every width, against the committed Linux baselines. A
-baseline the nightly or this gate rejects is repaired by its own pull request
-with the `visual:update` label; merging it updates the **Version Packages** pull
-request, whose synchronisation runs the gate again on the new images.
+The visual diff runs there in full, because that pull request is the last moment
+before `@pagopa/ui` is published: it compares the whole catalogue, at every
+width, where an ordinary pull request asks Chromatic for the stories its diff
+reaches. A diff the nightly or this pass finds is accepted in the Chromatic
+dashboard, and the pass that reports after the acceptance is the one that proves
+the fix.
 
 Merging a release therefore starts the release and the production Storybook
-deploy, not seven runs at once. A hand-written pull request runs everything but
-the visual regression: only the `nx-release/` branch is exempt from the other
-checks, and the visual gate belongs to it — or to a pull request carrying
-`visual:check`.
+deploy, not seven runs at once. A hand-written pull request runs everything:
+only the `nx-release/` branch skips the code review and the story preview, and
+its deep checks and visual pass take the whole catalogue.
 
-No merge to `main` runs the deep checks or the visual regression: a merge
-carries the diff its pull request already proved, and the nightly schedules are
-what re-prove the whole repository. For the visual gate the proof a change
-carries is the baselines it commits with `visual:update`; the nightly and the
-release gate are where the whole catalogue is compared again.
+No merge to `main` runs the deep checks or the visual diff: a merge carries the
+diff its pull request already proved, and the nightly schedules are what re-prove
+the whole repository. For the visual diff the proof a change carries is the
+comparison its pull request reported; the nightly and the release pass are where
+the whole catalogue is compared again.
 
 ## The green chain
 
-Green before commit; CI runs the same, and the chain runs the two gates CI owns
-but Nx projects do not: `mise install --locked` fails when `mise.lock` no longer
-matches what `mise.toml` resolves, and `nx format:check` covers every tracked
-file, `docs/` and `mise.toml` included.
+Green before commit; CI runs the same. The chain is one Nx task graph: every
+gate is an Nx target, `workspace:verify` names the whole graph, and Nx schedules
+what the dependencies allow in parallel and replays what it has already cached.
 
 ```bash
 pnpm nx run workspace:verify
 ```
 
 `-c fast` is the quick subset: it stops before the browser suites and the
-Storybook build, so it never replaces the full run before a commit. It runs the
-two gates too.
+Storybook build, so it never replaces the full run before a commit.
 
-What it runs:
+Two gates are not Nx projects, and the chain keeps them anyway.
+`mise install --locked node pnpm` opens it as a plain command — a toolchain pin
+that could be replayed from a cache would prove nothing — and fails when
+`mise.lock` no longer matches what `mise.toml` resolves.
+`workspace:check:format` wraps `nx format:check`, which covers every tracked
+file, `docs/` and `mise.toml` included.
 
-```bash
-mise install --locked node pnpm && pnpm nx format:check && \
-  pnpm nx run-many -p pagopa-ui -c=ci -t typecheck,fmt,lint,docs,check:catalogue,foundation:check,layers:check,build,test && \
-  pnpm nx run-many -p pagopa-ui-artwork,pagopa-ui-tokens,pagopa-ui-cli -c=ci -t typecheck,fmt,lint && \
-  pnpm nx run pagopa-ui-artwork:test && pnpm nx run pagopa-ui-tokens:test && pnpm nx run pagopa-ui-cli:test && \
-  pnpm nx run pagopa-ui-cli:check:rules && pnpm nx run pagopa-ui-cli:check:parity && \
-  pnpm nx run pagopa-ui-storybook:test:coverage && pnpm nx run pagopa-ui-storybook:test:stories && pnpm nx run pagopa-ui-storybook:build && pnpm nx run pagopa-ui:library:check
-```
+What the graph holds:
 
-The `ci` configuration is the gate: `lint` and `fmt` check instead of writing.
+- `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
+  Storybook tail, `pagopa-ui-storybook:typecheck`, `build`, `test:coverage`,
+  `test:stories` and `pagopa-ui:library:check`;
+- `workspace:verify-fast` — the static half, gate by gate:
+  `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
+  `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
+  `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
+  `typecheck`, `format:check`, `lint:check`, `test`. The `.Regole` card report
+  (`pagopa-ui-cli:check:rules`) is not a gate: it prints the drift and exits 0,
+  and `--strict` is the caller that wants it to fail.
+
+`lint:check` and `format:check` are the gate: `lint` and `fmt` write, the
+`:check` variants report, which is what the `ci` configuration CI uses resolves
+to. `pagopa-ui:test` pulls the checks that package owns — `api:check`,
+`figma:map:check`, `a11y:conformance:check` and the rest — through its
+`dependsOn`, so each runs once, wherever in the graph it is needed. A gate is
+added by adding a `dependsOn` entry to `tools/workspace/project.json`;
+`packages/ui-cli/tests/checks/verify-chain.test.mjs` reads the task graph and
+fails when one leaves it.
+
 A lock the gate rejects is refreshed with `mise lock node pnpm`, which rewrites
 only the entries whose resolution moved; commit it with the `.mise/locks`
 directory it points at.
@@ -474,65 +555,74 @@ in CI, where `mise deps` has initialized their toolchain.
 
 ### Visual regression
 
-`visual.yml` captures every story at 320, 600 and 1200 px, except the ones
-tagged `no-visual`, and compares each image with the baselines in
-`apps/storybook/visual/__screenshots__`. Baselines are produced only on Linux,
-in the Playwright container `mcr.microsoft.com/playwright:v1.63.0-noble`, by the
-workflow itself: never commit one produced on macOS.
+Chromatic renders every story at 320, 600 and 1200 px — the widths
+`apps/storybook/.storybook/preview.tsx` declares — compares them with the last
+build on the base branch, and keeps the history, the review and the accept step
+in its dashboard. The decision and its reasons are
+[ADR-0018](./docs/decisions/0018-chromatic-for-visual-regression.md); this
+section is how to use it.
 
-The gate runs nightly at 04:00 UTC and on the **Version Packages** pull request,
-both times on the whole catalogue: a story nothing captured surfaces a day after
-it reached `main`, and a publish never rests on a scoped guess. `--all` names
-that capture and skips the walk.
+**The run is experimental.** [ADR-0018 §4](./docs/decisions/0018-chromatic-for-visual-regression.md)
+records why: a live build reported ten stories failing their plays that
+`test:stories` passes, a build over the plan's limit publishes and runs no test
+while staying green, and TurboSnap is inert for the first ten CI builds. A green
+Chromatic check therefore reports that the run happened, not that the pixels did
+not move — it is a dashboard to read beside the change, never the proof that the
+change looks the same, and it is not a required check. ADR-0018 §5 names what
+ends the experimental status; the work is tracked in
+[#195](https://github.com/pagopa/ui/issues/195).
 
-A change owns its images. `ui-cli test visual` reads the built Storybook index,
-walks the imports each story reaches — the story file, what it imports, the
-shared preview and the stylesheets behind it — and writes the story ids to
-`scope.json` in `apps/storybook/visual/`, which the spec reads through
-`VISUAL_SCOPE`. A change to a component the walk reaches names the stories that
-render it; a change to a file no story imports names none. The same walk widens
-to the whole catalogue for anything that can move every screenshot without an
-import edge: `packages/tokens`, `packages/artwork`, the design-system `assets`,
-the storybook manifests and lockfile, the visual harness itself, and any deleted
-source. The `visual:update` label runs that walk and commits the images it names
-to the head branch, so a pull request that adds or moves a story carries its
-baselines and leaves the other images' bytes alone.
-
-The `visual:check` label runs the same comparison on any pull request, for as
-long as the label stays: it is how a reviewer proves a risky change before the
-merge, and how the commit the update job pushed gets verified, since that commit
-is made with `GITHUB_TOKEN` and starts no run of its own.
-
-Run the same check locally as a fail-fast sequence; the browser starts only
-after the build and baseline preflight succeed:
+The integration is opt-in through the `CHROMATIC_PROJECT_TOKEN` environment
+secret of `app-dev-ci` ([Figma drift secrets](./docs/figma-drift-secrets.md) has
+the create and rotate steps). The workflow stays in place and its first step
+publishes whether the token exists: without one the job is green and says so in
+a notice, and the day the secret is created the same run starts comparing with
+nothing else to change. Run it locally with the token in the environment:
 
 ```bash
-pnpm nx run pagopa-ui-storybook:build && \
-pnpm nx run pagopa-ui-cli:test:visual -- --since origin/main --out apps/storybook/visual/scope.json --check-baselines && \
-VISUAL_SCOPE=apps/storybook/visual/scope.json pnpm nx run pagopa-ui-storybook:test:visual
+pnpm nx run pagopa-ui-storybook:build
+CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --only-changed
 ```
 
-`--all` skips the walk and names no story; without `VISUAL_SCOPE` the suite is
-complete too. The file carries the mode as well: `stories` lists the ids to
-capture, `all` names none because the whole catalogue runs.
-`--check-baselines` lists missing or untracked Linux images for the selected
-stories before the browser starts; the update job omits it so it can create
-those images. A nonzero preflight is a hard stop: do not run Playwright, which
-can create a snapshot when a baseline is missing. Use the pinned Linux container
-below for comparisons; create or update baselines only through `visual:update`.
+What a run compares follows the event. An ordinary pull request passes
+`--only-changed`, and Chromatic's TurboSnap traces the changed files through the
+module graph the build writes to `preview-stats.json` to the stories they reach —
+the scope walk this repository used to own. The build passes `--stats-json` for
+that reason: the Vite builder emits the stats only when asked, and a prebuilt
+Storybook without them fails the run instead of tracing. The nightly at 04:00
+UTC, a manual dispatch and the **Version Packages** pull request compare every
+story, because those are the passes where a story nothing else proved has to
+surface and the publish is the last moment to notice. The first run of a project
+captures everything and becomes the baseline the next one traces against;
+TurboSnap itself needs ten builds from CI before it traces anything, so
+`--only-changed` captures the whole catalogue until then.
 
-The comparison uses `threshold: 0` and a 32-pixel budget. Every counted pixel
-must match exactly; the budget absorbs Chromium's small border and text
-rasterisation drift (about 0.01% of a 320x900 capture) without hiding a surface
-or layout change. A failure above the budget is a finding, not noise.
+The comparison reports, it does not gate: `exitZeroOnChanges` in
+`apps/storybook/chromatic.config.json` keeps a non-empty diff green and the
+verdict in the dashboard. To accept a change, open its build in the dashboard
+and accept the changed stories; the next build of the branch compares against
+what was accepted. Nothing is stored in this repository — no image, no
+`__screenshots__`, no baseline key.
 
-To accept a visual change, add the `visual:update` label to the pull request.
-The workflow commits the new images to its head branch; review a sample, then
-add `visual:check` so the gate compares the committed images. The same
-comparison runs locally with Docker and the same image:
+The capture is what the plan sells, and a full build is 544 stories at three
+widths. Under the plan's limit Chromatic limits the build instead of failing it:
+the Storybook publishes, no test runs and the job is green while comparing
+nothing. The step after the CLI reads its log for that answer and raises a
+warning annotation and a summary line, so a green check that proved nothing says
+so on the pull request instead of looking like a clean one — but the plan still
+has to cover the catalogue before the run means anything.
 
-```bash
-docker run --rm --ipc=host -v "$PWD":/work -w /work/apps/storybook \
-  mcr.microsoft.com/playwright:v1.63.0-noble \
-  pnpm exec playwright test -c visual/playwright.config.ts
-```
+The build also runs the stories' `play` functions as interaction tests, and one
+of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
+runs the same plays in two engines, so a story that fails only here is read in
+the interaction report before it is treated as a regression — and the report is
+the only place the message appears, since the dashboard needs a sign-in while
+the published Storybook does not. The first live build named ten stories that
+`test:stories` passes at 320 and at 414 px, on both engines; ADR-0018 §5 holds
+the decision, and no flag exists to make the build ignore only the plays.
+
+Two catalogues change whenever everything else does, so they are exempt by
+parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory
+declare `parameters.chromatic.disableSnapshot`. The review stories under
+`Reviews/` are not compared either: they live on `design.preview.branch`, and
+the workflow skips that head ref.

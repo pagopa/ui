@@ -4,8 +4,13 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as ReportIcon } from "@/components/icons/generated/report"
+import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
 
 import { toneStyles, type Tone } from "./tones"
 
@@ -31,10 +36,10 @@ interface HeaderAlertProps {
 // `1322:6542` (info, the filled variant `98:1115`), `7635:3910` (check_circle),
 // `1322:6534` (warning) and `7635:3924` (report).
 const toneIcons: Record<Tone, React.ReactElement> = {
-  info: <PagoPAIcon name="info" variant="filled" size={24} className="shrink-0" />,
-  success: <PagoPAIcon name="check_circle" size={24} className="shrink-0" />,
-  warning: <PagoPAIcon name="warning" size={24} className="shrink-0" />,
-  error: <PagoPAIcon name="report" size={24} className="shrink-0" />,
+  info: <Icon source={InfoFilledIcon} size={24} className="pui:shrink-0" />,
+  success: <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0" />,
+  warning: <Icon source={WarningIcon} size={24} className="pui:shrink-0" />,
+  error: <Icon source={ReportIcon} size={24} className="pui:shrink-0" />,
 }
 
 function HeaderAlert({
@@ -57,35 +62,41 @@ function HeaderAlert({
     <div
       role={tone === "error" ? "alert" : "status"}
       className={cn(
-        "text-label-mini-sb",
-        isDefault ? "bg-selection-soft text-foreground" : toneStyles[tone],
+        "pui:text-label-mini-sb",
+        isDefault ? "pui:bg-selection-soft pui:text-foreground" : toneStyles[tone],
       )}
     >
       <div
         className={cn(
-          "mx-auto flex min-h-10 max-w-7xl items-center px-6 py-2",
+          "pui:mx-auto pui:flex pui:min-h-10 pui:max-w-7xl pui:items-center pui:px-6 pui:py-2",
           // The source root: 16 between its `Content` row and the trailing
           // button (Default), 8 between the icon and the copy (tinted).
-          isDefault ? "gap-4 max-tablet:flex-col max-tablet:items-start" : "gap-2",
-          centred && "justify-center",
+          isDefault ? "pui:gap-4 pui:max-tablet:flex-col pui:max-tablet:items-start" : "pui:gap-2",
+          centred && "pui:justify-center",
         )}
       >
         <div
           data-slot="header-alert-content"
           className={cn(
-            "flex min-w-0 items-center gap-2",
+            "pui:flex pui:min-w-0 pui:items-center pui:gap-2",
             // Source `Status=Default` (`11014:7007`/`11014:7010`): the `Content`
             // row fills the band at every device; the tinted tones
             // (`1322:6534`, `align=CENTER`) centre the icon+copy pair, so their
             // row hugs from `sm` where the copy needs no wrapping.
-            isDefault ? "flex-1 max-tablet:w-full" : centred ? "w-full tablet:w-auto" : "flex-1",
+            isDefault
+              ? "pui:flex-1 pui:max-tablet:w-full"
+              : centred
+                ? "pui:w-full pui:tablet:w-auto"
+                : "pui:flex-1",
           )}
         >
-          {toneIcon ?? <PagoPAIcon name="kid_star" size={24} className="shrink-0" />}
-          <div className={cn("min-w-0 flex-1", centred && "tablet:flex-initial")}>{children}</div>
+          {toneIcon ?? <Icon source={KidStarIcon} size={24} className="pui:shrink-0" />}
+          <div className={cn("pui:min-w-0 pui:flex-1", centred && "pui:tablet:flex-initial")}>
+            {children}
+          </div>
         </div>
         {action && (
-          <div data-slot="header-alert-action" className="flex shrink-0">
+          <div data-slot="header-alert-action" className="pui:flex pui:shrink-0">
             {action}
           </div>
         )}
@@ -94,9 +105,9 @@ function HeaderAlert({
             type="button"
             aria-label={dismissLabel}
             onClick={onDismiss}
-            className="flex size-10 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-current"
+            className="pui:flex pui:size-10 pui:items-center pui:justify-center pui:rounded-md pui:focus-visible:outline-2 pui:focus-visible:outline-current"
           >
-            <X aria-hidden="true" className="size-5" />
+            <Icon source={CloseIcon} className="pui:size-5" />
           </button>
         )}
       </div>

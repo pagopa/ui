@@ -54,10 +54,10 @@ export const Fidelity: Story = {
   render: () => (
     <ul
       aria-label="Loghi dei prestatori di servizi di pagamento"
-      className="m-0 flex list-none flex-wrap items-center gap-3 p-0"
+      className="pui:m-0 pui:flex pui:list-none pui:flex-wrap pui:items-center pui:gap-3 pui:p-0"
     >
       {pspBrands.map((brand) => (
-        <li className="flex size-6 items-center justify-center" key={brand}>
+        <li className="pui:flex pui:size-6 pui:items-center pui:justify-center" key={brand}>
           <PaymentProviderLogos brand={brand} />
         </li>
       ))}

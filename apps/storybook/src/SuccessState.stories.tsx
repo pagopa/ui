@@ -40,7 +40,7 @@ const sourceActions = (
     <a
       className={cn(
         buttonVariants({ variant: "link" }),
-        "relative min-h-0 px-0 after:absolute after:inset-x-0 after:-inset-y-3",
+        "pui:relative pui:min-h-0 pui:px-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3",
       )}
       download
       href="/ricevuta.pdf"

@@ -4,7 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { ImageIcon } from "@/components/primitives/icons"
+import { Icon } from "@/components/icons/icon"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 
 type ImageProps = React.ComponentProps<"img"> & {
   ratio?: "square" | "video" | "photo" | "portrait" | "cinema" | "wide"
@@ -25,16 +26,16 @@ function Image({
   const [failed, setFailed] = React.useState(false)
   const ratioClass =
     ratio === "square"
-      ? "aspect-square"
+      ? "pui:aspect-square"
       : ratio === "photo"
-        ? "aspect-[4/3]"
+        ? "pui:aspect-[4/3]"
         : ratio === "portrait"
-          ? "aspect-[3/4]"
+          ? "pui:aspect-[3/4]"
           : ratio === "cinema"
-            ? "aspect-[21/9]"
+            ? "pui:aspect-[21/9]"
             : ratio === "wide"
-              ? "aspect-[3/1]"
-              : "aspect-video"
+              ? "pui:aspect-[3/1]"
+              : "pui:aspect-video"
 
   if (failed || !props.src) {
     return (
@@ -43,13 +44,13 @@ function Image({
         data-slot="image"
         aria-label={alt || fallbackLabel}
         className={cn(
-          "grid place-items-center bg-han-purple-soft text-muted-foreground",
+          "pui:grid pui:place-items-center pui:bg-han-purple-soft pui:text-muted-foreground",
           ratioClass,
           className,
         )}
       >
-        <span className="flex items-center gap-2 text-label-mini">
-          <ImageIcon aria-hidden="true" />
+        <span className="pui:flex pui:items-center pui:gap-2 pui:text-label-mini">
+          <Icon source={PhotoIcon} />
           {fallbackLabel}
         </span>
       </div>
@@ -60,7 +61,7 @@ function Image({
     <img
       alt={alt}
       data-slot="image"
-      className={cn("w-full object-cover", ratioClass, className)}
+      className={cn("pui:w-full pui:object-cover", ratioClass, className)}
       onError={() => setFailed(true)}
       {...props}
     />
@@ -68,3 +69,4 @@ function Image({
 }
 
 export { Image }
+export type { ImageProps }

@@ -5,7 +5,8 @@ import { expect, userEvent, waitFor, within } from "storybook/test"
 import productLogo from "@/assets/storybook/1526-6505.png"
 import coverPhoto from "@/assets/storybook/757-6293.jpeg"
 import { Avatar } from "@/components/content/avatar"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as TheaterComedyIcon } from "@/components/icons/generated/theater-comedy"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
@@ -78,7 +79,7 @@ export const SourceRowSize: Story = {
     await expect(bounds.height).toBe(32)
     const surface = identity.querySelector("[data-slot=avatar]")
     const glyph = identity.querySelector("[aria-hidden=true]")
-    if (!(surface instanceof HTMLElement) || !(glyph instanceof HTMLElement))
+    if (!(surface instanceof Element) || !(glyph instanceof Element))
       throw new Error("Expected the visible source row Avatar and placeholder glyph")
     await expect(Number.parseFloat(getComputedStyle(surface).borderRadius)).toBeCloseTo(5.818, 2)
     await expect(glyph.getBoundingClientRect().width).toBe(16)
@@ -89,7 +90,7 @@ export const SourceRowSize: Story = {
 
 export const SourceSizes: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-6">
+    <div className="pui:flex pui:flex-wrap pui:gap-6">
       <Avatar alt="Identità piccola" size="small" />
       <Avatar alt="Identità intermedia" size="medium" />
       <Avatar alt="Identità grande" size="large" />
@@ -117,7 +118,7 @@ export const SourceSizes: Story = {
 export const SourcePlaceholder: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="flex items-start gap-6">
+    <div className="pui:flex pui:items-start pui:gap-6">
       <Avatar alt="Organizzazione non ancora disponibile" size="small" />
       <Avatar alt="Organizzazione grande non ancora disponibile" size="large" />
     </div>
@@ -135,8 +136,7 @@ export const SourcePlaceholder: Story = {
         throw new Error("Expected the visible source fallback")
       await expect(getComputedStyle(fallback).backgroundColor).toBe("rgb(244, 245, 248)")
       const symbol = fallback.querySelector("[data-figma-node-id='99:666']")
-      if (!(symbol instanceof HTMLElement))
-        throw new Error("Expected the actual source placeholder")
+      if (!(symbol instanceof Element)) throw new Error("Expected the actual source placeholder")
       await expect(symbol.getBoundingClientRect().width).toBe(dimension)
       await expect(symbol.getBoundingClientRect().height).toBe(dimension)
       await expect(getComputedStyle(symbol).color).toBe("rgb(187, 194, 214)")
@@ -149,7 +149,7 @@ export const SourcePlaceholder: Story = {
 
 export const SourceLogos: Story = {
   render: () => (
-    <div className="flex items-start gap-6">
+    <div className="pui:flex pui:items-start pui:gap-6">
       <Avatar alt="Prodotto piccolo" src={productLogo} imageFit="contain" size="small" />
       <Avatar alt="Prodotto grande" src={productLogo} imageFit="contain" size="large" />
     </div>
@@ -202,7 +202,7 @@ export const SourceLogos: Story = {
 function RecoveringIdentity() {
   const [available, setAvailable] = React.useState(true)
   return (
-    <div className="grid justify-items-start gap-4">
+    <div className="pui:grid pui:justify-items-start pui:gap-4">
       <Avatar
         alt="Identità con immagine ripristinabile"
         src={available ? productLogo : "data:image/png;base64,invalid"}
@@ -253,17 +253,17 @@ export const SourceIcons: Story = {
   tags: ["color-pinned"],
   parameters: { design: { type: "figma", url: figmaEmbedUrl("160:1403") } },
   render: () => (
-    <div className="flex flex-wrap items-start gap-6">
+    <div className="pui:flex pui:flex-wrap pui:items-start pui:gap-6">
       <Avatar
         alt="Servizio culturale"
         size="large"
-        icon={<PagoPAIcon name="theater_comedy" size={32} />}
+        icon={<Icon source={TheaterComedyIcon} size={32} />}
       />
-      <div className="rounded-lg bg-navy p-4">
+      <div className="pui:rounded-lg pui:bg-navy pui:p-4">
         <Avatar
           alt="Servizio culturale su superficie scura"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
         />
       </div>
@@ -281,7 +281,7 @@ export const SourceIcons: Story = {
       if (!(fallback instanceof HTMLElement)) throw new Error("Expected the source icon surface")
       await expect(getComputedStyle(fallback).backgroundColor).toBe("rgba(255, 255, 255, 0.2)")
       const symbol = fallback.querySelector("[data-figma-node-id='99:2278']")
-      if (!(symbol instanceof HTMLElement)) throw new Error("Expected the actual source icon")
+      if (!(symbol instanceof Element)) throw new Error("Expected the actual source icon")
       await expect(symbol.getBoundingClientRect().width).toBe(32)
       await expect(symbol.getBoundingClientRect().height).toBe(32)
       await expect(getComputedStyle(symbol).color).toBe(color)
@@ -295,14 +295,14 @@ export const SourceIcons: Story = {
 export const DecorativeIconSlot: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("160:1403") } },
   render: () => (
-    <div className="grid justify-items-start gap-4">
+    <div className="pui:grid pui:justify-items-start pui:gap-4">
       <Button variant="outline">Prima dell'identità</Button>
       <Avatar
         alt="Identità visiva non interattiva"
         size="large"
         icon={
           <a href="#avatar-service-destination">
-            <PagoPAIcon name="theater_comedy" size={32} />
+            <Icon source={TheaterComedyIcon} size={32} />
           </a>
         }
       />
@@ -324,13 +324,13 @@ export const DecorativeIconSlot: Story = {
 function RecoveringIconIdentity() {
   const [available, setAvailable] = React.useState(false)
   return (
-    <div className="grid justify-items-start gap-4">
-      <div className="rounded-lg bg-navy p-4">
+    <div className="pui:grid pui:justify-items-start pui:gap-4">
+      <div className="pui:rounded-lg pui:bg-navy pui:p-4">
         <Avatar
           alt="Servizio con icona alternativa"
           src={available ? productLogo : "data:image/png;base64,invalid"}
           imageFit="contain"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
           size="large"
         />
@@ -373,14 +373,14 @@ export const ImageIconRecovery: Story = {
 function SelectableIdentity() {
   const [selected, setSelected] = React.useState(false)
   return (
-    <div className="flex items-center gap-3">
+    <div className="pui:flex pui:items-center pui:gap-3">
       <input
         id="avatar-product-choice"
         type="checkbox"
         checked={selected}
         onChange={(event) => setSelected(event.currentTarget.checked)}
       />
-      <label htmlFor="avatar-product-choice" className="flex items-center gap-3">
+      <label htmlFor="avatar-product-choice" className="pui:flex pui:items-center pui:gap-3">
         <Avatar
           alt="Identità del prodotto associato"
           src={productLogo}
@@ -395,7 +395,7 @@ function SelectableIdentity() {
 }
 
 // The eight variants of the small source set (`160:1344`), each rendered at the
-// source size so parity captures one frame per variant.
+// source size so a comparison measures one frame per variant.
 export const FigmaSmallStates: Story = {
   tags: ["color-pinned"],
   parameters: {
@@ -406,7 +406,7 @@ export const FigmaSmallStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("160:1344") },
   },
   render: () => (
-    <div className="flex w-max flex-wrap items-start gap-4 p-4">
+    <div className="pui:flex pui:w-max pui:flex-wrap pui:items-start pui:gap-4 pui:p-4">
       <div data-fidelity-variant="160-1345">
         <Avatar alt="Identità non disponibile" size="small" />
       </div>
@@ -457,7 +457,7 @@ export const FigmaBigStates: Story = {
     design: { type: "figma", url: figmaEmbedUrl("160:1403") },
   },
   render: () => (
-    <div className="flex w-max flex-wrap items-start gap-4 p-4">
+    <div className="pui:flex pui:w-max pui:flex-wrap pui:items-start pui:gap-4 pui:p-4">
       <div data-fidelity-variant="160-1404">
         <Avatar alt="Identità grande non disponibile" size="large" />
       </div>
@@ -465,14 +465,14 @@ export const FigmaBigStates: Story = {
         <Avatar
           alt="Servizio culturale"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
         />
       </div>
-      <div data-fidelity-variant="160-1412" className="rounded-lg bg-navy p-4">
+      <div data-fidelity-variant="160-1412" className="pui:rounded-lg pui:bg-navy pui:p-4">
         <Avatar
           alt="Servizio culturale su superficie scura"
           size="large"
-          icon={<PagoPAIcon name="theater_comedy" size={32} />}
+          icon={<Icon source={TheaterComedyIcon} size={32} />}
           tone="inverse"
         />
       </div>
@@ -527,7 +527,7 @@ export const SourceSelection: Story = {
     if (!(surface instanceof HTMLElement)) throw new Error("Expected the selected source surface")
     await expect(getComputedStyle(surface).backgroundColor).toBe("rgb(11, 62, 227)")
     const mark = surface.querySelector("[data-figma-node-id='98:1156']")
-    if (!(mark instanceof HTMLElement)) throw new Error("Expected the genuine selection mark")
+    if (!(mark instanceof Element)) throw new Error("Expected the genuine selection mark")
     await expect(mark.getBoundingClientRect().width).toBe(24)
     await expect(mark.getBoundingClientRect().height).toBe(24)
     await expect(getComputedStyle(mark).color).toBe("rgb(255, 255, 255)")
@@ -541,8 +541,8 @@ export const SourceSelection: Story = {
 function LoadingIdentities() {
   const [loading, setLoading] = React.useState(true)
   return (
-    <div className="grid justify-items-start gap-4">
-      <div className="flex items-start gap-6">
+    <div className="pui:grid pui:justify-items-start pui:gap-4">
+      <div className="pui:flex pui:items-start pui:gap-6">
         <Avatar
           alt="Prodotto selezionato in caricamento"
           src={productLogo}
@@ -629,9 +629,9 @@ export const SourceDoubleAvatar: Story = {
       const identityBounds = identity.getBoundingClientRect()
       await expect(identityBounds.width).toBeCloseTo(28, 2)
       await expect(identityBounds.height).toBeCloseTo(28, 2)
-      // The faces are scaled boxes: Chromatic's renderer can report the pair's
-      // origin one device pixel off the transformed face. The contract under
-      // test is the 44/28 grid and the 16px step, not its sub-pixel origin.
+      // The faces are scaled boxes: a renderer can report the pair's origin one
+      // device pixel off the transformed face. The contract under test is the
+      // 44/28 grid and the 16px step, not its sub-pixel origin.
       await expect(Math.abs(identityBounds.x - bounds.x - offset)).toBeLessThanOrEqual(1)
       await expect(Math.abs(identityBounds.y - bounds.y - offset)).toBeLessThanOrEqual(1)
     }
@@ -642,7 +642,7 @@ export const SourceDoubleAvatar: Story = {
 function RecoveringPair() {
   const [failed, setFailed] = React.useState(false)
   return (
-    <div className="grid justify-items-start gap-4">
+    <div className="pui:grid pui:justify-items-start pui:gap-4">
       <Avatar
         alt="Prodotto principale della coppia"
         src={productLogo}
@@ -710,7 +710,7 @@ export const PairedImageRecovery: Story = {
 export const PairedReadableInitials: Story = {
   parameters: { design: { type: "figma", url: figmaEmbedUrl("160:1344") } },
   render: () => (
-    <div className="flex flex-wrap gap-6">
+    <div className="pui:flex pui:flex-wrap pui:gap-6">
       {pairedSizes.map((size) => (
         <Avatar
           key={size}
@@ -763,7 +763,7 @@ export const PairedReadableInitials: Story = {
 
 export const NonColorStatuses: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-6">
+    <div className="pui:flex pui:flex-wrap pui:gap-6">
       <Avatar alt="Identità disponibile" initials="PA" size="small" status="online" />
       <Avatar alt="Identità non in linea" initials="PA" size="small" status="offline" />
       <Avatar alt="Identità occupata" initials="PA" size="small" status="busy" />

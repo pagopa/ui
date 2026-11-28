@@ -149,8 +149,8 @@ function contractOf(parameters: object): Contract {
 
 // The reflow condition's exemptions live with each story: `parameters:
 // { a11yContract: { reflow: false } }` carries the flag and the reason (a
-// source-width fixture, or a request pending in
-// docs/design-requests/2026-10-16-a11y-reflow-conditions.md).
+// source-width fixture, or a radius the story pins). The flags that remain are
+// debt, recorded in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
 
 // Waits for a predicate on a wall-clock budget rather than a frame count: a
 // fixed number of frames measures how busy the runner was, and a loaded CI

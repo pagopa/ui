@@ -95,7 +95,7 @@ test("the docs gate accepts optional comparison values and still checks followin
     "--compare-offset .origin",
     "--compare-box full --compare-offset .origin",
   ]) {
-    const command = `pnpm ui-cli parity check --case demo ${options}`
+    const command = `pnpm ui-cli parity check --node 1:1 ${options}`
     assert.deepEqual(check({ "CONTRIBUTING.md": `\`${command}\`` }).problems, [])
     assert.match(
       problems(check({ "CONTRIBUTING.md": `\`${command} --typo\`` })),
@@ -106,8 +106,41 @@ test("the docs gate accepts optional comparison values and still checks followin
 
 test("historical documents are checked on links only", () => {
   assert.deepEqual(
-    check({ "docs/plans/next.md": "Will add `scripts/future.mjs`.", "scripts/keep.mjs": "" })
-      .problems,
+    check({
+      "docs/README.md": "[Plans](plans/)",
+      "docs/plans/next.md": "Will add `scripts/future.mjs`.",
+      "scripts/keep.mjs": "",
+    }).problems,
+    [],
+  )
+})
+
+test("the root glossary map is audited like the other root documents", () => {
+  assert.match(
+    problems(check({ "GLOSSARY.md": "[Term](docs/vocabulary/gone.md)" })),
+    /GLOSSARY\.md:1: missing link docs\/vocabulary\/gone\.md/,
+  )
+})
+
+test("the docs index is the one surface that links every section and document", () => {
+  assert.match(
+    problems(
+      check({
+        "docs/README.md": "[ADRs](decisions/)",
+        "docs/decisions/0001-rework.md": "",
+        "docs/reports/quarterly.md": "",
+      }),
+    ),
+    /docs\/reports is not linked from docs\/README\.md/,
+  )
+  assert.deepEqual(
+    check({
+      "docs/README.md":
+        "[ADRs](decisions/)\n[Reports](reports/)\n[Handoff](figma-drift-handoff.md)",
+      "docs/decisions/0001-rework.md": "",
+      "docs/reports/quarterly.md": "",
+      "docs/figma-drift-handoff.md": "",
+    }).problems,
     [],
   )
 })
@@ -173,6 +206,48 @@ test("other skills may name components and the installed third-party skills are 
       "src/components/feedback/banner.tsx": "export function Banner() { return null }",
     }).problems,
     [],
+  )
+})
+
+test("a generated icon identity is not a component a skill may not name", () => {
+  const marker =
+    "// Generated from pinned source geometry by packages/ui-cli/src/figma/icons.ts; do not edit."
+  assert.deepEqual(
+    check({
+      [`${SKILL}/SKILL.md`]: "Press Close to dismiss, then pick Small or Search.",
+      "src/components/icons/generated/index.ts": `${marker}\nexport { default as Close } from "./close"\nexport { default as Small } from "./small"\nexport { default as Search } from "./search"`,
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(
+      check({
+        [`${SKILL}/SKILL.md`]: "Press Close to dismiss.",
+        "src/components/feedback/close.tsx": "export function Close() { return null }",
+      }),
+    ),
+    /names the component Close/,
+  )
+})
+
+test("a skill pinned in skills-lock.json needs the entrypoint it resolves to", () => {
+  const lock = `{
+  "version": 2,
+  "skills": {
+    "shadcn": { "source": "shadcn/ui", "skillPath": "skills/shadcn/SKILL.md" }
+  }
+}
+`
+  assert.deepEqual(
+    check({
+      "skills-lock.json": lock,
+      ".agents/skills/shadcn/SKILL.md": "# shadcn\n",
+    }).problems,
+    [],
+  )
+  assert.match(
+    problems(check({ "skills-lock.json": lock })),
+    /skills-lock\.json:4: shadcn is pinned in skills-lock\.json but \.agents\/skills\/shadcn\/SKILL\.md is missing/,
   )
 })
 

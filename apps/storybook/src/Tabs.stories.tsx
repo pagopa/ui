@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
-import { Building2, FileText, UserRound } from "lucide-react"
+
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
+import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
+import { Default as PersonIcon } from "@/components/icons/generated/person"
+import { Default as ReceiptLongIcon } from "@/components/icons/generated/receipt-long"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/primitives/tabs"
 
 import tabsGuide from "./guides/tabs.md?raw"
@@ -17,29 +21,33 @@ function AccountTabs({ orientation }: AccountTabsProps) {
     <Tabs
       orientation={orientation}
       defaultValue="profile"
-      className="w-[min(42rem,calc(100vw-2rem))]"
+      className="pui:w-[min(42rem,calc(100vw-2rem))]"
     >
-      <TabsList variant="line" aria-label="Sezioni del profilo" className="w-full overflow-x-auto">
+      <TabsList
+        variant="line"
+        aria-label="Sezioni del profilo"
+        className="pui:w-full pui:overflow-x-auto"
+      >
         <TabsTrigger value="profile">
-          <UserRound aria-hidden="true" />
+          <Icon source={PersonIcon} aria-hidden="true" />
           Profilo
         </TabsTrigger>
         <TabsTrigger value="organization">
-          <Building2 aria-hidden="true" />
+          <Icon source={AccountBalanceIcon} aria-hidden="true" />
           Ente
         </TabsTrigger>
         <TabsTrigger value="documents">
-          <FileText aria-hidden="true" />
+          <Icon source={ReceiptLongIcon} aria-hidden="true" />
           Documenti
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="profile" className="rounded-lg border p-5">
+      <TabsContent value="profile" className="pui:rounded-lg pui:border pui:p-5">
         Dati personali e preferenze dell’account.
       </TabsContent>
-      <TabsContent value="organization" className="rounded-lg border p-5">
+      <TabsContent value="organization" className="pui:rounded-lg pui:border pui:p-5">
         Informazioni e ruoli associati all’ente.
       </TabsContent>
-      <TabsContent value="documents" className="rounded-lg border p-5">
+      <TabsContent value="documents" className="pui:rounded-lg pui:border pui:p-5">
         Documenti disponibili per il profilo.
       </TabsContent>
     </Tabs>
@@ -101,12 +109,16 @@ export const FidelityTabs: Story = {
     design: { type: "figma", url: figmaEmbedUrl("1137:8910") },
   },
   render: () => (
-    <div data-fidelity-variant="1137-8910" className="w-[658px] max-w-full">
+    <div data-fidelity-variant="1137-8910" className="pui:w-[658px] pui:max-w-full">
       <Tabs defaultValue="source-1">
-        <TabsList variant="line" aria-label="Sezioni di esempio" className="w-full overflow-x-auto">
+        <TabsList
+          variant="line"
+          aria-label="Sezioni di esempio"
+          className="pui:w-full pui:overflow-x-auto"
+        >
           {fidelityTabs.map((value) => (
             <TabsTrigger key={value} value={value}>
-              <PagoPAIcon name="kid_star" />
+              <Icon source={KidStarIcon} />
               Tab
             </TabsTrigger>
           ))}

@@ -118,10 +118,10 @@ export const DrawerCloseLabel: Story = {
 }
 
 export const NoticeLabels: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-4">
+    <div className="pui:grid pui:max-w-xl pui:gap-4">
       <Banner title="Avviso su misura" onDismiss={() => undefined} dismissLabel="Nascondi avviso">
         Copy dell'avviso.
       </Banner>
@@ -171,16 +171,15 @@ export const NoticeLabels: Story = {
 }
 
 export const NavigationTexts: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: {
     a11yContract: { reflow: false },
-    // The play function reads the wide layout: below the 900px collapse step the
-    // page buttons it queries are hidden, so Chromatic captures and plays this
-    // fixture at the desktop width only.
-    chromatic: { viewports: [1200] },
+    // The fixture pins the desktop width: the play function reads the wide
+    // layout, and below the 900px collapse step the page buttons it queries are
+    // hidden.
   },
   render: () => (
-    <div className="grid max-w-5xl gap-6">
+    <div className="pui:grid pui:max-w-5xl pui:gap-6">
       <Pagination
         currentPage={1}
         totalPages={3}
@@ -233,10 +232,10 @@ export const NavigationTexts: Story = {
 }
 
 export const FieldTexts: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-md gap-6">
+    <div className="pui:grid pui:max-w-md pui:gap-6">
       <TextField label="Nome" required requiredLabel="(campo obbligatorio)" />
       <AuthenticationCodeInput
         name="code"
@@ -290,7 +289,7 @@ export const FieldTexts: Story = {
     await expect(requiredField).toBeRequired()
     const requiredWords = canvas.getByText("(campo obbligatorio)")
     await expect(requiredWords).toBeVisible()
-    await expect(requiredWords).not.toHaveClass("sr-only")
+    await expect(requiredWords).not.toHaveClass("pui:sr-only")
     await expect(canvasElement.querySelector('[aria-label="Cifra 2 di 4"]')).not.toBeNull()
     await expect(canvas.getByRole("progressbar", { name: "Invio in corso" })).toBeVisible()
     await expect(canvas.getByRole("button", { name: "Interrompi" })).toBeVisible()
@@ -334,10 +333,10 @@ export const FieldTexts: Story = {
 }
 
 export const ContentAnnouncements: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <Avatar
         alt="Profilo"
         initials="OR"
@@ -369,7 +368,7 @@ export const ContentAnnouncements: Story = {
         legacySuggestion="Perché sei già socio"
         continueLabel="Prosegui su misura"
       />
-      <ul className="list-none">
+      <ul className="pui:list-none">
         <TableListItem
           fields={[{ label: "Servizio", value: "TARI" }]}
           action={{ onPress: () => undefined }}
@@ -389,7 +388,7 @@ export const ContentAnnouncements: Story = {
     const canvas = within(canvasElement)
     await expect(canvas.getByText("Presenza: online")).toBeVisible()
     await expect(canvas.getByText("Scelto")).toBeVisible()
-    const actions = canvasElement.querySelector('[role="columnheader"] .sr-only')
+    const actions = canvasElement.querySelector('[role="columnheader"] .pui\\:sr-only')
     await expect(actions?.textContent).toBe("Comandi di riga")
     await expect(canvasElement.querySelector('[aria-label="Scarica documento"]')).not.toBeNull()
     await expect(canvasElement.querySelector('[aria-label="Scarica avviso"]')).not.toBeNull()
@@ -406,7 +405,7 @@ export const OverlayAnnouncements: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid max-w-xl gap-6">
+    <div className="pui:grid pui:max-w-xl pui:gap-6">
       <CameraView
         label="Inquadra il QR"
         active={false}

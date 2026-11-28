@@ -2,24 +2,23 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
+import { Autocomplete } from "@/components/inputs/autocomplete"
 import {
-  Autocomplete,
   AuthenticationCodeInput,
-  CheckboxField,
-  Chip,
-  DatePicker,
   DatePickerField,
-  DragAndDrop,
-  ErrorSummary,
-  InputChip,
-  MultiSelectField,
-  RadioField,
-  RadioGroup,
-  SelectField,
-  SwitchField,
   TextareaField,
   TextField,
-} from "@/components/inputs"
+} from "@/components/inputs/text-fields"
+import { CheckboxField } from "@/components/inputs/checkbox-field"
+import { Chip, InputChip } from "@/components/inputs/chips"
+import { DatePicker } from "@/components/inputs/date-picker"
+import { DragAndDrop } from "@/components/inputs/drag-and-drop"
+import { ErrorSummary } from "@/components/inputs/error-summary"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { RadioField } from "@/components/inputs/radio-field"
+import { RadioGroup } from "@/components/inputs/radio-group"
+import { SelectField } from "@/components/inputs/select-field"
+import { SwitchField } from "@/components/inputs/switch-field"
 import { Button } from "@/components/primitives/button"
 import { Checkbox } from "@/components/primitives/checkbox"
 import { Label } from "@/components/primitives/label"
@@ -55,7 +54,7 @@ async function chooseOption(trigger: HTMLElement, listName: string | RegExp, opt
 function FormControls() {
   return (
     <form
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-7"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-7"
       onSubmit={(event) => event.preventDefault()}
     >
       <TextField
@@ -67,13 +66,13 @@ function FormControls() {
         autoComplete="email"
       />
 
-      <div className="grid gap-2">
-        <Label id="municipality-label" className="flex-wrap text-label-sb">
+      <div className="pui:grid pui:gap-2">
+        <Label id="municipality-label" className="pui:flex-wrap pui:text-label-sb">
           Comune
-          <span aria-hidden="true" className="text-destructive">
+          <span aria-hidden="true" className="pui:text-destructive">
             *
           </span>
-          <span className="text-caption"> (obbligatorio)</span>
+          <span className="pui:text-caption"> (obbligatorio)</span>
         </Label>
         <Select
           name="municipality"
@@ -91,9 +90,9 @@ function FormControls() {
         </Select>
       </div>
 
-      <div className="flex items-start gap-3">
+      <div className="pui:flex pui:items-start pui:gap-3">
         <Checkbox id="terms" name="terms" required />
-        <Label htmlFor="terms" className="min-h-6 text-label-sb">
+        <Label htmlFor="terms" className="pui:min-h-6 pui:text-label-sb">
           Accetto i termini del servizio
         </Label>
       </div>
@@ -118,13 +117,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const PaintedKeyboardPerimeters: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
     <form
       aria-label="Indicatori di tastiera"
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-6"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6"
       onSubmit={(event) => event.preventDefault()}
     >
       <TextField label="Indirizzo email" name="email" />
@@ -179,11 +178,14 @@ export const PaintedKeyboardPerimeters: Story = {
 }
 
 export const NativeEditorKeyboardFocus: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
-    <form aria-label="Editor nativi" className="grid w-[min(28rem,calc(100vw-2rem))] gap-6">
+    <form
+      aria-label="Editor nativi"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6"
+    >
       <TextField label="Prima degli editor" />
       <DatePickerField label="Data" defaultValue="2026-05-11" />
       <TextField label="Orario" type="time" defaultValue="10:30" />
@@ -239,7 +241,7 @@ export const NativeEditorLabelFloat: Story = {
   render: () => (
     <form
       aria-label="Etichette degli editor"
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-6"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6"
     >
       <TextField label="Orario vuoto" type="time" />
       <TextField label="Orario con valore" type="time" defaultValue="10:30" />
@@ -297,9 +299,9 @@ const disabledFilesChanged = fn<(files: File[]) => void>()
 
 export const NativeCheckboxReset: Story = {
   render: () => (
-    <form aria-label="Ripristino consensi" className="grid max-w-md gap-4">
+    <form aria-label="Ripristino consensi" className="pui:grid pui:max-w-md pui:gap-4">
       <CheckboxField label="Accetto i termini" name="accept" />
-      <label className="flex min-h-11 items-center gap-3">
+      <label className="pui:flex pui:min-h-11 pui:items-center pui:gap-3">
         <Checkbox name="optional" />
         Consenso facoltativo
       </label>
@@ -328,7 +330,7 @@ export const NativeCheckboxReset: Story = {
 
 export const NativeRadioReset: Story = {
   render: () => (
-    <form aria-label="Ripristino canale" className="grid max-w-md gap-4">
+    <form aria-label="Ripristino canale" className="pui:grid pui:max-w-md pui:gap-4">
       <RadioGroup legend="Canale di conferma" name="contact" defaultValue="email">
         <RadioField label="Email" value="email" />
         <RadioField label="SMS" value="sms" />
@@ -353,7 +355,7 @@ export const NativeRadioReset: Story = {
 
 export const NativeSwitchReset: Story = {
   render: () => (
-    <form aria-label="Ripristino notifiche" className="grid max-w-md gap-4">
+    <form aria-label="Ripristino notifiche" className="pui:grid pui:max-w-md pui:gap-4">
       <SwitchField label="Ricevi aggiornamenti" name="updates" defaultChecked />
       <Button type="reset">Ripristina notifiche</Button>
     </form>
@@ -374,7 +376,7 @@ export const NativeSwitchReset: Story = {
 
 export const NativeAuthenticationCodeReset: Story = {
   render: () => (
-    <form aria-label="Ripristino verifica" className="grid max-w-md gap-4">
+    <form aria-label="Ripristino verifica" className="pui:grid pui:max-w-md pui:gap-4">
       <AuthenticationCodeInput label="Codice di verifica" name="code" length={4} />
       <Button type="reset">Ripristina codice</Button>
     </form>
@@ -394,10 +396,10 @@ export const NativeAuthenticationCodeReset: Story = {
 }
 
 export const AuthenticationCodeReflow: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <form aria-label="Verifica su schermo piccolo" className="w-72 max-w-full">
+    <form aria-label="Verifica su schermo piccolo" className="pui:w-72 pui:max-w-full">
       <AuthenticationCodeInput name="code" />
     </form>
   ),
@@ -418,7 +420,7 @@ export const AuthenticationCodeReflow: Story = {
 
 export const CancelledChoiceChanges: Story = {
   render: () => (
-    <form aria-label="Modifiche annullate" className="grid max-w-md gap-4">
+    <form aria-label="Modifiche annullate" className="pui:grid pui:max-w-md pui:gap-4">
       <CheckboxField
         label="Consenso non confermato"
         name="accept"
@@ -466,10 +468,10 @@ export const CancelledChoiceChanges: Story = {
 function ControlledChoiceForm() {
   const [accept, setAccept] = React.useState(false)
   const [updates, setUpdates] = React.useState(true)
-  const [contact, setContact] = React.useState("email")
+  const [contact, setContact] = React.useState<string | null>("email")
   const [code, setCode] = React.useState("")
   return (
-    <form aria-label="Preferenze controllate" className="grid max-w-md gap-4">
+    <form aria-label="Preferenze controllate" className="pui:grid pui:max-w-md pui:gap-4">
       <CheckboxField
         label="Consenso controllato"
         name="accept"
@@ -563,7 +565,7 @@ function ExternalFormControls() {
     ref.current.focus()
   }
   return (
-    <div className="grid max-w-md gap-4">
+    <div className="pui:grid pui:max-w-md pui:gap-4">
       <form id="external-form-first" aria-label="Primo form">
         <Button type="reset">Ripristina primo form</Button>
       </form>
@@ -667,7 +669,7 @@ function ControlledSelections() {
   const [province, setProvince] = React.useState("rm")
   const [services, setServices] = React.useState(["tributi"])
   return (
-    <form aria-label="Selezioni controllate" className="grid max-w-md gap-6">
+    <form aria-label="Selezioni controllate" className="pui:grid pui:max-w-md pui:gap-6">
       <Autocomplete
         label="Comune"
         name="city"
@@ -794,12 +796,12 @@ const resetCities = [
 ]
 
 export const CancelledFormReset: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
     <form
       aria-label="Ripristino annullato"
-      className="grid max-w-md gap-6"
+      className="pui:grid pui:max-w-md pui:gap-6"
       onReset={(event) => event.preventDefault()}
     >
       <Autocomplete label="Comune" name="city" options={resetCities} defaultValue="roma" />
@@ -876,7 +878,7 @@ export const AutocompleteNativeForm: Story = {
   render: () => (
     <form
       aria-label="Ricerca comune"
-      className="grid max-w-md gap-6"
+      className="pui:grid pui:max-w-md pui:gap-6"
       onSubmit={(event) => {
         event.preventDefault()
         submitMunicipality(new FormData(event.currentTarget).get("municipality"))
@@ -922,7 +924,7 @@ export const AutocompleteNativeForm: Story = {
 
 export const AutocompleteResetAndDisabled: Story = {
   render: () => (
-    <form aria-label="Ripristino comune" className="grid max-w-md gap-6">
+    <form aria-label="Ripristino comune" className="pui:grid pui:max-w-md pui:gap-6">
       <Autocomplete
         label="Comune"
         name="municipality"
@@ -965,7 +967,7 @@ export const AutocompleteResetAndDisabled: Story = {
 
 export const MultiSelectNativeForm: Story = {
   render: () => (
-    <form aria-label="Scelta servizi" className="grid max-w-md gap-6">
+    <form aria-label="Scelta servizi" className="pui:grid pui:max-w-md pui:gap-6">
       <MultiSelectField
         label="Servizi"
         name="services"
@@ -1015,7 +1017,7 @@ export const MultiSelectNativeForm: Story = {
 
 export const SelectNativeReset: Story = {
   render: () => (
-    <form aria-label="Scelta provincia" className="grid max-w-md gap-6">
+    <form aria-label="Scelta provincia" className="pui:grid pui:max-w-md pui:gap-6">
       <SelectField
         label="Provincia"
         name="province"
@@ -1045,7 +1047,7 @@ export const SelectNativeReset: Story = {
 
 export const UploadNativeForm: Story = {
   render: () => (
-    <form aria-label="Allegati" className="grid max-w-md gap-6">
+    <form aria-label="Allegati" className="pui:grid pui:max-w-md pui:gap-6">
       <DragAndDrop
         label="Ricevuta"
         name="attachment"
@@ -1088,10 +1090,10 @@ export const UploadNativeForm: Story = {
 }
 
 export const UploadRejectsInvalidFiles: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <form aria-label="Allegati verificati" className="grid max-w-md gap-6">
+    <form aria-label="Allegati verificati" className="pui:grid pui:max-w-md pui:gap-6">
       <DragAndDrop label="Documento PDF" name="document" accept=".pdf" required />
       <Button type="reset">Ripristina documento</Button>
     </form>
@@ -1138,11 +1140,11 @@ export const UploadRejectsInvalidFiles: Story = {
 }
 
 export const UploadMimeAndDragStates: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
-    <form aria-label="Allegati multipli" className="grid max-w-md gap-6">
+    <form aria-label="Allegati multipli" className="pui:grid pui:max-w-md pui:gap-6">
       <DragAndDrop name="documents" accept="image/*, application/pdf" multiple />
       <DragAndDrop label="Qualsiasi formato" name="unrestricted" />
       <DragAndDrop
@@ -1236,7 +1238,7 @@ export const Default: Story = {
 
 export const ValidationError: Story = {
   render: () => (
-    <div className="w-[min(28rem,calc(100vw-2rem))]">
+    <div className="pui:w-[min(28rem,calc(100vw-2rem))]">
       <TextField
         label="Codice fiscale"
         error="Inserisci un codice fiscale valido."
@@ -1270,9 +1272,9 @@ export const ValidationError: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <div className="grid w-[min(28rem,calc(100vw-2rem))] gap-6">
+    <div className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6">
       <TextField label="Campo non disponibile" disabled value="Valore non modificabile" readOnly />
-      <div className="flex items-center gap-3">
+      <div className="pui:flex pui:items-center pui:gap-3">
         <Checkbox id="disabled-checkbox" disabled />
         <Label htmlFor="disabled-checkbox">Opzione non disponibile</Label>
       </div>
@@ -1293,7 +1295,7 @@ function ErrorSummaryForm() {
   return (
     <form
       aria-label="Segnalazione degli errori"
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-6"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6"
       onSubmit={(event) => event.preventDefault()}
     >
       <ErrorSummary errors={summaryErrors} />

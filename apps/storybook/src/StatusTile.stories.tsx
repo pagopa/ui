@@ -1,8 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { StatusTile, Tag } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { StatusTile } from "@/components/content/status-tile"
+import { Tag } from "@/components/content/tag"
+import { Icon } from "@/components/icons/icon"
+import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
+import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
+import { Default as SendIcon } from "@/components/icons/generated/send"
 
 import statusTileGuide from "./guides/status-tile.md?raw"
 
@@ -10,7 +14,7 @@ const meta = {
   title: "Components/Content/StatusTile",
   component: StatusTile,
   args: {
-    channel: <PagoPAIcon name="SEND" />,
+    channel: <Icon source={SendIcon} />,
     title: "SEND",
     tag: <Tag status="default">In attesa</Tag>,
     children: "Invio previsto dopo la validazione della comunicazione.",
@@ -38,12 +42,12 @@ type Story = StoryObj<typeof meta>
 export const Playground: Story = {}
 
 export const Orientations: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-[min(36rem,calc(100vw-2rem))] gap-3">
+    <div className="pui:grid pui:w-[min(36rem,calc(100vw-2rem))] pui:gap-3">
       <StatusTile
-        channel={<PagoPAIcon name="mark_email_read" />}
+        channel={<Icon source={MarkEmailReadIcon} />}
         title="Piattaforma pagoPA"
         tag={<Tag status="success">Attivo</Tag>}
       >
@@ -51,7 +55,7 @@ export const Orientations: Story = {
       </StatusTile>
       <StatusTile
         orientation="vertical"
-        channel={<PagoPAIcon name="notifications_active" />}
+        channel={<Icon source={NotificationsActiveIcon} />}
         title="Piattaforma Notifiche"
         tag={<Tag status="warning">Limitato</Tag>}
       >
@@ -65,7 +69,7 @@ export const Orientations: Story = {
 // column width. Each capture is its own export so the root maps the variant
 // alone, framed at the source width.
 const sourceTile = (orientation: "horizontal" | "vertical") => () => (
-  <div data-fidelity-variant={orientation} className="w-[312px]">
+  <div data-fidelity-variant={orientation} className="pui:w-[312px]">
     <StatusTile orientation={orientation} {...meta.args} />
   </div>
 )

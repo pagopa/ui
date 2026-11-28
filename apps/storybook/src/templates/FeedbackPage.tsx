@@ -25,11 +25,14 @@ function FeedbackPage({ preheader, header, children, footer, className }: Feedba
   return (
     <div
       data-slot="feedback-page"
-      className={cn("flex min-h-(--artboard-height-tall) flex-col bg-background", className)}
+      className={cn(
+        "pui:flex pui:min-h-(--pui-artboard-height-tall) pui:flex-col pui:bg-background",
+        className,
+      )}
     >
       {preheader}
       {header}
-      <main className="flex-1">{children}</main>
+      <main className="pui:flex-1">{children}</main>
       {footer}
     </div>
   )

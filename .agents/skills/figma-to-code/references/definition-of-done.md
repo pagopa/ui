@@ -3,9 +3,9 @@
 Satisfied for each touched node before the green chain. The checks own the
 predicates; this list owns the order.
 
-- [ ] The rendered story matches the source at its width and state; every declared
-      device has its case.
-- [ ] The story is the parity capture surface: source width, real states,
+- [ ] The rendered story matches the source at its width and state, on every
+      declared device.
+- [ ] The story is the comparison surface: source width, real states,
       `parameters.design` built with `figmaEmbedUrl`, every `storyExports` entry
       showing the node, not the variant.
 - [ ] The guide records which source property drives which prop, attribute or
@@ -25,17 +25,24 @@ continuing after failures:
 
 ```bash
 pnpm nx run pagopa-ui:check:catalogue
-pnpm nx run pagopa-ui-cli:check:rules
 pnpm nx run pagopa-ui-cli:check:devices
-pnpm nx run pagopa-ui-cli:check:evidence
-pnpm nx run pagopa-ui-cli:check:parity
 pnpm nx run pagopa-ui:docs
 pnpm nx run workspace:verify
 ```
 
-With Storybook answering, run `pnpm ui-cli parity check --node <nodeId> --saved`
-for **each** touched node. Nx gates reuse unchanged inputs; browser runs are
-fresh.
+`pnpm nx run pagopa-ui-cli:check:rules` reports the `.Regola` drift and exits 0:
+the pending, `new`, `stale` and `removed` cards it prints are findings of the
+node, reported and not counted as a failure. `--strict` fails on that drift, for
+the caller that wants the ledger closed rather than reported.
+
+With Storybook answering, run `pnpm ui-cli align <nodeId> --device <device>` for
+**each** touched node on **each** device the inventory declares: one run reads the
+target, the story and the declared devices, probes Storybook and compares
+([commands.md](commands.md)). Nothing is stored between runs, so the comparison
+is this session's and Nx reuses nothing: the numbers are read now or not at all.
+Write the decision and its documents with
+`pnpm ui-cli record <nodeId> --status <status>`, which is atomic and idempotent,
+and report the run that closed the node, not the one you first typed.
 
 **Push and pull request stay with the person.** Keep stories, registry, inventory
 and exception changes with the implementation.

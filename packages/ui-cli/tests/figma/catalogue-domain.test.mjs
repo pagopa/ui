@@ -74,7 +74,6 @@ function renewNote(files, entry, prefix) {
         affected: [],
       },
       evidenceExceptions: {},
-      noteBaseline: null,
     })
     return { note: report.registry.entries["1:1"].note, notices: report.notices }
   } finally {
@@ -174,7 +173,6 @@ test("inventory refresh queues changed implementations and returns proposed writ
         affected: [],
       },
       evidenceExceptions: { "1:1": "Temporary exception" },
-      noteBaseline: null,
     })
     assert.equal(report.inventory.components[0].name, "Control v2")
     assert.equal(report.registry.entries["1:1"].status, "pending")
@@ -186,6 +184,7 @@ test("inventory refresh queues changed implementations and returns proposed writ
         "src/catalog/figma/inventory.json",
         "src/catalog/figma/registry.json",
         "src/catalog/figma/evidence-exceptions.json",
+        "src/catalog/figma/story-titles.json",
       ],
     )
   } finally {
@@ -246,7 +245,7 @@ test("catalogue CLI preserves success, failure and usage contracts", async () =>
       env: { PAGOPA_UI_STORIES_ROOT: "src/catalog/figma" },
     })
     assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /^inventory: 1 nodes \\| excluded 1/m)
+    assert.match(result.stdout, /^inventory: 1 nodes \| excluded 1/m)
     assert.match(result.stderr, /warn: inventory snapshot is \d+ days old/)
   } finally {
     valid.dispose()

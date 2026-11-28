@@ -24,12 +24,11 @@ import { buildBriefQueue, formatBriefQueue } from "../figma/brief-queue.ts"
 import { commentsJson, commentsReport, formatComments } from "../figma/comments-workflow.ts"
 import { figmaToken } from "../adapters/figma-token.ts"
 import { UsageError } from "../lib/command.ts"
-import { integer, jsonArg, requireText } from "./args.ts"
+import { integer, jsonArg, requireText, stringArg } from "./args.ts"
 import { action, EXIT, printJson, printLines, type CliContext } from "./context.ts"
 import { requireToken, requireTokenArg } from "./token.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 
-const stringArg = { type: "string" } as const
 const idArg = { type: "positional", required: true } as const
 
 function rulesRefresh(ctx: CliContext) {
@@ -311,18 +310,23 @@ export function rulesCommands(ctx: CliContext): SubCommandsDef {
 export function rulesCheckCommand(ctx: CliContext) {
   return defineCommand({
     meta: { name: "rules", description: "Check the rules ledger" },
-    args: { strict: { type: "boolean", default: true }, json: jsonArg },
+    args: {
+      strict: {
+        type: "boolean",
+        default: false,
+        description: "Fail on cards behind Figma instead of reporting them",
+      },
+      json: jsonArg,
+    },
     run: action(ctx, ({ strict, json }) => {
       const workspace = ctx.workspace()
       const result = checkRules(workspace, strict)
       if (json) printJson(ctx.io, result)
       else
-        printLines(ctx.io, {
-          [result.errors.length ? "err" : "out"]: formatRulesCheck(
-            result,
-            Boolean(readRulesSnapshot(workspace.root, false)),
-          ),
-        })
+        printLines(
+          ctx.io,
+          formatRulesCheck(result, Boolean(readRulesSnapshot(workspace.root, false))),
+        )
       return result.errors.length ? EXIT.failure : EXIT.ok
     }),
   })

@@ -55,10 +55,11 @@ const preview: Preview = {
       },
     },
     layout: "centered",
-    // The opt-in Chromatic baseline captures the same stories at the two mobile
-    // widths the library targets and at the desktop width. Chromatic is never a
-    // required check: the workflow runs on dispatch or the `chromatic` label.
-    chromatic: { viewports: [360, 390, 1200] },
+    chromatic: {
+      // The two breakpoints the responsive contract states, plus the desktop
+      // reference (ADR-0004). Chromatic's default set would add none of them.
+      viewports: [320, 600, 1200],
+    },
     controls: {
       // Controls panel: every control open with its description and default
       // value, required props first; color/date values pick the right control.

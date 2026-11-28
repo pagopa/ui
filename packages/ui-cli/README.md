@@ -11,9 +11,8 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 - Agents invoke CLI commands as `pnpm ui-cli …`; Nx targets remain the gates and
   CI entry points. The CLI reads the design system through an explicit root
   (`PAGOPA_UI_ROOT`), never from the working directory. Paths inside a command
-  are relative to that root, except the repository-level `docs/` defaults
-  (`docs/figma-parity`, `docs/design-requests`, and the default `parity report`
-  markdown output), which resolve at the workspace root.
+  are relative to that root, except the repository-level `docs/design-requests`
+  default, which resolves at the workspace root.
 - Figma is read-only. Figma REST calls use GET requests only; tools never write
   to the Figma file.
 - `src/figma/rest.ts` handles Figma API reads. The handoff adapters also access
@@ -30,22 +29,26 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
   `packages/artwork/src/assets/figma-icons/*`,
   `packages/artwork/src/assets/figma-pictograms/*`,
   `packages/artwork/src/components/icons/icon-assets.ts`,
+  `packages/pagopa-ui/src/components/icons/generated/*`,
   `packages/artwork/src/components/icons/pictogram-assets.ts` and
   `packages/artwork/src/components/icons/figma-inventory.ts`; the token
   generator owns `packages/tokens/src/manifest.json`, `packages/tokens/src/figma.generated.css`,
   `packages/tokens/src/figma-tokens.generated.ts` and
   `packages/tokens/src/figma-text-classes.generated.ts`.
-- `src/catalog/figma/registry.json` is hand-maintained, reviewed data: so are the
-  two device policy files beside it — `device-policy.json` (the vocabulary: the
-  axes, the devices with their aliases and the values that mean "no device
-  axis", never a component list) and `device-exceptions.json` (the reasoned
-  burn-down exceptions, `<nodeId>: <reason>`, which must shrink). `check:catalogue`
-  validates their shapes, resolves every axis value the inventory declares and
-  refuses an exception whose node no longer misses a device.
+- `src/catalog/figma/registry.json` is hand-maintained, reviewed data: so is
+  `device-policy.json` beside it — the vocabulary of the device axis, holding
+  the axes, the devices with their aliases and the values that mean "no device
+  axis", never a component list. `check:catalogue` validates its shape and
+  resolves every axis value the inventory declares.
 - `packages/tokens/src/foundations.json` is hand-maintained, reviewed data: the
   foundation entries without a single published variable (spacing steps, sizes,
   breakpoints, container thresholds, z-index steps, radius extensions, effect
-  styles), each with its source and, for a local extension, the reason.
+  styles), each with its source and, for a local extension, the reason. Its
+  `stylesheet` list declares, one `declaration` (`property: value`) and `reason`
+  at a time, the literals of `packages/pagopa-ui/src/index.css`: a hardcoded
+  colour or an unbacked pixel dimension in that stylesheet fails the foundation
+  check unless this list carries exactly that value, and so does a declaration
+  the stylesheet no longer holds.
 - `packages/tokens/src/foundation-baseline.json` is the ceiling of the foundation lint
   and can only go down; `packages/tokens/src/foundation-exceptions.json` is its reasoned
   burn-down list (`rule`, `file`, `match`, `nodeId`, `reason`). A stale
@@ -65,16 +68,16 @@ compare it with the source code of the audited package, `packages/pagopa-ui`.
 
 Run recurring local checks through `pnpm nx run <project>:<target>` to reuse
 their cache. The caller invokes Nx explicitly; the CLI never starts Nx.
-Unchanged inputs reuse the same checks; source, stories, evidence and the
-ignored `.figma/rules.json` snapshot invalidate the relevant cached results.
+Unchanged inputs reuse the same checks; source, stories and the ignored
+`.figma/rules.json` snapshot invalidate the relevant cached results.
 The snapshot fingerprint is produced by `src/adapters/rules-cache-input.ts`,
 which distinguishes a missing snapshot and propagates other read errors.
 
 The cache contracts cover the standard workspace paths and default arguments.
-Use the direct CLI for alternate roots or external `--input`/`--cases` files;
+Use the direct CLI for alternate roots or an external `--input` file;
 those files are outside the default Nx input sets.
 Direct CLI invocations are uncached. Live reads, writers and browser captures
-remain fresh, including each node's `parity check --node <id> --saved`.
+remain fresh, including each node's `align <node> --device <device>`.
 
 ### Operations
 
@@ -92,9 +95,6 @@ available from the CLI:
   large saved delta stays printable; only `.figma/delta.json` and
   `.figma/live-delta.json` are read as a local delta, and `delta` is `null` —
   the queue ordering the brief — when the pull request carries none.
-- `pnpm ui-cli figma handoff media --pr <n> --base <ref>` captures changed
-  parity cases from local Storybook at `http://localhost:6006` (or
-  `STORYBOOK_URL`), attaches before/after evidence and verifies the comment.
 - `pnpm ui-cli figma request open --input <request.json>` creates the issue and
   record; `list --waiting` and `list --answered` query open issues by status;
   `close <record> --decision <text> --commit <sha>` records the answer and
@@ -126,50 +126,50 @@ keeps the same preflight behavior as the other live Figma commands.
 
 ## Files
 
-| File                                       | Type             | Purpose                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------------------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/source-modules.ts`                | Shared library   | Parses TypeScript and TSX files with `oxc-parser`. Resolves import specifiers, finds runtime export identities, reads the story meta title, the components of a story and its Design panel node ids, so checks link Figma entries to actual exports instead of matching text.                                                                                                                              |
-| `src/figma/snapshot.ts`                    | Shared library   | Normalizes a live Figma export, builds contract and design fingerprints, compares snapshots and orders work by dependency, so meaningful drift is visible and dependent work is done in the right order.                                                                                                                                                                                                   |
-| `src/figma/devices.ts`                     | Shared library   | Resolves the device vocabulary (`device-policy.json`): every axis value the inventory declares maps to a canonical device or to `any`. `--check` fails on an unmapped value, a duplicate alias or a declared axis nobody uses; it warns on an unused alias and on a device-like value on a non-device axis, so changes to Figma's device vocabulary stay explicit instead of being silently misclassified. |
-| `src/figma/rest.ts`                        | Shared library   | Sends read-only GET requests to the Figma REST API, returns a pinned snapshot and the rendered SVG variants, and writes the snapshot as streamed compact JSON, so live reads are explicit, a document larger than one string still saves, and the rest of the CLI can use reproducible local data.                                                                                                         |
-| `src/checks/import-layers.ts`              | Check            | Enforces the import contract between the layers `primitives`, `icons` and the families, the retired `screens` and `templates` paths and the third-party confinement, preventing dependency-boundary drift from undermining the architecture.                                                                                                                                                               |
-| `src/checks/foundation.ts`                 | Check            | Enforces the component class contract over the string literals of `src/components`: no arbitrary px/rem values, default Tailwind text sizes or font weights, raw Figma variables, palette or hex colours, off-scale spacing. Exceptions need a node and a reason; the baseline can only go down, keeping one-off styles from silently diverging from the design foundations.                               |
-| `src/figma/icons.ts`                       | Tool and check   | Generates all source icon variants offline; checks pinned provenance, complete identities, standalone SVGs and the runtime map, so public icon aliases stay traceable to complete, reproducible artwork.                                                                                                                                                                                                   |
-| `src/checks/doc-links.ts`                  | Check            | Resolves the links and path claims in the agent documentation, the guides, `figma-to-code.yaml` and the script/workflow citations; keeps the `figma-to-code` skill free of project component names, Figma node ids and `docs/` references, so instructions stay actionable without coupling the skill to this repository.                                                                                  |
-| `src/checks/library.ts`                    | Check            | Packs the library, installs the tarball in a temporary application and drives the Playwright specs against it, proving consumers can use the packed artifact rather than only the source tree.                                                                                                                                                                                                             |
-| `src/checks/library-artifact.ts`           | Shared module    | Defines the static artifact contract (CSS, fonts, licenses, dependency boundaries, export lists) used by `src/checks/library.ts` before the consumer install, catching packaging defects before browser tests.                                                                                                                                                                                             |
-| `tests/e2e/library.spec.mjs`               | Playwright spec  | Runs the complete browser sequence per engine (SSR, native forms, overlays, forced colors, artwork, reflow), one project per engine and one retry, covering real browser behavior that static checks cannot prove.                                                                                                                                                                                         |
-| `src/checks/css-budget.ts`                 | Check            | Enforces the published stylesheet budget recorded in `data/css-budget.json` (raw bytes, gzip level 9, brotli): growth fails, a ceiling ahead of the artifact only warns, and `update css` records the size you accept without ever raising a ceiling, preventing unreviewed payload growth.                                                                                                                |
-| `src/build/prepare-types.ts`               | Build step       | Rewrites the specifiers in the emitted `.d.ts` files to produce alias-free ESM, so consumers can resolve the package declarations without this repository's TypeScript aliases. Runs inside `pnpm nx run pagopa-ui:build`.                                                                                                                                                                                 |
-| `src/figma/catalogue/index.ts`             | Check and tool   | Validates the catalogue, reports live drift, refreshes the inventory, queues the delta and renders the drift PR body, making Figma/source mismatches explicit and reviewable instead of silent.                                                                                                                                                                                                            |
-| `src/figma/export.ts`                      | Tool             | Joins the MCP inventory with the REST data and writes one pinned snapshot to `.figma/live-rest.json`, so sync can work from reproducible evidence instead of querying Figma for every check.                                                                                                                                                                                                               |
-| `src/figma/pictograms.ts`                  | Tool and check   | Exports the pictogram variants, writes the asset manifest and validates the committed artwork, keeping published variants reproducible and catching drift before it reaches consumers.                                                                                                                                                                                                                     |
-| `src/figma/tokens.ts`                      | Tool and check   | Curates a pinned variable snapshot into the committed token manifest; keys every token by its published Figma id, so a rename is a delta; merges the reviewed foundation entries and generates and validates the CSS foundation layer and the documentation inventory, keeping token identity and published styles aligned.                                                                                |
-| `src/parity/source.ts`                     | Tool             | Reads the pinned export into the compact per-node spec (geometry, layout, paint, type) and picks the source variant, so each Storybook capture is compared with the intended Figma variant.                                                                                                                                                                                                                |
-| `src/parity/render.ts`                     | Tool             | Defines the pure capture contracts used by `src/adapters/storybook.ts`; the preflight refuses a scaled, unfixed-width or wrong-state capture, and the offsets are measured from the declared origin, so setup errors cannot masquerade as design drift.                                                                                                                                                    |
-| `src/parity/diff.ts`                       | Shared library   | Compares spec and probe using a 2px tolerance, the weight law, the 44px target rule, composition offsets/order (advisory unless `--strict`) and token classification, separating meaningful mismatches from tolerated visual noise.                                                                                                                                                                        |
-| `src/parity/corpus.ts`                     | Shared library   | Holds the reviewed case corpus as one value: the cases, the inventory, the registry and the device vocabulary are readonly documents, and coverage, proposals, validation and the id and node lookups are methods, so parity runs ask the corpus instead of rebuilding an index and validation takes no arguments.                                                                                         |
-| `src/parity/case-rows.ts`                  | Shared library   | Joins `registry.json` with the story files (story ids, declared exports, Design-panel nodes) and emits one row per registry target, so parity runs use explicit, reproducible mappings rather than guessed ones.                                                                                                                                                                                           |
-| `src/parity/case-writer.ts`                | Shared library   | Canonicalises and saves one reviewed case and forgets the reader's memory afterwards, so `parity:check --save-case` writes a reproducible refinement instead of duplicating an entry.                                                                                                                                                                                                                      |
-| `src/testing/changed.ts`                   | Tool             | Runs the test files affected by sources changed since the last successful run of the same pass and records the new baseline, keeping iteration fast without skipping relevant tests or advancing after a failed run.                                                                                                                                                                                       |
-| `tests/checks/import-layers.test.mjs`      | Regression tests | Covers the layer rules with `pnpm nx run pagopa-ui-cli:test`, so changes to import syntax cannot bypass the architecture boundaries.                                                                                                                                                                                                                                                                       |
-| `tests/checks/foundation.test.mjs`         | Regression tests | Covers foundation ceilings, exemptions, stale exceptions and string-literal extraction against temporary trees, so both intended rules and failure cases stay enforced.                                                                                                                                                                                                                                    |
-| `tests/checks/css-budget.test.mjs`         | Regression tests | Covers the budget ceiling, slack, missing metric and `update css` ratchet, protecting the rule that accepted size changes cannot silently raise the budget.                                                                                                                                                                                                                                                |
-| `tests/checks/doc-links.test.mjs`          | Regression tests | Covers link, path-claim and skill-agnosticism rules against temporary trees, so the documentation gate catches regressions without depending on repository state.                                                                                                                                                                                                                                          |
-| `tests/checks/story-taxonomy.test.mjs`     | Regression tests | Enforces the Storybook taxonomy: every meta title is `Foundations/*` or a known `Components/<section>/*`, and the retired `Screens/*`, `Templates/*` and `Alignment/*` sections stay retired, keeping taxonomy changes explicit.                                                                                                                                                                           |
-| `tests/parity/*.test.mjs`                  | Regression tests | Covers parity rules (tolerance, weight law, targets, classification, composition, capture preflight) and the case corpus (schema, registry/story consistency, canonical save) against fixtures, with no snapshot or browser, so these rules stay fast and deterministic to verify.                                                                                                                         |
-| `src/catalog/figma/device-policy.json`     | Reviewed data    | Defines the device vocabulary: the axes that mean "device", canonical devices with aliases, widths and default layout scopes, and values meaning "no device axis". It holds no component name, file or path, so scripts and agents resolve devices consistently without node-specific rules.                                                                                                               |
-| `src/catalog/figma/device-exceptions.json` | Reviewed data    | Records burn-down exceptions for nodes whose declared devices the corpus does not cover yet (`<nodeId>: <reason>`); the list must shrink, making known coverage gaps visible instead of permanent blind spots.                                                                                                                                                                                             |
-| `src/catalog/figma/rules.json`             | Reviewed data    | The English record of every consolidated `.Regole` card: verbatim Italian title, English title and summary, source hash, targets, disposition and review date. `figma:rules` writes it, `check:rules` validates it, and the guide's `## Component Rules` block carries the consumer-facing subset with no source reference.                                                                                |
-| `src/catalog/figma/parity-cases.json`      | Reviewed corpus  | Maps each compared variant to its verified case; `parity:check --case <id>` reproduces it and `--save-case` writes a refinement back, making the evidence reviewable and repeatable. Validated by `tests/parity/cases.test.mjs`.                                                                                                                                                                           |
-| `tests/figma/pictograms.test.mjs`          | Regression tests | Covers pictogram export against a mock Figma API, so export behavior can be checked without live network access.                                                                                                                                                                                                                                                                                           |
-| `tests/figma/rules.test.mjs`               | Regression tests | Covers the `.Regole` card extraction (sections, status, placeholder, unfiled card), the source hash and the plan diff, and the component-rules block markers, so a rules-box change is either reviewed or reported as drift.                                                                                                                                                                               |
-| `tests/figma/tokens.test.mjs`              | Regression tests | Covers token curation, generation and check failure modes against fixtures, ensuring changes cannot silently desynchronize token identities, CSS and documentation.                                                                                                                                                                                                                                        |
-| `tests/figma/icons.test.mjs`               | Regression tests | Exercises offline icon extraction, masks, transforms, Boolean geometry, defaults and complete source coverage, guarding against artwork variants silently disappearing or changing.                                                                                                                                                                                                                        |
-| `tests/figma/sync.test.mjs`                | Regression tests | Covers delta logic, fingerprints, evidence rules and write protection, preserving the guarantees that make Figma updates reviewable and safe.                                                                                                                                                                                                                                                              |
-| `tests/testing/changed.test.mjs`           | Regression tests | Covers the changed-only window, per-pass baselines, fallbacks and argument handling against temporary repositories, so incremental runs stay relevant and reliable.                                                                                                                                                                                                                                        |
-| `tests/fixtures/library-consumer/`         | Test fixture     | The packed-library application exercises native forms/reset, Dialog/Drawer/Popover, responsive Table, text fonts and source artwork in all three engines, proving the built package works in a consumer app.                                                                                                                                                                                               |
-| `tests/fixtures/vitest-changed/`           | Test fixture     | A Vitest test double that records the arguments a changed-only run would execute, allowing selection and fallback behavior to be verified without running the full test suite.                                                                                                                                                                                                                             |
+| File                                   | Type             | Purpose                                                                                                                                                                                                                                                                                                                                                                                                    |
+| -------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/source-modules.ts`            | Shared library   | Parses TypeScript and TSX files with `oxc-parser`. Resolves import specifiers, finds runtime export identities, reads the story meta title, the components of a story and its Design panel node ids, so checks link Figma entries to actual exports instead of matching text.                                                                                                                              |
+| `src/figma/snapshot.ts`                | Shared library   | Normalizes a live Figma export, builds contract and design fingerprints, compares snapshots and orders work by dependency, so meaningful drift is visible and dependent work is done in the right order.                                                                                                                                                                                                   |
+| `src/figma/devices.ts`                 | Shared library   | Resolves the device vocabulary (`device-policy.json`): every axis value the inventory declares maps to a canonical device or to `any`. `--check` fails on an unmapped value, a duplicate alias or a declared axis nobody uses; it warns on an unused alias and on a device-like value on a non-device axis, so changes to Figma's device vocabulary stay explicit instead of being silently misclassified. |
+| `src/figma/rest.ts`                    | Shared library   | Sends read-only GET requests to the Figma REST API, returns a pinned snapshot and the rendered SVG variants, and writes the snapshot as streamed compact JSON, so live reads are explicit, a document larger than one string still saves, and the rest of the CLI can use reproducible local data.                                                                                                         |
+| `src/checks/import-layers.ts`          | Check            | Enforces the import contract between the layers `primitives`, `icons` and the families, the retired `screens` and `templates` paths and the third-party confinement, preventing dependency-boundary drift from undermining the architecture.                                                                                                                                                               |
+| `src/checks/foundation.ts`             | Check            | Enforces the component class contract over the string literals of `src/components`: no arbitrary px/rem values, default Tailwind text sizes or font weights, raw Figma variables, palette or hex colours, off-scale spacing. Exceptions need a node and a reason; the baseline can only go down, keeping one-off styles from silently diverging from the design foundations.                               |
+| `src/figma/icons.ts`                   | Tool and check   | Generates all source icon variants offline; checks pinned provenance, complete identities, standalone SVGs and the runtime map, so public icon aliases stay traceable to complete, reproducible artwork.                                                                                                                                                                                                   |
+| `src/checks/doc-links.ts`              | Check            | Resolves the links and path claims in the agent documentation, the guides, `figma-to-code.yaml` and the script/workflow citations; keeps the `figma-to-code` skill free of project component names, Figma node ids and `docs/` references, so instructions stay actionable without coupling the skill to this repository.                                                                                  |
+| `src/checks/library.ts`                | Check            | Packs the library, installs the tarball in a temporary application and drives the Playwright specs against it, proving consumers can use the packed artifact rather than only the source tree.                                                                                                                                                                                                             |
+| `src/checks/library-artifact.ts`       | Shared module    | Defines the static artifact contract (CSS, fonts, licenses, dependency boundaries, export lists) used by `src/checks/library.ts` before the consumer install, catching packaging defects before browser tests.                                                                                                                                                                                             |
+| `tests/e2e/library/`                   | Playwright specs | Runs the packed artifact's browser domains (SSR and hydration, native forms, overlays, forced colors and artwork, responsive reflow) one spec per domain, so a failure names the domain that broke while every assertion and the artifact verdict stay the same. Each spec boots the consumer on its own page, which is why they run in parallel: one project per engine and one retry.                    |
+| `src/checks/css-budget.ts`             | Check            | Enforces the published stylesheet budget recorded in `data/css-budget.json` (raw bytes, gzip level 9, brotli): growth fails, a ceiling ahead of the artifact only warns, and `update css` records the size you accept without ever raising a ceiling, preventing unreviewed payload growth.                                                                                                                |
+| `src/build/prepare-types.ts`           | Build step       | Rewrites the specifiers in the emitted `.d.ts` files to produce alias-free ESM, so consumers can resolve the package declarations without this repository's TypeScript aliases. Runs inside `pnpm nx run pagopa-ui:build`.                                                                                                                                                                                 |
+| `src/figma/catalogue/index.ts`         | Check and tool   | Validates the catalogue, reports live drift, refreshes the inventory, queues the delta and renders the drift PR body, making Figma/source mismatches explicit and reviewable instead of silent.                                                                                                                                                                                                            |
+| `src/figma/align.ts`                   | Tool             | Runs a node's preflight, its Storybook probe and the comparison in one invocation and writes nothing, so target, devices and residues are read in a single call and a second run on the same tree says the same thing.                                                                                                                                                                                     |
+| `src/figma/record.ts`                  | Tool             | Writes one node's decision and every document it entails — registry, page surface, note baseline, story titles, consumer map — atomically: a failed step restores every snapshotted byte, so a run applies all of them or none and the re-run starts from the same place.                                                                                                                                  |
+| `src/figma/export.ts`                  | Tool             | Joins the MCP inventory with the REST data and writes one pinned snapshot to `.figma/live-rest.json`, so sync can work from reproducible evidence instead of querying Figma for every check.                                                                                                                                                                                                               |
+| `src/figma/pictograms.ts`              | Tool and check   | Exports the pictogram variants, writes the asset manifest and validates the committed artwork, keeping published variants reproducible and catching drift before it reaches consumers.                                                                                                                                                                                                                     |
+| `src/figma/tokens.ts`                  | Tool and check   | Curates a pinned variable snapshot into the committed token manifest; keys every token by its published Figma id, so a rename is a delta; merges the reviewed foundation entries and generates and validates the CSS foundation layer and the documentation inventory, keeping token identity and published styles aligned.                                                                                |
+| `src/parity/source.ts`                 | Tool             | Reads the pinned export into the compact per-node spec (geometry, layout, paint, type) and picks the source variant, so each Storybook capture is compared with the intended Figma variant.                                                                                                                                                                                                                |
+| `src/parity/render.ts`                 | Tool             | Defines the pure capture contracts used by `src/adapters/storybook.ts`; the preflight refuses a scaled, unfixed-width or wrong-state capture, and the offsets are measured from the declared origin, so setup errors cannot masquerade as design drift.                                                                                                                                                    |
+| `src/parity/diff.ts`                   | Shared library   | Compares spec and probe using a 2px tolerance, the weight law, the 44px target rule, composition offsets/order (advisory unless `--strict`) and token classification, separating meaningful mismatches from tolerated visual noise.                                                                                                                                                                        |
+| `src/parity/check.ts`                  | Tool             | Runs one ephemeral comparison: it reads the pinned source and the rendered story in one process, prints the residues that survive the tolerance and writes nothing, so the verdict belongs to the session that asked for it.                                                                                                                                                                               |
+| `src/parity/case-rows.ts`              | Shared library   | Joins `registry.json` with the story files (story ids, declared exports, Design-panel nodes) and emits one row per registry target, so parity runs use explicit, reproducible mappings rather than guessed ones.                                                                                                                                                                                           |
+| `src/testing/changed.ts`               | Tool             | Runs the test files affected by sources changed since the last successful run of the same pass and records the new baseline, keeping iteration fast without skipping relevant tests or advancing after a failed run.                                                                                                                                                                                       |
+| `tests/checks/import-layers.test.mjs`  | Regression tests | Covers the layer rules with `pnpm nx run pagopa-ui-cli:test`, so changes to import syntax cannot bypass the architecture boundaries.                                                                                                                                                                                                                                                                       |
+| `tests/checks/foundation.test.mjs`     | Regression tests | Covers foundation ceilings, exemptions, stale exceptions and string-literal extraction against temporary trees, so both intended rules and failure cases stay enforced.                                                                                                                                                                                                                                    |
+| `tests/checks/css-budget.test.mjs`     | Regression tests | Covers the budget ceiling, slack, missing metric and `update css` ratchet, protecting the rule that accepted size changes cannot silently raise the budget.                                                                                                                                                                                                                                                |
+| `tests/checks/doc-links.test.mjs`      | Regression tests | Covers link, path-claim and skill-agnosticism rules against temporary trees, so the documentation gate catches regressions without depending on repository state.                                                                                                                                                                                                                                          |
+| `tests/checks/story-taxonomy.test.mjs` | Regression tests | Enforces the Storybook taxonomy: every meta title is `Foundations/*` or a known `Components/<section>/*`, and the retired `Screens/*`, `Templates/*` and `Alignment/*` sections stay retired, keeping taxonomy changes explicit.                                                                                                                                                                           |
+| `tests/commands/*.test.mjs`            | Regression tests | Covers `align` and `record` against fixtures: one invocation does the whole preflight or the whole write, a re-run on an unchanged tree writes the same bytes, `--dry-run` writes nothing, an injected failure restores the tree byte for byte, and a rejected entry exits before any document changes.                                                                                                    |
+| `tests/parity/*.test.mjs`              | Regression tests | Covers the parity rules (tolerance, weight law, targets, classification, composition) and the ephemeral contract of the diagnostic against fixtures, with no snapshot and no browser, so the comparison stays fast and deterministic to verify.                                                                                                                                                            |
+| `src/catalog/figma/device-policy.json` | Reviewed data    | Defines the device vocabulary: the axes that mean "device", canonical devices with aliases, widths and default layout scopes, and values meaning "no device axis". It holds no component name, file or path, so scripts and agents resolve devices consistently without node-specific rules.                                                                                                               |
+| `src/catalog/figma/rules.json`         | Reviewed data    | The English record of every consolidated `.Regole` card: verbatim Italian title, English title and summary, source hash, targets, disposition and review date. `figma:rules` writes it, `check:rules` reports it, and the guide's `## Component Rules` block carries the consumer-facing subset with no source reference.                                                                                  |
+| `tests/figma/pictograms.test.mjs`      | Regression tests | Covers pictogram export against a mock Figma API, so export behavior can be checked without live network access.                                                                                                                                                                                                                                                                                           |
+| `tests/figma/rules.test.mjs`           | Regression tests | Covers the `.Regole` card extraction (sections, status, placeholder, unfiled card), the source hash and the plan diff, and the component-rules block markers, so a rules-box change is either reviewed or reported as drift.                                                                                                                                                                               |
+| `tests/figma/tokens.test.mjs`          | Regression tests | Covers token curation, generation and check failure modes against fixtures, ensuring changes cannot silently desynchronize token identities, CSS and documentation.                                                                                                                                                                                                                                        |
+| `tests/figma/icons.test.mjs`           | Regression tests | Exercises offline icon extraction, masks, transforms, Boolean geometry, defaults and complete source coverage, guarding against artwork variants silently disappearing or changing.                                                                                                                                                                                                                        |
+| `tests/figma/sync.test.mjs`            | Regression tests | Covers delta logic, fingerprints, evidence rules and write protection, preserving the guarantees that make Figma updates reviewable and safe.                                                                                                                                                                                                                                                              |
+| `tests/testing/changed.test.mjs`       | Regression tests | Covers the changed-only window, per-pass baselines, fallbacks and argument handling against temporary repositories, so incremental runs stay relevant and reliable.                                                                                                                                                                                                                                        |
+| `tests/fixtures/library-consumer/`     | Test fixture     | The packed-library application exercises native forms/reset, Dialog/Drawer/Popover, responsive Table, text fonts and source artwork in all three engines, proving the built package works in a consumer app.                                                                                                                                                                                               |
+| `tests/fixtures/vitest-changed/`       | Test fixture     | A Vitest test double that records the arguments a changed-only run would execute, allowing selection and fallback behavior to be verified without running the full test suite.                                                                                                                                                                                                                             |
 
 ## What the checks protect
 
@@ -179,7 +179,9 @@ keeps the same preflight behavior as the other live Figma commands.
    `molecules`, `organisms`, `figma-primitives`, `ui` and the retired `screens`.
    It rejects a direct `cn`
    import outside `src/lib/cn.ts`, where the merge tables know the generated
-   type scale.
+   type scale. It rejects a family barrel — `@/components/<family>` — in a
+   story: a story names the module that declares the component, so a change to
+   one component reaches only its own stories.
 2. **The story taxonomy.** The taxonomy test proves that every library story
    still lives under `Foundations/*` or `Components/<section>/*`, so a
    prototype or fidelity section cannot be added under a new top-level title
@@ -198,12 +200,12 @@ keeps the same preflight behavior as the other live Figma commands.
    The device dimension is part of the check: `src/figma/devices.ts` resolves every
    axis value the inventory declares against the committed vocabulary, so a new
    source value fails with its axis in the message and the fix is one alias line.
-   `check:catalogue` prints the vocabulary line and the coverage line
-   (`devices: <n> implemented sets · covered <n> · missing <n> · exceptions <n>`),
-   fails a node that enters the live delta (or is newly closed `implemented`)
-   while a declared device has no reviewed case and no reasoned
-   `device-exceptions.json` entry, and keeps the historical burn-down a single
-   warning whose work list is `pnpm ui-cli parity queue --uncovered`.
+   `check:catalogue` prints the vocabulary line and the inventory line
+   (`devices: <n> sets with an axis · declared <n> · aliases resolved <n>/<n> ·
+   unmapped <n>`), and fails only on a value it cannot resolve: no node owes a
+   comparison the repository does not store. The per-node comparison is
+   `pnpm ui-cli align <node> --device <name>`, run in the session that draws or
+   aligns the node.
 5. **The artwork.** The icon check and the pictogram check prove that each public
    alias maps to a real source identity with pinned export provenance. Names
    remain stable through source renames and page moves. A newer metadata-only
@@ -211,10 +213,14 @@ keeps the same preflight behavior as the other live Figma commands.
    identities, checksums and icon geometry must still match.
 6. **The design foundations.** `src/figma/tokens.ts` proves that the committed
    token manifest matches the generated CSS foundation layer and the
-   documentation inventory, and that every `var(--figma-*)` reference in
-   `src/index.css` resolves. Legacy namespaces are excluded with recorded
-   reasons; unknown namespaces fail the refresh, and an unresolved variable
-   either gets a value or a reasoned exclusion — none can linger silently.
+   documentation inventory, that every `var(--pui-*)` reference in
+   `src/index.css` names a declaration of the semantic block, and that every
+   `var(--figma-*)` reference resolves. The projections it emits carry the
+   contract alone: the primitives are build-time input, and the library build
+   replaces each reference with its literal. Legacy namespaces are excluded with
+   recorded reasons; unknown namespaces fail the refresh, and an unresolved
+   variable either gets a value or a reasoned exclusion — none can linger
+   silently.
 7. **The component class contract.** `src/checks/foundation.ts` proves that
    `src/components` consumes the token scale: no arbitrary px/rem values, no
    default Tailwind text sizes or standalone font weights, no raw
@@ -248,6 +254,8 @@ pnpm ui-cli --help
 pnpm ui-cli check --help
 pnpm ui-cli check catalogue --help
 pnpm ui-cli parity check --help
+pnpm ui-cli align --help
+pnpm ui-cli record --help
 ```
 
 Nx targets remain the gates and CI entry points. A direct call is always
@@ -260,21 +268,48 @@ which builds it first.
 ### Parity and testing boundaries
 
 `src/commands/parity.ts` and `src/commands/test.ts` are typed citty adapters:
-only they print results and set the command exit code. The parity pipeline is
-split by operation (`queue`, `check`, `saved`, `capture`, `align`, `report`,
-`proposals`, `read-source`, `verify`, `evidence`). Shared `context`, `mapping`,
+only they print results and set the command exit code. The diagnostic is split
+by operation (`source`, `render`, `check`, `read-source`). Shared `context`,
 `evaluate` and `format` modules receive an explicit `Workspace`; they neither
 change directories nor parse argv. Browser/DOM capture, pinned image requests
 and test-runner processes live in `src/adapters/` and are injectable in tests.
-The changed-only and visual-scope domains live in `src/testing/`.
+The changed-only domain lives in `src/testing/`.
 
-For a deterministic local wave, use `pnpm ui-cli parity queue --next --size 3
---json`: it selects pending nodes in dependency-first implementation order.
-`pnpm ui-cli parity check --node <id> --saved` reproduces every committed case,
-including multiple states on the same device, and refuses missing declared
-devices. `parity align` prints the exact check command for each declared device.
-Hover cases set `--expect-state hover` and end `--state-evidence` with `:hover`;
-see the [parity state-capture contract](../../.agents/skills/figma-to-code/references/parity-tooling.md#capturing-a-state).
+`pnpm ui-cli align <node> --device <name>` is the whole loop: it prints the
+residues for one node on one declared device and writes nothing, so there is no
+wave to select and no case to reproduce — the work order comes from the delta
+plan and a node is compared when it is drawn or aligned. Hover states
+set `--expect-state hover` and end `--state-evidence` with `:hover`; see the
+[parity state-capture contract](../../.agents/skills/figma-to-code/references/parity-tooling.md#capturing-a-state).
+
+### Alignment and recording
+
+A node's bookkeeping is two invocations. `src/figma/align.ts` and
+`src/figma/record.ts` hold the sequences; `src/commands/align.ts` and
+`src/commands/record.ts` are their citty adapters. Both take their dependencies
+as arguments, so the fixture suites drive them without a browser or a network.
+
+`pnpm ui-cli align <node>` runs everything a comparison needs before and after
+the capture, in the order that fails fastest: the node in the inventory (a node
+the inventory does not hold stops the run and names the refresh), the registry
+target and the story the case captures, the declared devices, the Storybook
+probe when `STORYBOOK_URL` is set (a silent storybook stops the run before a
+browser is opened), then the diagnostic itself. It prints the plan and the
+residues and writes nothing, so a second run on the same tree says the same
+thing and there is nothing to resume. Exit codes are the diagnostic's: `3` on
+residues, `2` on a refused capture, a silent storybook or a usage error.
+
+`pnpm ui-cli record <node> --status <status>` writes the decision and every
+document it entails — registry, page surface, note baseline, story titles,
+consumer map — in one atomic run, then regenerates the catalogue and reports
+what the written documents still say. The registry update is computed first
+with nothing written, so a rejected entry exits `2` before any document
+changes; `--dry-run` stops there and prints the transition. A step that throws
+restores every snapshotted byte, so a failed run leaves the tree as it found it
+— there is no half-recorded node to repair, and the re-run starts from the same
+place. The generators are deterministic, so a second run on an unchanged tree
+prints `unchanged:` and writes the same bytes. The exit code is the catalogue's,
+`1` when it or a leftover residue failed, else `0`.
 
 ### Figma workflow helpers
 
@@ -286,7 +321,7 @@ rules, uncensused pages (named, from the inventory against the census),
 unreadable records, open requests, open comments, pending census identities,
 pending registry entries and unaccounted nodes each take precedence over
 "nothing to align". A pending census identity is routed to a review and
-`figma registry set`, never to `figma:triage`, which preserves the decision it
+`record`, never to `figma:triage`, which preserves the decision it
 reopens; unaccounted nodes are routed to `check:catalogue`, because the
 node-brief queue selects registry-pending entries only. `requests`
 counts the `open` records and lists the `unreadable` ones — a record whose
@@ -320,52 +355,51 @@ Catalogue drift and parity differences above tolerance return exit code 3;
 validation failures return 1 and missing inputs return 2. A catalogue run with
 both an error and drift exits 1: the error is graded first, whatever its text.
 
-`pnpm ui-cli figma registry set <nodeId> --status <status>` records a decision.
-Use `--module`, `--export`, `--story`, `--story-exports`, `--note` and
-`--reason` for its evidence. `--dry-run --json` previews the registry, census
-and ratchet edits without writing. A real edit runs the catalogue check and
-returns its overall verdict.
+`pnpm ui-cli record <node> --status <status>` records a decision. Use
+`--module`, `--export`, `--story`, `--story-exports`, `--note` and `--reason`
+for its evidence. `--dry-run --json` previews the registry, page-surface and
+consumer-map edits without writing. A real edit writes the registry, the page
+surface and the consumer map in one atomic run, then regenerates the catalogue
+and returns its overall verdict: a step that throws restores every snapshotted
+byte, so a failed run leaves the tree as it found it and a re-run starts from
+the same place.
 
 `figma close` has been removed: closing orchestration belongs to the caller.
-Run the local gates through Nx, each touched node's saved parity cases through
-the CLI, then docs and the full Nx verification chain. The complete sequence
+Run the local gates through Nx, each touched node's diagnostic through the CLI,
+then docs and the full Nx verification chain. The complete sequence
 and reporting requirements live in the Figma skill's
 [definition of done](../../.agents/skills/figma-to-code/references/definition-of-done.md#closing-and-delivery).
 
 ## npm tasks
 
-| Task                      | Command                                  | Network     | Notes                                                                                                                                                                                                                                                                          |
-| ------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `check:catalogue`         | `check catalogue`                        | No          | The hermetic check. Runs on each push and pull request.                                                                                                                                                                                                                        |
-| `figma:devices`           | `figma devices`                          | No          | Resolves the declared device vocabulary; `--check` is the gate (also inside `check:catalogue`), `--json` feeds tooling.                                                                                                                                                        |
-| `figma:export`            | `figma export`                           | Yes         | Uses `FIGMA_TOKEN` from the environment or macOS keychain (`figma-pat`). Writes `.figma/live-rest.json`.                                                                                                                                                                       |
-| `update:inventory`        | `update inventory`                       | Yes         | Refreshes the inventory and queues the delta. Equal to triage.                                                                                                                                                                                                                 |
-| `figma:triage`            | `figma triage`                           | Yes         | Refreshes the inventory and queues the delta. Equal to update.                                                                                                                                                                                                                 |
-| `figma:rules`             | `figma rules <command>`                  | `refresh`   | `plan` reports changes, `refresh` reads the boxes, `mark` records a decision, and `node` or `show` reads rules.                                                                                                                                                                |
-| `check:rules`             | `check rules`                            | No          | Checks the ledger and guides strictly; `--no-strict` allows pending rules.                                                                                                                                                                                                     |
-| `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                               |
-| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots. `--card` prints the bounded node card, in text or with `--json`, and writes the full brief it summarises to `.figma/briefs/<id>.txt`.     |
-| `parity:queue`            | `parity queue`                           | No          | The registry cases with their story ids and missing evidence; `--unmapped` prints the cases with no committed mapping.                                                                                                                                                         |
-| `parity:check`            | `parity check`                           | No          | Needs a source (the local snapshot, `--input`, or the committed evidence slice) and Storybook on `:6006`; exit 3 on deltas, 2 on missing evidence (including a refused capture or a slice that no longer matches the committed inventory). `--case <id>` runs a reviewed case. |
-| `parity:cases`            | `parity cases`                           | No          | Proposes the missing device cases and the variants no reviewed case points at (states and visual properties) from a sibling case; a proposal is a draft (`note`) until a wave replaces its note with the reviewed render.                                                      |
-| `check:parity`            | `check parity`                           | No          | The hermetic verdict of the case corpus, the device coverage and the evidence bundle: no snapshot, no Storybook, no network; exit 1 on errors, 0 with warnings.                                                                                                                |
-| `check:evidence`          | `check evidence`                         | No          | Proves the committed slice, PNGs and manifest match the corpus without a token or Storybook.                                                                                                                                                                                   |
-| `update:evidence`         | `update evidence [--input <file>]`       | Yes         | Refreshes the slice, pinned PNGs and manifest using a token and pinned snapshot.                                                                                                                                                                                               |
-| `check:tokens`            | `check tokens`                           | No          | Validates the manifest against generated tokens and styles.                                                                                                                                                                                                                    |
-| `check:icons`             | `check icons [--input <file>]`           | No          | Validates icon identities, SVG variants and provenance.                                                                                                                                                                                                                        |
-| `check:pictograms`        | `check pictograms [--input <file>]`      | No          | Validates committed pictograms, generated module and provenance.                                                                                                                                                                                                               |
-| `check:artwork`           | `check artwork`                          | No          | Runs both icon and pictogram checks.                                                                                                                                                                                                                                           |
-| `update:tokens`           | `update tokens --input <file>`           | No          | Curates a pinned variable snapshot and regenerates token files.                                                                                                                                                                                                                |
-| `update:icons`            | `update icons --input <file>`            | No          | Generates local icon assets from a pinned snapshot.                                                                                                                                                                                                                            |
-| `update:pictograms`       | `update pictograms --input <file>`       | No          | Imports pictogram assets from a pinned snapshot.                                                                                                                                                                                                                               |
-| `figma:pictograms:export` | `figma pictograms export --input <file>` | Yes         | Exports individual pictogram variants from a pinned snapshot.                                                                                                                                                                                                                  |
-| `layers:check`            | `check layers`                           | No          | Reads `src`.                                                                                                                                                                                                                                                                   |
-| `foundation:check`        | `check foundation`                       | No          | Enforces the component class contract; `--measure` prints the current counts.                                                                                                                                                                                                  |
-| `docs:check`              | `check docs`                             | No          | Reads the repository; fails on a dead link or path and on a project identifier inside the skill.                                                                                                                                                                               |
-| `test`                    | `node --test "tests/**/*.test.mjs"`      | No          | Runs the CLI regressions.                                                                                                                                                                                                                                                      |
-| `test:changed`            | `test changed`                           | No          | The fast pass (Firefox and WebKit) on the affected test files only.                                                                                                                                                                                                            |
-| `test:coverage:changed`   | `test changed --coverage`                | No          | The Chromium/v8 coverage pass on the affected test files; the report covers the changed files.                                                                                                                                                                                 |
-| `test:visual`             | `test visual`                            | No          | The stories a diff can move, read from the built Storybook index and written as the scope `VISUAL_SCOPE` hands to the Playwright suite; `--all` skips the walk.                                                                                                                |
+| Task                      | Command                                  | Network     | Notes                                                                                                                                                                                                                                                                      |
+| ------------------------- | ---------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check:catalogue`         | `check catalogue`                        | No          | The hermetic check. Runs on each push and pull request.                                                                                                                                                                                                                    |
+| `figma:devices`           | `figma devices`                          | No          | Resolves the declared device vocabulary; `--check` is the gate (also inside `check:catalogue`), `--json` feeds tooling.                                                                                                                                                    |
+| `figma:export`            | `figma export`                           | Yes         | Uses `FIGMA_TOKEN` from the environment or macOS keychain (`figma-pat`). Writes `.figma/live-rest.json`.                                                                                                                                                                   |
+| `update:inventory`        | `update inventory`                       | Yes         | Refreshes the inventory and queues the delta. Equal to triage.                                                                                                                                                                                                             |
+| `figma:triage`            | `figma triage`                           | Yes         | Refreshes the inventory and queues the delta. Equal to update.                                                                                                                                                                                                             |
+| `figma:rules`             | `figma rules <command>`                  | `refresh`   | `plan` reports changes, `refresh` reads the boxes, `mark` records a decision, and `node` or `show` reads rules.                                                                                                                                                            |
+| `check:rules`             | `check rules`                            | No          | Reports the ledger and guide drift and exits 0; `--strict` fails on it instead.                                                                                                                                                                                            |
+| `figma:comments`          | `figma comments`                         | `--refresh` | The node comments: `--refresh` snapshots the threads, `--node` prints the threads of a node, `--open` keeps the unresolved ones.                                                                                                                                           |
+| `figma:brief`             | `figma brief --node <id>`                | No          | The implementation brief of a node: registry entry, rules, open comments and design requests, read offline from the local snapshots. `--card` prints the bounded node card, in text or with `--json`, and writes the full brief it summarises to `.figma/briefs/<id>.txt`. |
+| `parity:source`           | `parity source`                          | No          | Prints the pinned numeric spec of one node: geometry, layout, paint and type, resolved against the device policy.                                                                                                                                                          |
+| `parity:render`           | `parity render`                          | No          | Probes the story the node maps to and prints the measurements the comparison reads; the preflight refuses a scaled, unfixed-width or wrong-state capture.                                                                                                                  |
+| `parity:check`            | `parity check`                           | No          | Compares the source with the render and prints the residues: exit 3 on residues, 2 on a refused capture or a missing story; writes no case and no evidence. `--node <id> --device <name>` narrows the run.                                                                 |
+| `check:tokens`            | `check tokens`                           | No          | Validates the manifest against generated tokens and styles.                                                                                                                                                                                                                |
+| `check:icons`             | `check icons [--input <file>]`           | No          | Validates icon identities, SVG variants and provenance.                                                                                                                                                                                                                    |
+| `check:pictograms`        | `check pictograms [--input <file>]`      | No          | Validates committed pictograms, generated module and provenance.                                                                                                                                                                                                           |
+| `check:artwork`           | `check artwork`                          | No          | Runs both icon and pictogram checks.                                                                                                                                                                                                                                       |
+| `update:tokens`           | `update tokens --input <file>`           | No          | Curates a pinned variable snapshot and regenerates token files.                                                                                                                                                                                                            |
+| `update:icons`            | `update icons --input <file>`            | No          | Generates local icon assets from a pinned snapshot.                                                                                                                                                                                                                        |
+| `update:pictograms`       | `update pictograms --input <file>`       | No          | Imports pictogram assets from a pinned snapshot.                                                                                                                                                                                                                           |
+| `figma:pictograms:export` | `figma pictograms export --input <file>` | Yes         | Exports individual pictogram variants from a pinned snapshot.                                                                                                                                                                                                              |
+| `layers:check`            | `check layers`                           | No          | Reads `src`.                                                                                                                                                                                                                                                               |
+| `foundation:check`        | `check foundation`                       | No          | Enforces the component class contract; `--measure` prints the current counts.                                                                                                                                                                                              |
+| `docs:check`              | `check docs`                             | No          | Reads the repository; fails on a dead link or path and on a project identifier inside the skill.                                                                                                                                                                           |
+| `test`                    | `node --test "tests/**/*.test.mjs"`      | No          | Runs the CLI regressions.                                                                                                                                                                                                                                                  |
+| `test:changed`            | `test changed`                           | No          | The fast pass (Firefox and WebKit) on the affected test files only.                                                                                                                                                                                                        |
+| `test:coverage:changed`   | `test changed --coverage`                | No          | The Chromium/v8 coverage pass on the affected test files; the report covers the changed files.                                                                                                                                                                             |
 
 Task names follow the command surface: read-only gates are `check:<contract>`
 (`check:tokens`, `check:icons`, `check:pictograms`, `check:artwork`) or
@@ -428,12 +462,15 @@ run does not move it. Each command records its own baseline under
   where Firefox joins the engines. A merge to `main` starts nothing: the pull
   request it came from already ran them on the same diff.
 - **Each Monday at 04:00 UTC.** `.github/workflows/figma-drift.yml` runs
-  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json`.
+  `pnpm ui-cli update inventory --rest --save .figma/live-rest.json --prBody .figma/pr-body.md --delta .figma/delta.json --tokens --tokenDrift docs/figma-drift/token-drift.json`.
   The job needs the read-only `FIGMA_TOKEN` secret and fails when it is missing.
-  With drift it refreshes the inventory and the evidence bundle and opens one
-  review pull request with the job's `GITHUB_TOKEN`, whose runs wait for the
-  reviewer's approval, uploading `delta.json`, `run.json` and the body as
-  artifacts; without drift it leaves the tree untouched and opens nothing. The
+  One read answers both halves of the drift: the component delta and the
+  variables compared with the pinned manifest, so a run whose only drift is a
+  token still opens the pull request and records it in a `token-drift.json` the
+  run writes beside `docs/figma-drift-handoff.md`. With drift it refreshes the
+  inventory and opens one review pull
+  request with the job's `GITHUB_TOKEN`, whose runs wait for the reviewer's
+  approval, uploading `delta.json`, `run.json` and the body as artifacts; without drift it leaves the tree untouched and opens nothing. The
   branch guard refuses to force-push a branch whose head is not the bot's
   commit. The merge is the review record.
 
@@ -539,11 +576,9 @@ repository, under review in a pull request.
   review or assistive-technology tests.
 - The files `evidence-exceptions.json` and `api-exceptions.json` are burn-down
   lists. They must shrink. A new entry needs a reason.
-- `check:catalogue` counts the registry notes longer than 600 characters against
-  `src/catalog/figma/note-length-baseline.json` in both directions: a new long
-  note fails, and a count below the baseline asks to lower `overLimit`. The
-  drift refresh lowers it when the `pending` stub shortens a reviewed note;
-  nothing raises it.
+- `figma registry set` refuses a note longer than 600 characters, and
+  `check:catalogue` reports how many committed notes are already past it. There
+  is no baseline file: the limit holds the writer, never the branch.
 - `check:catalogue` warns when the inventory is older than 30 days.
 - Storybook and `library:check` need Playwright Chromium, Firefox and WebKit. Run
   `pnpm exec playwright install chromium firefox webkit` one time.

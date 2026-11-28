@@ -1,9 +1,7 @@
-import fs from "node:fs"
-
 import { readJson } from "../lib/json.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import { fetchFigmaSnapshot, writeFigmaSnapshot } from "./rest.ts"
-import { normalizeLive } from "./snapshot.ts"
+import { fileKeyFromSource, normalizeLive } from "./snapshot.ts"
 import { figmaToken, type KeychainRunner } from "../adapters/figma-token.ts"
 
 export async function exportFigma(
@@ -15,7 +13,7 @@ export async function exportFigma(
   figmaToken(env, run)
   const mcpNodes = input ? normalizeLive(readJson(input), { workspace }) : []
   const snapshot = await fetchFigmaSnapshot(
-    fileKeyFromWorkspace(workspace),
+    fileKeyFromSource(workspace),
     mcpNodes,
     figmaToken(env, run),
   )
@@ -26,11 +24,4 @@ export async function exportFigma(
     `Read-only export: ${nodes.length} component roots, version ${snapshot.version}` +
     `${snapshot.lastModified ? ` (modified ${snapshot.lastModified})` : ""} -> ${target}`
   )
-}
-
-function fileKeyFromWorkspace(workspace: Workspace): string {
-  const file = fs.readFileSync(workspace.path("src/catalog/figma/file.ts"), "utf8")
-  const match = file.match(/FIGMA_FILE_KEY\s*=\s*["']([^"']+)["']/)
-  if (!match?.[1]) throw new Error("src/catalog/figma/file.ts must export a literal FIGMA_FILE_KEY")
-  return match[1]
 }

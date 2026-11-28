@@ -157,9 +157,12 @@ test("local icon write preserves pinned source paths, paints and placement witho
   assert.deepEqual([...data.subarray((3 * 24 + 2) * 4, (3 * 24 + 2) * 4 + 4)], [11, 62, 227, 255])
   assert.equal(data[(3 * 24 + 1) * 4 + 3], 0, "do not paint the source's ambient canvas")
   assert.equal(data[(3 * 24 + 10) * 4 + 3], 0, "retain the source shape bounds")
-  assert.match(
-    fs.readFileSync(path.join(root, "src/components/icons/icon-assets.ts"), "utf8"),
-    /1-1\.svg\?no-inline/,
+  const assets = fs.readFileSync(path.join(root, "src/components/icons/icon-assets.ts"), "utf8")
+  assert.match(assets, /file: "1-1\.svg"/)
+  assert.doesNotMatch(
+    assets,
+    /import [^\n]*\.svg/,
+    "the catalogue carries no artwork import; the icon components inline it",
   )
   const check = run("--check", "--input", "live.json")
   assert.equal(check.status, 0, check.stderr)
@@ -176,6 +179,65 @@ test("local icon write preserves pinned source paths, paints and placement witho
   assert.equal(invalid.status, 1)
   assert.match(invalid.stderr, /checksum/i)
   assert.doesNotMatch(result.stdout, /https:|token/i)
+})
+
+test("each pinned icon compiles to one inline SVG component that paints with currentColor", (t) => {
+  const { root, run } = fixture(t, component, { rendering: "mask" })
+  const result = run("--write", "--input", "live.json")
+  assert.equal(result.status, 0, result.stderr)
+  const generated = path.join(root, "src/components/icons/generated")
+  const mark = fs.readFileSync(path.join(generated, "fixture-mark.tsx"), "utf8")
+  assert.doesNotMatch(
+    mark,
+    /backgroundColor|maskImage|<img/,
+    "no icon paints through a mask or image",
+  )
+  assert.match(
+    mark,
+    /<svg[^>]*viewBox="0 0 24 24"[^>]*fill="currentColor"[^>]*data-figma-node-id="1:1"[^>]*\{\.\.\.props\}/,
+    "the root must paint with the inherited colour and carry its source identity",
+  )
+  assert.doesNotMatch(mark, /#0b3ee3/i, "a mask symbol must not keep the source paint")
+  assert.match(mark, /export function Default\(props: SVGProps<SVGSVGElement>\)/)
+  assert.match(mark, /export const variants: IconVariantComponents = \{\n  "1:1": Default,\n\}/)
+  assert.match(mark, /export default Default/)
+  assert.match(
+    fs.readFileSync(path.join(generated, "index.ts"), "utf8"),
+    /export \{ default as FixtureMark \} from "\.\/fixture-mark"/,
+  )
+  const registry = fs.readFileSync(path.join(generated, "registry.ts"), "utf8")
+  assert.match(
+    registry,
+    /import \{ variants as fixtureMarkVariants \} from "\.\/fixture-mark"/,
+    "a slug that is also a reserved word binds a suffixed local name",
+  )
+  assert.match(registry, /"Fixture mark": fixtureMarkVariants,/)
+  const check = run("--check", "--input", "live.json")
+  assert.equal(check.status, 0, check.stderr)
+  fs.writeFileSync(path.join(generated, "stale.tsx"), "export {}\n")
+  const stale = run("--check", "--input", "live.json")
+  assert.equal(stale.status, 1)
+  assert.match(stale.stderr, /Stale local icon component stale\.tsx/)
+  const rewritten = run("--write", "--input", "live.json")
+  assert.equal(rewritten.status, 0, rewritten.stderr)
+  assert.equal(
+    fs.existsSync(path.join(generated, "stale.tsx")),
+    false,
+    "orphan icon components are removed on write",
+  )
+})
+
+test("multicolour artwork keeps its own paints inline instead of inheriting currentColor", (t) => {
+  const { root, run } = fixture(t, component)
+  const result = run("--write", "--input", "live.json")
+  assert.equal(result.status, 0, result.stderr)
+  const mark = fs.readFileSync(
+    path.join(root, "src/components/icons/generated/fixture-mark.tsx"),
+    "utf8",
+  )
+  assert.match(mark, /fill="#0b3ee3"/, "a multicolour logo keeps the source paint")
+  assert.doesNotMatch(mark, /fill="currentColor"/)
+  assert.doesNotMatch(mark, /<img/)
 })
 
 test("artwork provenance is required and a per-node override replaces the family default", (t) => {

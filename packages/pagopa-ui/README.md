@@ -6,6 +6,11 @@ is pending.
 
 ## Install
 
+The package is public and MIT licensed, and it is published through GitHub
+Packages at `https://npm.pkg.github.com` (not the npm registry). GitHub Packages
+still requires an authenticated request even for a public package: skipping the
+`.npmrc` and token below makes the install fail with `401 Unauthorized`.
+
 Configure the `@pagopa` scope in your `.npmrc` and authenticate with a GitHub
 classic personal access token that has `read:packages`. Store the token in an
 environment variable instead of committing it:
@@ -15,7 +20,8 @@ environment variable instead of committing it:
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-After a version is released, install the package alongside React and ReactDOM:
+After a version is released, install the package alongside React and ReactDOM in
+the supported peer range (`^19.0.0`):
 
 ```sh
 pnpm add @pagopa/ui
@@ -36,10 +42,10 @@ export function App() {
 }
 ```
 
-The provider renders the scope root the stylesheet is written against; a
-component tree outside it is unstyled. Scoped styles require `@scope` support:
-Chrome 118+, Safari 17.4+ or Firefox 128+. There is no fallback, so older
-browsers render the components unstyled.
+The provider renders the root the token variables are published on; a component
+tree outside it is unstyled. The stylesheet encapsulates with CSS cascade layers
+and `:where()` rather than `@scope`, so it needs nothing beyond layer support:
+Chrome 99+, Safari 15.4+ or Firefox 97+.
 
 React and ReactDOM are peer dependencies. The package ships compiled CSS,
 fonts, artwork, and TypeScript declarations; consumers do not need Tailwind,
@@ -47,12 +53,20 @@ shadcn, or the repository's build aliases.
 
 ## Tokens
 
-The `--figma-*` custom properties in `styles.css` are the public token
-contract: a section that renders beside the components reads the same colours,
-spacing, radius and shadows. `@pagopa/ui/tokens` exports them as typed data,
-and `@pagopa/ui/tokens.css` ships the block alone for a page that does not load
-the component stylesheet. The values are read-only; a rename is a breaking
-change listed in the changelog. See the
+The `--pui-*` custom properties in `styles.css` are the public token contract:
+a section that renders beside the components reads the same colours, spacing,
+radius and shadows. They are named for the design role, not for the Figma
+variable behind them, so a rename upstream never moves them. The `--figma-*`
+primitives a role resolves to are build-time only: the library build replaces
+each one with its literal, so the stylesheet a consumer loads declares none.
+
+`@pagopa/ui/tokens` exports the contract as typed data (`semanticTokens`),
+`@pagopa/ui/tokens.css` ships the block alone for a page that does not load the
+component stylesheet, and `@pagopa/ui/tokens.dtcg.json` is the same contract in
+Design Tokens Community Group format, every `$value` the value the stylesheet
+declares. The `--pui-*` properties are the override surface: setting one on a
+root above the components restyles them. A rename is a breaking change listed in
+the changelog. See the
 [tokens guide](../../apps/storybook/src/guides/tokens.md) for the loading
 options and the two examples.
 
@@ -166,3 +180,8 @@ or build the part.
 procedure that turns a layout into components: it says how a status is read, what
 to do when a part has no row, and when a part is a gap in the design system
 rather than something to build.
+
+## Licence
+
+`@pagopa/ui` is released under the [MIT licence](../../LICENSE), and the same
+`LICENSE` file ships inside the published package.

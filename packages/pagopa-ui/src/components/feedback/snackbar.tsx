@@ -4,8 +4,8 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { X } from "@/components/primitives/icons"
+import { Icon } from "@/components/icons/icon"
+import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 import { statusIcons, toneStyles, type Tone } from "./tones"
 
@@ -50,17 +50,17 @@ function Snackbar({
       data-slot="snackbar"
       data-tone={tone}
       className={cn(
-        "min-h-14 w-(--overlay-width) max-w-[calc(100vw-var(--page-gutter))] items-start rounded-lg border p-4 shadow-32",
+        "pui:min-h-14 pui:w-(--pui-overlay-width) pui:max-w-[calc(100vw-var(--pui-page-gutter))] pui:items-start pui:rounded-lg pui:border pui:p-4 pui:shadow-32",
         hasFooter
           ? cn(
-              "grid gap-4",
+              "pui:grid pui:gap-4",
               action && onDismiss
-                ? "grid-cols-[minmax(0,1fr)_auto_auto]"
+                ? "pui:grid-cols-[minmax(0,1fr)_auto_auto]"
                 : action || onDismiss
-                  ? "grid-cols-[minmax(0,1fr)_auto]"
-                  : "grid-cols-[minmax(0,1fr)]",
+                  ? "pui:grid-cols-[minmax(0,1fr)_auto]"
+                  : "pui:grid-cols-[minmax(0,1fr)]",
             )
-          : "flex gap-4",
+          : "pui:flex pui:gap-4",
         toneStyles[tone],
         className,
       )}
@@ -68,23 +68,23 @@ function Snackbar({
       <div
         data-slot="snackbar-content"
         className={cn(
-          "flex min-w-0 flex-1 items-start gap-2",
-          hasFooter && "col-start-1 row-start-1",
+          "pui:flex pui:min-w-0 pui:flex-1 pui:items-start pui:gap-2",
+          hasFooter && "pui:col-start-1 pui:row-start-1",
         )}
       >
         <span
           data-slot="snackbar-icon"
-          className="grid size-6 shrink-0 place-items-center text-current"
+          className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:text-current"
         >
-          <PagoPAIcon name={statusIcons[tone]} {...(tone === "info" ? { filled: true } : {})} />
+          <Icon source={statusIcons[tone]} />
         </span>
-        <div className="grid min-w-0 flex-1 grid-cols-1 gap-y-1">
+        <div className="pui:grid pui:min-w-0 pui:flex-1 pui:grid-cols-1 pui:gap-y-1">
           {title != null && (
-            <div data-slot="snackbar-title" className="min-w-0 text-body-sb">
+            <div data-slot="snackbar-title" className="pui:min-w-0 pui:text-body-sb">
               {title}
             </div>
           )}
-          <div data-slot="snackbar-description" className="min-w-0 text-caption">
+          <div data-slot="snackbar-description" className="pui:min-w-0 pui:text-caption">
             {message}
           </div>
         </div>
@@ -92,7 +92,10 @@ function Snackbar({
       {action && (
         <div
           data-slot="snackbar-action"
-          className={cn("min-w-0 shrink-0 self-center", hasFooter && "col-start-2 row-start-1")}
+          className={cn(
+            "pui:min-w-0 pui:shrink-0 pui:self-center",
+            hasFooter && "pui:col-start-2 pui:row-start-1",
+          )}
         >
           {action}
         </div>
@@ -104,18 +107,21 @@ function Snackbar({
           aria-label={dismissLabel}
           data-slot="snackbar-dismiss"
           className={cn(
-            "relative size-6 shrink-0 rounded-md text-foreground after:absolute after:-inset-2.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-current",
-            hasFooter && (action ? "col-start-3" : "col-start-2"),
-            hasFooter && "row-start-1",
+            "pui:relative pui:size-6 pui:shrink-0 pui:rounded-md pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current",
+            hasFooter && (action ? "pui:col-start-3" : "pui:col-start-2"),
+            hasFooter && "pui:row-start-1",
           )}
         >
-          <span data-slot="snackbar-close-icon" className="grid size-6 place-items-center">
-            <X aria-hidden="true" className="size-5" />
+          <span
+            data-slot="snackbar-close-icon"
+            className="pui:grid pui:size-6 pui:place-items-center"
+          >
+            <Icon source={CloseIcon} className="pui:size-5" />
           </span>
         </button>
       )}
       {hasFooter && (
-        <div data-slot="snackbar-footer" className="col-span-full min-w-0">
+        <div data-slot="snackbar-footer" className="pui:col-span-full pui:min-w-0">
           {footer}
         </div>
       )}

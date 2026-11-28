@@ -13,9 +13,15 @@ import { createSourceModules, type SourceModules } from "../lib/source-modules.t
 import {
   FoundationBaselineSchema,
   FoundationExceptionsSchema,
+  FoundationsFileSchema,
   type FoundationException,
 } from "../schemas/tokens.ts"
-import { cssStyleOccurrences, inlineStyleOccurrences, STYLE_RULES } from "./foundation-styles.ts"
+import {
+  cssStyleOccurrences,
+  declarationToken,
+  inlineStyleOccurrences,
+  STYLE_RULES,
+} from "./foundation-styles.ts"
 import { report, type CheckReport } from "./report.ts"
 
 const FoundationManifestSchema = z.looseObject({
@@ -38,14 +44,21 @@ type FoundationManifest = z.infer<typeof FoundationManifestSchema>
 const MANIFEST = "src/manifest.json"
 const BASELINE = "src/foundation-baseline.json"
 const EXCEPTIONS = "src/foundation-exceptions.json"
+const FOUNDATIONS = "src/foundations.json"
 const MANIFEST_PATH = `packages/tokens/${MANIFEST}`
 const BASELINE_PATH = `packages/tokens/${BASELINE}`
 const EXCEPTIONS_PATH = `packages/tokens/${EXCEPTIONS}`
+const FOUNDATIONS_PATH = `packages/tokens/${FOUNDATIONS}`
+// The stylesheet that declares the semantic tokens, relative to the package.
+const SEMANTIC_STYLESHEET = "src/index.css"
 const COMPONENTS = "src/components"
 // The Figma page templates live in the Storybook application, outside the
 // package, and follow the same token-first rules.
 const TEMPLATES = "apps/storybook/src/templates"
 const ROOTS = [COMPONENTS, TEMPLATES]
+// Compiled from the pinned Figma artwork: the mask fills and the `url(#…)` ids
+// are the source's, so a token rule cannot own them.
+const DERIVED = ["src/components/icons/generated/"]
 
 export const RULES = {
   "arbitrary-length": /\[[^[\]]*?\d+(?:\.\d+)?(?:px|rem)\b[^[\]]*?\]/g,
@@ -69,10 +82,6 @@ export const RULES = {
   // spares `@md/alert:` container queries and any hyphenated token such as
   // `text-sm:` or `max-w-screen-sm:`.
   "default-breakpoint": /(?<![@\w-])(?:max-)?(?:sm|md|lg|xl|2xl):/g,
-  // Device typography pairs; frozen until a responsive type decision exists.
-  "mobile-text-class": /\btext-[a-z0-9-]+-mobile\b/g,
-  // Container sizes not backed by a Figma container token; frozen.
-  "default-container-query": /@(?:3xs|2xs|xs|sm|md|lg|xl|[2-7]xl)(?:\/[a-z-]+)?:/g,
 } as const
 
 export type RuleName = keyof typeof RULES
@@ -160,10 +169,20 @@ function spacingValue(token: string): number | null {
   return Math.round(Number(match[1]) * 4 * 100) / 100
 }
 
+// The semantic names are generated from the stylesheet, so the gate reads them
+// back from the committed emission rather than deriving them a second time.
+function emittedTokenNames(workspace: Workspace): string[] {
+  const file = path.join(workspace.tokensRoot, "src/tokens.generated.css")
+  if (!fs.existsSync(file)) return []
+  return [...fs.readFileSync(file, "utf8").matchAll(/^ {2}(--[a-z0-9-]+):/gm)].map(
+    (match) => match[1] ?? "",
+  )
+}
+
 export function measure(workspace: Workspace, manifest: FoundationManifest): Occurrence[] {
   const { parseSource } = createSourceModules(workspace)
   const spacing = allowedSpacing(manifest)
-  const knownTokens = new Set<string>()
+  const knownTokens = new Set<string>(emittedTokenNames(workspace))
   for (const entry of [
     ...Object.values(manifest.foundations),
     ...Object.values(manifest.variables ?? {}),
@@ -190,6 +209,7 @@ export function measure(workspace: Workspace, manifest: FoundationManifest): Occ
         root,
         path.relative(absolute, file).split(path.sep).join("/"),
       )
+      if (DERIVED.some((prefix) => identity.startsWith(prefix))) continue
       const { source, literals, program } = stringLiterals(parseSource, file)
       occurrences.push(...inlineStyleOccurrences(program, source, identity, knownTokens))
       for (const literal of literals) {
@@ -307,6 +327,37 @@ function readManifest(workspace: Workspace): FoundationManifest {
   )
 }
 
+// The semantic stylesheet is the token boundary: a literal colour or dimension
+// there is a reviewed decision, not a local. Foundations records the ones that
+// stay, and a declaration that stops matching fails like a stale exception.
+function readStylesheetDeclarations(workspace: Workspace): Map<string, string> {
+  const file = path.join(workspace.tokensRoot, FOUNDATIONS)
+  if (!fs.existsSync(file)) return new Map()
+  const { stylesheet = [] } = parseSchema(FoundationsFileSchema, readJson(file), FOUNDATIONS_PATH)
+  return new Map(stylesheet.map((entry) => [declarationToken(entry.declaration), entry.reason]))
+}
+
+function applyStylesheetDeclarations(
+  occurrences: Occurrence[],
+  declared: Map<string, string>,
+): { occurrences: Occurrence[]; errors: string[] } {
+  const matched = new Set<string>()
+  const kept = occurrences.filter((occurrence) => {
+    const key = `${occurrence.rule}|${occurrence.file}|${occurrence.token}`
+    if (!key.startsWith(`visual-constant|${SEMANTIC_STYLESHEET}|`)) return true
+    if (!declared.has(occurrence.token)) return true
+    matched.add(occurrence.token)
+    return false
+  })
+  const errors = [...declared.keys()]
+    .filter((token) => !matched.has(token))
+    .map(
+      (token) =>
+        `${FOUNDATIONS_PATH}: stale stylesheet declaration "${token}" — remove it, or restore the value in packages/pagopa-ui/${SEMANTIC_STYLESHEET}`,
+    )
+  return { occurrences: kept, errors }
+}
+
 function readExceptions(workspace: Workspace): z.infer<typeof FoundationExceptionsSchema> {
   const file = path.join(workspace.tokensRoot, EXCEPTIONS)
   if (!fs.existsSync(file)) return { schemaVersion: 1, exceptions: [] }
@@ -319,7 +370,11 @@ export function measureFoundation(workspace: Workspace): {
   counts: Record<string, number>
   raw: Record<string, number>
 } {
-  const occurrences = measure(workspace, readManifest(workspace))
+  const measured = applyStylesheetDeclarations(
+    measure(workspace, readManifest(workspace)),
+    readStylesheetDeclarations(workspace),
+  )
+  const occurrences = measured.occurrences
   const used = new Set(readExceptions(workspace).exceptions.map(exceptionKey))
   const counts: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
   const raw: Record<string, number> = Object.fromEntries(ALL_RULES.map((rule) => [rule, 0]))
@@ -332,17 +387,23 @@ export function measureFoundation(workspace: Workspace): {
 }
 
 export function checkFoundation(workspace: Workspace): CheckReport {
-  const occurrences = measure(workspace, readManifest(workspace))
+  const measured = applyStylesheetDeclarations(
+    measure(workspace, readManifest(workspace)),
+    readStylesheetDeclarations(workspace),
+  )
   const baseline = parseSchema(
     FoundationBaselineSchema,
     readJson(path.join(workspace.tokensRoot, BASELINE)),
     BASELINE_PATH,
   )
   const { errors, counts, exceptions } = evaluateFoundation(
-    occurrences,
+    measured.occurrences,
     baseline,
     readExceptions(workspace),
   )
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
-  return report("foundation", `${total} occurrences, ${exceptions} registered exceptions`, errors)
+  return report("foundation", `${total} occurrences, ${exceptions} registered exceptions`, [
+    ...errors,
+    ...measured.errors,
+  ])
 }

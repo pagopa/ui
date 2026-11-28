@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Figma alignment for React components, device variants, tokens and artwork. Use for a delta or drift handoff, a node-backed component, API coverage without a node, parity evidence, or design-owner questions.
+description: Figma alignment for React components, device variants, tokens and artwork. Use for a delta or drift handoff, a node-backed component, API coverage without a node, a parity comparison, or design-owner questions.
 ---
 
 # Figma to code
@@ -16,15 +16,25 @@ Figma is read-only: read it over REST or MCP where
 2. **Context.** `pnpm ui-cli figma brief --node <nodeId>`; `--queue` orders the
    delta's briefs. [Statuses](references/catalogue/statuses.md); done when target,
    guide, constraints, rules, comments and devices are read.
-3. **Decide.** Automation orders and measures, never decides: implement, exclude,
-   or leave pending with a request.
-4. **Close.** [definition-of-done.md](references/definition-of-done.md): every
-   decision, every read's scope, every gate's exit code.
+3. **Align.** `pnpm ui-cli align <nodeId>`: the preflight, the capture and the
+   comparison in one run, writing nothing. Done when every declared device has a
+   run whose result you can restate ([commands](references/commands.md)).
+4. **Decide.** Automation orders and measures, never decides: implement, exclude,
+   or leave pending with a request. The ratified design defaults
+   (`design-defaults.md`) answer the routine choices — a derived state colour, a
+   composite input-plus-icon spacing, a layout switch, a reflow condition —
+   before a request is opened.
+5. **Close.** `pnpm ui-cli record <nodeId> --status …` writes the decision and its
+   documents in one atomic run; then
+   [definition-of-done.md](references/definition-of-done.md): every decision,
+   every read's scope, every gate's exit code.
 
 ## Routes
 
 One route per session; this is the live delta:
-[node review](references/node-review.md), [parity](references/visual-parity.md),
+[node review](references/node-review.md),
+[the two commands](references/commands.md),
+[parity](references/visual-parity.md),
 [new from a node](references/new-from-figma.md),
 [without one](references/new-without-node.md),
 [design request](references/design-request.md),

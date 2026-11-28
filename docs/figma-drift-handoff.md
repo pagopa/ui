@@ -15,6 +15,15 @@ The workflow uploads `delta.json`, `run.json` and `pr-body.md` as artifacts
 work order and summaries. The person pushes, reviews and merges; the merge is
 the review record.
 
+The same run reports both halves of the library drift: the components it already
+compared and, through `--tokens`, the variables against the manifest pinned in
+`packages/tokens/src/manifest.json`. A run whose only drift is token drift still
+opens the pull request, and the token half is recorded in
+`docs/figma-drift/token-drift.json` while the body carries its `## Token drift`
+section; the alignment then starts from the recorded entries instead of a
+component delta. `update tokens --input <snapshot>` re-pins the manifest once
+the person accepts the change.
+
 ## Metrics
 
 The workflow records two durations:

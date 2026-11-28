@@ -16,7 +16,7 @@ import type { Workspace } from "../adapters/workspace.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { readRegistry } from "../records/committed.ts"
 import type { Registry } from "../schemas/catalogue.ts"
-import { storyId } from "./corpus.ts"
+import { storyId } from "./ids.ts"
 
 // One case per registry target: the identity, the declared story exports and
 // the Design-panel nodes each export shows. A target without a story (the

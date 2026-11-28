@@ -98,6 +98,10 @@ export const FORBIDDEN_EXPORTS = [
 
 const PackageManifestSchema = z.looseObject({
   name: z.string(),
+  license: z.string().optional(),
+  publishConfig: z
+    .looseObject({ access: z.string().optional(), registry: z.string().optional() })
+    .optional(),
   exports: z.record(z.string(), z.union([z.string(), z.record(z.string(), z.string())])),
   peerDependencies: z.record(z.string(), z.string()).optional(),
   dependencies: z.record(z.string(), z.string()).optional(),
@@ -108,6 +112,102 @@ export type ArtifactContract = {
   stylesFile: string
   expectedIconVariants: number
   expectedIconVariantIds: string[]
+  expectedIconPaints: number
+}
+
+const GENERATED_ICONS = "src/components/icons/generated"
+
+// The per-node identifier namespace keeps masks unique, so a paint comparison
+// drops it. Two pinned variants can still repeat one geometry — a checked radio
+// repeats the check glyph — so the count is the number of distinct drawings,
+// which is what a packed artifact must reproduce.
+function sourceIconPaints(read: (file: string) => string, root: string): number {
+  const paints = new Set<string>()
+  for (const file of walkRelative(root, GENERATED_ICONS, (entry) => entry.endsWith(".tsx"))) {
+    for (const match of read(file).matchAll(
+      /data-figma-node-id="([^"]+)"[^>]*>([\s\S]*?)<\/svg>/g,
+    )) {
+      const prefix = match[1].toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      paints.add(match[2].replaceAll(`${prefix}-`, ""))
+    }
+  }
+  return paints.size
+}
+
+export const GITHUB_PACKAGES_REGISTRY = "https://npm.pkg.github.com"
+export const REACT_PEER_RANGE = "^19.0.0"
+
+export type LicenceFiles = {
+  /** The `LICENSE` text at the repository root, or null when the file is absent. */
+  root: string | null
+  /** The `LICENSE` text shipped by the package, or null when the file is absent. */
+  package: string | null
+}
+
+// The distribution contract of the published package: the licence it declares
+// in its manifests, the registry and visibility it publishes to, and the peer
+// range its consumers can meet.
+export function distributionProblems(
+  manifest: z.infer<typeof PackageManifestSchema>,
+  licences: LicenceFiles,
+): string[] {
+  const problems: string[] = []
+  if (manifest.license !== "MIT")
+    problems.push(`license is ${JSON.stringify(manifest.license)}, expected "MIT"`)
+  if (manifest.publishConfig?.access !== "public")
+    problems.push('publishConfig.access must be "public"')
+  if (manifest.publishConfig?.registry !== GITHUB_PACKAGES_REGISTRY)
+    problems.push(`publishConfig.registry must be ${GITHUB_PACKAGES_REGISTRY}`)
+  for (const name of ["react", "react-dom"] as const)
+    if (manifest.peerDependencies?.[name] !== REACT_PEER_RANGE)
+      problems.push(`${name} peer must be ${REACT_PEER_RANGE}`)
+  for (const [where, text] of [
+    ["repository root", licences.root],
+    ["package", licences.package],
+  ] as const) {
+    if (!text) problems.push(`missing LICENSE at the ${where}`)
+    else if (!/^MIT License\b/.test(text))
+      problems.push(`the LICENSE at the ${where} is not the MIT text`)
+  }
+  return problems
+}
+
+// The demo surface owns the geometry: the artboard heights, the frame widths
+// and the demo grid columns that only the templates and the artboards read. A
+// published stylesheet declaring one of them ships a value no shipped component
+// resolves, so a consumer receives geometry it never renders.
+//
+// The reference is the source that reads the value, not the sheet that declares
+// it: a demo variable still declared in `index.css` never reached
+// `preview.css`, and comparing the two sheets alone let it pass. A property is
+// demo geometry when the demo sources name it and no library source does, which
+// is the rule `demoGeometryProblems` enforces — the move to the preview sheet is
+// then the fix, not the detection.
+export function demoGeometryProblems(
+  styles: string,
+  sources: { demo: string[]; library: string[] },
+): string[] {
+  const named = (texts: string[], name: string): boolean =>
+    texts.some((text) => text.includes(name))
+  return [...customProperties(styles)]
+    .filter((name) => named(sources.demo, name) && !named(sources.library, name))
+    .sort()
+}
+
+function customProperties(styles: string): Set<string> {
+  const names = new Set<string>()
+  for (const match of styles.matchAll(/(--[\w-]+)\s*:/g)) if (match[1]) names.add(match[1])
+  return names
+}
+
+// The source text a check reads when it asks who resolves a custom property: a
+// stylesheet or a module carries the `var(--…)` reference or the `w-(--…)`
+// utility, and prose does not, so a guide mentioning a name cannot suppress a
+// finding.
+function readSources(root: string, directory: string): string[] {
+  return walkRelative(root, directory, (file) => /\.(?:css|ts|tsx)$/.test(file)).map((file) =>
+    fs.readFileSync(path.join(root, file), "utf8"),
+  )
 }
 
 export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
@@ -131,6 +231,26 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     styles,
     /@(?:import|tailwind|theme|apply|source)\b/,
     "published CSS must not require Tailwind, shadcn or source imports",
+  )
+  // ADR-0013 RD2: the Figma primitive layer is the build-time input of the
+  // --pui-* contract, not part of it. The build resolves every reference, so a
+  // primitive that reaches either stylesheet is a resolution that stopped
+  // working, not a value to document.
+  for (const file of ["dist/styles.css", "dist/tokens.css"]) {
+    assert.ok(fs.existsSync(at(file)), `missing ${file} — the public stylesheets must ship`)
+    assert.doesNotMatch(
+      fs.readFileSync(at(file), "utf8"),
+      /--figma-/,
+      `${file}: the internal Figma primitive layer must not reach the published CSS`,
+    )
+  }
+  assert.deepEqual(
+    demoGeometryProblems(styles, {
+      demo: readSources(workspace.storiesRoot, "src"),
+      library: readSources(root, "src/components"),
+    }),
+    [],
+    "the published stylesheet must not declare demo or artboard geometry — it belongs in apps/storybook/src/preview.css",
   )
   const fontURLs = [...styles.matchAll(/url\(["']?([^"')\s]+)["']?\)/g)]
     .map((match) => match[1])
@@ -183,6 +303,16 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     manifest.peerDependencies?.react && manifest.peerDependencies?.["react-dom"],
     "React and ReactDOM must be shared with the consuming application",
   )
+  const licence = (file: string): string | null =>
+    fs.existsSync(at(file)) ? fs.readFileSync(at(file), "utf8") : null
+  assert.deepEqual(
+    distributionProblems(manifest, {
+      root: licence(path.join("..", "..", "LICENSE")),
+      package: licence("LICENSE"),
+    }),
+    [],
+    "the package must publish MIT from GitHub Packages on the React 19 peer range",
+  )
 
   // The per-module build must publish the directive of every client module:
   // a Server Component accepts a client module only when the module declares
@@ -216,5 +346,8 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     "the runtime package must not install a second React or its styling/build toolchain",
   )
 
-  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds }
+  const expectedIconPaints = sourceIconPaints((file) => fs.readFileSync(at(file), "utf8"), root)
+  assert.ok(expectedIconPaints > 0, "the compiled icon components must draw something")
+
+  return { manifest, stylesFile, expectedIconVariants, expectedIconVariantIds, expectedIconPaints }
 }

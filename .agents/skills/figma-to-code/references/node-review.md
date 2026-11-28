@@ -10,11 +10,9 @@ bulk re-approval.
 1. **Read the record.** `pnpm ui-cli figma brief --node <nodeId>`
    gathers the registry entry (status, target, `note`), the rules that target the
    node, the open comments and the design requests ([rules.md](rules.md)). Read
-   its committed case IDs
-   (`pnpm ui-cli parity capture --saved --node <id> --dry-run`),
-   their entries in `catalog.parityCases`, and the guide of the target component
-   too. The note's constraints and open decisions are binding until the review
-   changes them.
+   the registry `note` for what the last review adapted, and the guide of the
+   target component too. The note's constraints and open decisions are binding
+   until the review changes them.
    **Done when** the current target, stories, adaptations and outstanding
    rule/comment work are known.
 
@@ -25,17 +23,21 @@ bulk re-approval.
    change: the source the change touches.
    **Done when** the source variants to compare are listed.
 
-3. **Re-run the evidence.** `pnpm ui-cli parity check --node <id> --saved`
-   runs every committed case and checks declared-device coverage. Capture missing cases
-   with the parity route in `visual-parity.md`. A residue measured under conditions
-   that no longer hold (an old font, a removed dependency) is re-measured, never
-   re-approved.
-   **Done when** every case reports a verdict.
+3. **Align, per declared device.** `pnpm ui-cli align <nodeId> --device <name>`
+   for each device the inventory declares: one run reads the target, the story and
+   the devices, probes Storybook and compares, following the parity route in
+   `visual-parity.md` ([commands.md](commands.md)). Nothing was stored to re-run:
+   the comparison is this session's pin against this session's render, and a
+   residue the note recorded under conditions that no longer hold (an old font, a
+   removed dependency) is re-measured, never re-approved.
+   **Done when** every declared device reports a verdict and each remaining
+   residue has a reason you can restate.
 
 4. **Decide** using [catalogue review semantics](catalogue/statuses.md#review-semantics).
-   Record the result with `pnpm ui-cli figma registry set <id> --status <status>`
-   and its evidence/reason flags. A design-owner blocker uses
-   `design-request.md`.
+   Record the result with `pnpm ui-cli record <nodeId> --status <status>` and its
+   target, note and reason flags: one run writes the registry entry, the page
+   surface and the generated documents, or none of them
+   ([commands.md](commands.md)). A design-owner blocker uses `design-request.md`.
 
    A `mocked` demo keeps its status and note: a review is not a renewal. A
    mapping to an existing implementation needs that implementation to cover the

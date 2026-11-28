@@ -29,16 +29,16 @@ type Story = StoryObj<typeof meta>
 function ScrollExample() {
   const target = React.useRef<HTMLDivElement>(null)
   return (
-    <div className="grid gap-4">
+    <div className="pui:grid pui:gap-4">
       <div
         ref={target}
         role="region"
         aria-label="Informazioni"
         tabIndex={0}
-        className="h-32 w-64 overflow-auto"
+        className="pui:h-32 pui:w-64 pui:overflow-auto"
       >
         {Array.from({ length: 20 }, (_, index) => (
-          <p key={index} className="py-2">
+          <p key={index} className="pui:py-2">
             Informazione {index + 1}
           </p>
         ))}
@@ -49,13 +49,13 @@ function ScrollExample() {
 }
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ScrollExample />,
 }
 
 export const ReducedMotionScroll: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   beforeEach: () => {
     const original = window.matchMedia.bind(window)
@@ -93,17 +93,17 @@ export const ReducedMotionScroll: Story = {
 function SourceButtonFixture() {
   const target = React.useRef<HTMLDivElement>(null)
   return (
-    <div className="grid w-14 gap-4">
+    <div className="pui:grid pui:w-14 pui:gap-4">
       <ScrollToBottom target={target} />
       <div
         ref={target}
         role="region"
         aria-label="Informazioni"
         tabIndex={0}
-        className="h-56 w-14 overflow-auto"
+        className="pui:h-56 pui:w-14 pui:overflow-auto"
       >
         {Array.from({ length: 8 }, (_, index) => (
-          <p key={index} className="py-2">
+          <p key={index} className="pui:py-2">
             Informazione {index + 1}
           </p>
         ))}

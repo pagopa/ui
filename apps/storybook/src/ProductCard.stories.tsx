@@ -5,9 +5,14 @@ import { expect, fn, userEvent, within } from "storybook/test"
 import productLogo from "@/assets/storybook/1527-8132.svg"
 import productCover from "@/assets/storybook/757-6293.jpeg"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Avatar, Image } from "@/components/content"
-import { CatalogueCard, ProductCard } from "@/components/data-display"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Avatar } from "@/components/content/avatar"
+import { Image } from "@/components/content/image"
+import { CatalogueCard } from "@/components/data-display/catalogue-card"
+import { ProductCard } from "@/components/data-display/product-card"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckBigIcon } from "@/components/icons/generated/check"
+import { Dark as IoLogoDarkIcon } from "@/components/icons/generated/io-logo"
+import { Selected as PersonSelectedIcon } from "@/components/icons/generated/person"
 import { Chip } from "@/components/inputs/chips"
 
 import productCardsGuide from "./guides/product-cards.md?raw"
@@ -30,14 +35,18 @@ type Story = StoryObj<typeof meta>
 
 function SourceProductLogo() {
   return (
-    <img src={productLogo} alt="Logo PARI" className="size-12 rounded bg-primary object-none" />
+    <img
+      src={productLogo}
+      alt="Logo PARI"
+      className="pui:size-12 pui:rounded pui:bg-primary pui:object-none"
+    />
   )
 }
 
 function ProductWithAction() {
   const [opened, setOpened] = React.useState(false)
   return (
-    <div className="flex w-68 flex-col gap-4">
+    <div className="pui:flex pui:w-68 pui:flex-col pui:gap-4">
       <ProductCard
         data-testid="product"
         title="Nome prodotto"
@@ -60,10 +69,9 @@ export const SourceProduct: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: {
     a11yContract: { reflow: false },
-    // The play function asserts the desktop type scale (24/32) and spacing; at
-    // the mobile modes the card renders the 18/28 step, so Chromatic captures
-    // and plays this fixture at the desktop width only.
-    chromatic: { viewports: [1200] },
+    // The fixture pins the desktop width: the play function asserts the desktop
+    // type scale (24/32) and spacing, while the mobile modes render the 18/28
+    // step.
   },
   tags: ["color-pinned"],
   // The text-only source set (`757:10713`) was unpublished in the 2026-10-14
@@ -96,24 +104,16 @@ export const SourceProduct: Story = {
 }
 
 export const LogoAndChip: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   tags: ["color-pinned"],
   render: () => (
-    <div className="w-68">
+    <div className="pui:w-68">
       <ProductCard
         data-testid="product"
         title="Nome prodotto"
         titleAs="h2"
-        logo={
-          <PagoPAIcon
-            name="IO logo"
-            variant="dark"
-            decorative={false}
-            label="Logo di IO"
-            size={48}
-          />
-        }
+        logo={<Icon source={IoLogoDarkIcon} decorative={false} label="Logo di IO" size={48} />}
         chip={
           <Chip data-testid="premium" size="compact" variant="highlight">
             Premium
@@ -145,7 +145,7 @@ function ProductWithLinks() {
   return (
     <form
       aria-label="Prodotto con navigazione"
-      className="flex w-68 flex-col gap-4"
+      className="pui:flex pui:w-68 pui:flex-col pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(true)
@@ -158,7 +158,7 @@ function ProductWithLinks() {
             Per gestire questo prodotto, chiedi a uno dei suoi{" "}
             <a
               href="/prodotti/amministratori"
-              className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
               Amministratori
             </a>
@@ -173,7 +173,7 @@ function ProductWithLinks() {
 }
 
 export const NativeProductLinks: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => <ProductWithLinks />,
   play: async ({ canvasElement }) => {
@@ -210,7 +210,7 @@ export const NativeProductLinks: Story = {
 function ImageProduct() {
   const [joined, setJoined] = React.useState(false)
   return (
-    <div className="flex w-68 flex-col gap-4">
+    <div className="pui:flex pui:w-68 pui:flex-col pui:gap-4">
       <ProductCard
         data-testid="image-product"
         title="Firma con IO"
@@ -221,7 +221,7 @@ function ImageProduct() {
             Consenti ai cittadini di firmare digitalmente documenti tramite l'app IO.{" "}
             <a
               href="/prodotti/firma-con-io"
-              className="rounded-sm font-semibold text-primary underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:rounded-sm pui:font-semibold pui:text-primary pui:underline pui:underline-offset-2 pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
               Scopri di più
             </a>
@@ -304,7 +304,7 @@ export const NarrowContent: Story = {
             Visita{" "}
             <a
               href="/prodotti/documenti"
-              className="rounded-sm text-primary underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:rounded-sm pui:text-primary pui:underline pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
               https://servizi.example/gestionedocumentaleperleamministrazionipubbliche
             </a>{" "}
@@ -353,10 +353,10 @@ export const NarrowContent: Story = {
 }
 
 export const OptionalSlotsAndCatalogueContent: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-68 gap-4">
+    <div className="pui:grid pui:w-68 pui:gap-4">
       <ProductCard
         data-testid="informative-product"
         title="Guida ai servizi"
@@ -409,7 +409,7 @@ const catalogueCardSource = {
 function SourceCatalogue() {
   const [joined, setJoined] = React.useState(false)
   return (
-    <div className="flex w-90 flex-col gap-4">
+    <div className="pui:flex pui:w-90 pui:flex-col pui:gap-4">
       <CatalogueCard
         data-testid="catalogue-card"
         avatar={<Avatar size="small" alt="Immagine dell'ente" />}
@@ -419,14 +419,8 @@ function SourceCatalogue() {
           { label: "Iscriviti", onPress: () => setJoined(true) },
         ]}
         feedback={[
-          <PagoPAIcon
-            key="person"
-            name="person"
-            variant="selected"
-            size={24}
-            className="text-primary"
-          />,
-          <PagoPAIcon key="check" name="check" variant="big" size={24} className="text-primary" />,
+          <Icon source={PersonSelectedIcon} key="person" size={24} className="pui:text-primary" />,
+          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
         ]}
       />
       <output>{joined ? "Iscrizione inviata" : ""}</output>
@@ -454,7 +448,7 @@ export const SourceCatalogueCard: Story = {
     }
     const child = (parent: HTMLElement, selector: string) => {
       const element = parent.querySelector(selector)
-      if (!(element instanceof HTMLElement)) throw new Error(`missing ${selector}`)
+      if (!(element instanceof Element)) throw new Error(`missing ${selector}`)
       return element
     }
 
@@ -537,13 +531,13 @@ export const SourceCatalogueCard: Story = {
       feedback[0].getBoundingClientRect().right + 24,
     )
     for (const icon of feedback) {
-      const glyph = child(icon, "span")
+      const glyph = child(icon, "svg")
       await expect(icon.getBoundingClientRect().width).toBe(24)
       await expect(icon.getBoundingClientRect().height).toBe(24)
       // The source instance is a 24px box whose artwork is the source 16x16/15x11 glyph.
       await expect(glyph.getBoundingClientRect().width).toBe(24)
       await expect(glyph.getBoundingClientRect().height).toBe(24)
-      await expect(getComputedStyle(glyph).backgroundColor).toBe("rgb(11, 62, 227)")
+      await expect(getComputedStyle(glyph).color).toBe("rgb(11, 62, 227)")
     }
 
     join.focus()
@@ -556,10 +550,10 @@ export const SourceCatalogueCard: Story = {
 // actions without feedback, and feedback without actions, without inventing a
 // source frame that does not exist.
 export const CatalogueCardSlots: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="flex w-90 flex-col gap-4">
+    <div className="pui:flex pui:w-90 pui:flex-col pui:gap-4">
       <CatalogueCard
         data-testid="actions-only"
         title="Servizio con solo azioni"
@@ -573,7 +567,7 @@ export const CatalogueCardSlots: Story = {
         title="Servizio con solo indicatori"
         organization="Comune di Milano"
         feedback={[
-          <PagoPAIcon key="check" name="check" variant="big" size={24} className="text-primary" />,
+          <Icon source={CheckBigIcon} key="check" size={24} className="pui:text-primary" />,
         ]}
       />
     </div>

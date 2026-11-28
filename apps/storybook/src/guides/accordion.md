@@ -21,3 +21,22 @@ An item is a native trigger with `aria-expanded`; a disabled item keeps its
 `aria-disabled` state and does not open. The skeleton item is an `aria-busy`
 container with no control of its own, and its title, chip and icon are decorative
 because the announced state is the loading label.
+
+## Controlled and uncontrolled
+
+`value` with `onValueChange` hands the open sections to the caller; `defaultValue`
+opens sections at mount when `value` is omitted. Both modes share one lifecycle:
+a header click, Enter or Space reports the ids open afterwards, so the caller
+answers the same handler whatever opened the section.
+
+```tsx
+const [open, setOpen] = React.useState<string[]>(["pagamento"])
+
+<Accordion items={items} value={open} onValueChange={setOpen} multiple />
+```
+
+`multiple` keeps more than one section open at once; without it a new section
+replaces the open one, which is the composition the source draws. `ref`,
+`className` and the standard attributes of a `div` land on the root, so the group
+can be measured, styled or marked by the caller, and `className` is merged with
+the root's own.

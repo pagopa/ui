@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { FeatureList } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { FeatureList } from "@/components/content/feature-list"
+import { Icon } from "@/components/icons/icon"
+import { Default as CheckIcon } from "@/components/icons/generated/check"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 
 import featureListGuide from "./guides/feature-list.md?raw"
@@ -15,12 +17,12 @@ const meta = {
       {
         title: "Pagamenti sicuri",
         description: "Paga online verso la Pubblica Amministrazione.",
-        icon: <PagoPAIcon name="check" />,
+        icon: <Icon source={CheckIcon} />,
       },
       {
         title: "Servizi accessibili",
         description: "Esperienze progettate per tutte le persone.",
-        icon: <PagoPAIcon name="check" />,
+        icon: <Icon source={CheckIcon} />,
       },
     ],
   },
@@ -48,7 +50,7 @@ export const Playground: Story = { parameters: { a11yContract: { reflow: false }
 
 export const Indicators: Story = {
   render: () => (
-    <div className="grid w-[min(42rem,calc(100vw-2rem))] gap-8">
+    <div className="pui:grid pui:w-[min(42rem,calc(100vw-2rem))] pui:gap-8">
       <FeatureList
         features={[
           {
@@ -60,7 +62,7 @@ export const Indicators: Story = {
           {
             title: "Monitora le richieste",
             description: "Segui lo stato delle pratiche in tempo reale.",
-            icon: <PagoPAIcon name="check" />,
+            icon: <Icon source={CheckIcon} />,
           },
         ]}
       />
@@ -110,7 +112,7 @@ export const SourceIcon: Story = {
           {
             title: sourceTitle,
             description: sourceDescription,
-            icon: <PagoPAIcon name="photo" />,
+            icon: <Icon source={PhotoIcon} />,
             action: { label: "Scopri di più", href: "#scopri" },
           },
         ]}

@@ -3,10 +3,20 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 
-import { RadioGroup as RadioGroupPrimitive } from "@/components/primitives/radio-group"
+import {
+  RadioGroup as RadioGroupPrimitive,
+  type RadioGroupProps as RadioGroupPrimitiveProps,
+} from "@/components/primitives/radio-group"
 
 import { FieldMessages } from "./field"
 import { describedBy, useFieldIds } from "./field-utils"
+
+type RadioGroupFieldProps = RadioGroupPrimitiveProps & {
+  legend: React.ReactNode
+  description?: React.ReactNode
+  error?: React.ReactNode
+  required?: boolean
+}
 
 function RadioGroup({
   legend,
@@ -16,28 +26,24 @@ function RadioGroup({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof RadioGroupPrimitive> & {
-  legend: React.ReactNode
-  description?: React.ReactNode
-  error?: React.ReactNode
-  required?: boolean
-}) {
+}: RadioGroupFieldProps) {
   const ids = useFieldIds()
 
   return (
     <fieldset
-      className={cn("grid gap-3", className)}
+      data-slot="radio-group-field"
+      className={cn("pui:grid pui:gap-3", className)}
       aria-describedby={describedBy(ids, { description, error })}
       aria-invalid={Boolean(error) || undefined}
     >
-      <legend className="text-label-sb">
+      <legend className="pui:text-label-sb">
         <span id={`${ids.controlId}-legend`}>{legend}</span>
         {required ? (
           <>
-            <span aria-hidden="true" className="ml-0.5 text-destructive">
+            <span aria-hidden="true" className="pui:ml-0.5 pui:text-destructive">
               *
             </span>
-            <span className="sr-only"> (obbligatorio)</span>
+            <span className="pui:sr-only"> (obbligatorio)</span>
           </>
         ) : null}
       </legend>
@@ -55,3 +61,4 @@ function RadioGroup({
 }
 
 export { RadioGroup }
+export type { RadioGroupFieldProps }

@@ -2,9 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
+import { Default as InfoIcon } from "@/components/icons/generated/info"
 import { Chip } from "@/components/inputs/chips"
-import { SectionHeader } from "@/components/navigation"
+import { SectionHeader } from "@/components/navigation/section-header"
 import { Button } from "@/components/primitives/button"
 
 import sectionHeaderGuide from "./guides/section-header.md?raw"
@@ -13,7 +15,7 @@ const meta = {
   title: "Components/Navigation/SectionHeader",
   component: SectionHeader,
   args: {
-    icon: <PagoPAIcon name="credit_card" />,
+    icon: <Icon source={CreditCardIcon} />,
     title: "Servizi per cittadini e imprese",
     status: (
       <Chip variant="neutral" size="compact">
@@ -22,7 +24,7 @@ const meta = {
     ),
     actions: (
       <Button variant="ghost" size="icon" aria-label="Informazioni sulla sezione">
-        <PagoPAIcon name="info" />
+        <Icon source={InfoIcon} />
       </Button>
     ),
   },
@@ -66,10 +68,10 @@ export const Levels: Story = {
   // Reflow exemption: fixture pinned at the source width, not a product surface.
   parameters: { a11yContract: { reflow: false } },
   render: () => (
-    <div className="grid w-[min(42rem,calc(100vw-2rem))] gap-8">
+    <div className="pui:grid pui:w-[min(42rem,calc(100vw-2rem))] pui:gap-8">
       <SectionHeader
         level={1}
-        icon={<PagoPAIcon name="credit_card" />}
+        icon={<Icon source={CreditCardIcon} />}
         title="Servizi per cittadini e imprese"
         status={
           <Chip variant="neutral" size="compact">
@@ -80,13 +82,13 @@ export const Levels: Story = {
       <SectionHeader
         level={2}
         titleAs="h3"
-        icon={<PagoPAIcon name="credit_card" />}
+        icon={<Icon source={CreditCardIcon} />}
         title="Documenti e pagamenti"
       />
       <SectionHeader
         level={3}
         titleAs="h4"
-        icon={<PagoPAIcon name="credit_card" />}
+        icon={<Icon source={CreditCardIcon} />}
         title="Ultimo aggiornamento"
       />
     </div>

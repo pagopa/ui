@@ -10,9 +10,8 @@ component with no node needs only its catalogue coverage
    gives the catalogue decision, the rules that target the node, the open
    comments and the open design requests (`rules.md`); refresh the
    local rules snapshot when the session started on a file that may have
-   changed. `pnpm ui-cli parity align --node <nodeId>`
-   lists declared devices and their exact check commands; `parity source`
-   with `--compact --depth 3`
+   changed. The inventory records the devices the set declares; `pnpm ui-cli
+   parity source <nodeId> --compact --depth 3`
    gives each variant's anatomy (box, offsets, layout, hug/fill sizing, radius,
    strokes, fills, text style, hidden layers). Confirm anatomy with the read-only
    `get_screenshot` / `get_design_context` when the numbers are not enough.
@@ -36,8 +35,8 @@ component with no node needs only its catalogue coverage
    props shaped by
    [prop-conventions.md](../../pagopa-ui-standards/references/prop-conventions.md).
 
-4. **Story.** Under `code.stories`, one story export per source state the parity
-   cases compare, framed at the exact source width
+4. **Story.** Under `code.stories`, one story export per source state the
+   drawing distinguishes, framed at the exact source width
    (`max-w-full`, no invented wrapper width) and with `parameters.design` set to
    `figmaEmbedUrl("<nodeId>")`. Write or extend the guide in `code.guides` with
    the source mapping and import it into the docs description; add the
@@ -48,23 +47,22 @@ component with no node needs only its catalogue coverage
    **Done when** the story renders in Storybook, the a11y suite passes and the
    guide/ledger satisfy source alignment (`definition-of-done.md`).
 
-5. **Parity.** Order the work with
-   `pnpm ui-cli parity align --node <id>`, then the loop in
-   `visual-parity.md` for every variant the stories expose and
-   every declared device; save one case each.
-   **Done when** each case reproduces with `pnpm ui-cli parity check --case <id>`
+5. **Align.** The loop in `visual-parity.md`, for every variant the stories
+   expose and every declared device: `pnpm ui-cli align <nodeId> --device <name>`,
+   one run per device, nothing saved ([commands.md](commands.md)).
+   **Done when** every declared device has a run whose result you can restate,
    and every delta is fixed, a reasoned residue or a mapping artifact.
 
-6. **Registry.** Use `pnpm ui-cli figma registry set <nodeId> --status implemented`
-   with the target and note flags in
-   `catalogue/statuses.md`. Several implementations of a
-   set still require an in-place `additionalExports` edit. Export it
-   publicly when it is a production component. Run `pnpm nx run pagopa-ui:check:catalogue`.
+6. **Record.** Use `pnpm ui-cli record <nodeId> --status implemented` with the
+   target flags and the note in `catalogue/statuses.md`: one atomic run writes the
+   registry, the page surface and the generated documents, and reports the
+   catalogue verdict. Several implementations of a set still require an in-place
+   `additionalExports` edit. Export it publicly when it is a production component.
    An open point for the design owner is a design request
    (`design-request.md`); the node stays `pending` and the
    request is named in the note.
-   **Done when** the node is `implemented` with a green device coverage line, or
-   `pending` with its design request named.
+   **Done when** the node is `implemented` with the catalogue verdict its own run
+   reported, or `pending` with its design request named.
 
 7. **Close** with the source-alignment checklist in
    `definition-of-done.md` and the closing steps of the

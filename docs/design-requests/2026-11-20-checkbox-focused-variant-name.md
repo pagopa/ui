@@ -3,6 +3,7 @@
 - Type: design
 - Issue: https://github.com/pagopa/ui/issues/144
 - Status: open
+- Ratified defaults: [docs/design-defaults.md](../design-defaults.md) — apply §2–§4 before asking; what they do not decide stays open here.
 - Decision owner: @gunzip
 - Preview: none
 

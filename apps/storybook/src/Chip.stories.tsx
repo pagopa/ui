@@ -107,9 +107,9 @@ export const Playground: Story = {}
 export const ChipSourceVariantMatrix: Story = {
   tags: ["color-pinned"],
   render: () => (
-    <div className="grid gap-2">
+    <div className="pui:grid pui:gap-2">
       {chipSourceVariants.map(({ variant, label }) => (
-        <div key={variant} className="flex flex-wrap items-center gap-3">
+        <div key={variant} className="pui:flex pui:flex-wrap pui:items-center pui:gap-3">
           <Chip data-testid={`chip-${variant}-solid`} size="compact" variant={variant}>
             {label}
           </Chip>
@@ -217,7 +217,7 @@ export const ChipRemovalAction: Story = {
 // wins, so a consumer localising the chip by hand keeps its accessible name.
 export const ChipRemoveLabelOverride: Story = {
   render: () => (
-    <div className="grid gap-2">
+    <div className="pui:grid pui:gap-2">
       <Chip data-testid="default-remove-label" onRemove={removeChip}>
         Roma
       </Chip>

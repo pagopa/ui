@@ -35,7 +35,8 @@
         "logLevel": "none"
       },
       "ae-forgotten-export": {
-        "logLevel": "none"
+        "logLevel": "error",
+        "addToApiReportFile": false
       }
     },
     "tsdocMessageReporting": {

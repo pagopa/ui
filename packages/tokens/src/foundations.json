@@ -162,6 +162,20 @@
       "reason": "published scale value; the page is a component set, not a variable — requested to design",
       "theme": { "namespace": "spacing", "key": "6" }
     },
+    "spacing-28": {
+      "name": "Foundations/spacing-28",
+      "type": "FLOAT",
+      "value": 28,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "3262:40787",
+        "note": "menu label, timeline and microevento content inset (also 12812:16248 and 9676:5633)"
+      },
+      "reason": "recurs as a content inset in three component nodes and no published step carries it; requested to design",
+      "theme": { "namespace": "spacing", "key": "7" }
+    },
     "spacing-32": {
       "name": "Foundations/spacing-32",
       "type": "FLOAT",
@@ -176,6 +190,20 @@
       "reason": "published scale value; the page is a component set, not a variable — requested to design",
       "theme": { "namespace": "spacing", "key": "8" }
     },
+    "spacing-36": {
+      "name": "Foundations/spacing-36",
+      "type": "FLOAT",
+      "value": 36,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "602:9417",
+        "note": "menu item trailing inset for the selection mark: 24 icon + 12 padding"
+      },
+      "reason": "composite of the published parts (24 + 12) with no single step behind it; requested to design",
+      "theme": { "namespace": "spacing", "key": "9" }
+    },
     "spacing-40": {
       "name": "Foundations/spacing-40",
       "type": "FLOAT",
@@ -189,6 +217,20 @@
       },
       "reason": "published scale value; the page is a component set, not a variable — requested to design",
       "theme": { "namespace": "spacing", "key": "10" }
+    },
+    "spacing-44": {
+      "name": "Foundations/spacing-44",
+      "type": "FLOAT",
+      "value": 44,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "529:6102",
+        "note": "field leading inset: 12 padding + 24 icon + 8 gap (also 824:8839)"
+      },
+      "reason": "the composite docs/design-defaults.md §3 ratifies for a field with a leading icon; the parts are published, the total is recorded here",
+      "theme": { "namespace": "spacing", "key": "11" }
     },
     "spacing-48": {
       "name": "Foundations/spacing-48",
@@ -242,6 +284,20 @@
       },
       "reason": "recurring value outside the published scale; no published variable — requested to design",
       "theme": { "namespace": "spacing", "key": "20" }
+    },
+    "spacing-88": {
+      "name": "Foundations/spacing-88",
+      "type": "FLOAT",
+      "value": 88,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "8049:39452",
+        "note": "calendar caption trailing inset for the two navigation buttons"
+      },
+      "reason": "reserves the two navigation buttons inside the caption; no published step carries it — requested to design",
+      "theme": { "namespace": "spacing", "key": "22" }
     },
     "spacing-132": {
       "name": "Foundations/spacing-132",
@@ -418,6 +474,71 @@
       "reason": "no published Device variable carries this width; requested to design",
       "theme": { "namespace": "breakpoint", "key": "desktop-xxl" }
     },
+    "container-compact": {
+      "name": "Foundations/container-compact",
+      "type": "FLOAT",
+      "value": 448,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which Alert, PaymentModule and ProductModule pair their rows (the Tailwind md container step they read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "compact" }
+    },
+    "container-page": {
+      "name": "Foundations/container-page",
+      "type": "FLOAT",
+      "value": 768,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which the Dialog page template shortens its title row (the Tailwind 3xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "page" }
+    },
+    "container-panel": {
+      "name": "Foundations/container-panel",
+      "type": "FLOAT",
+      "value": 512,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which the Checkout module lays its card rows out horizontally (the Tailwind lg step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "panel" }
+    },
+    "container-wide": {
+      "name": "Foundations/container-wide",
+      "type": "FLOAT",
+      "value": 896,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the Footer width at which its link columns become a four-column grid (the Tailwind 4xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "wide" }
+    },
+    "container-wider": {
+      "name": "Foundations/container-wider",
+      "type": "FLOAT",
+      "value": 1152,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the Footer width at which its side padding widens (the Tailwind 6xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": { "namespace": "container", "key": "wider" }
+    },
     "container-narrow": {
       "name": "Foundations/container-narrow",
       "type": "FLOAT",
@@ -553,5 +674,99 @@
         "note": "Shadow 16 effect style (menu and dropdown elevation)"
       }
     }
-  }
+  },
+  "stylesheet": [
+    {
+      "declaration": "line-height: 1.5",
+      "reason": "Host typography: the root line box stays the CSS default ratio; Body sets a 22/16 line-height that would change every inherited line a caller renders."
+    },
+    {
+      "declaration": "--pui-navy: #061b49",
+      "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--pui-navy-deep: #17213c",
+      "reason": "Local extension: brand surface outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--pui-brand-cyan: #00a7e1",
+      "reason": "Local extension: brand accent outside the Figma collections; retired when the design owner publishes it as a variable (ADR-0001 §9)."
+    },
+    {
+      "declaration": "--pui-avatar-frame: rgb(14 15 19 / 6%)",
+      "reason": "Local extension: the avatar contrast ring has no Figma source; requested to design."
+    },
+    {
+      "declaration": "--pui-avatar-icon-surface: rgb(255 255 255 / 20%)",
+      "reason": "Local extension: the icon surface on inverse artwork has no Figma source; requested to design."
+    },
+    {
+      "declaration": "--pui-artboard-height: 650px",
+      "reason": "White Template page surface height, read by the shipped PageSurface. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-dialog-width: 600px",
+      "reason": "Dialog desktop frame width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-id-module-width: 410px",
+      "reason": "ID module width read from the 600px device step. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-state-width: 368px",
+      "reason": "Error, waiting and success state column width, read by the shipped state components. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-camera-size: 376px",
+      "reason": "Camera viewfinder frame size. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-menu-width: 274px",
+      "reason": "Menu minimum width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-menu-skeleton-width: 106px",
+      "reason": "Menu skeleton width from the source frame. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-overlay-width: 512px",
+      "reason": "Snackbar width. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-header-height: 102px",
+      "reason": "Header desktop frame height. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-preheader-height: 55px",
+      "reason": "Preheader frame height. Component geometry no published size foundation carries yet; requested as a foundation."
+    },
+    {
+      "declaration": "--pui-page-gutter: 2rem",
+      "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
+    },
+    {
+      "declaration": "--pui-page-gutter-lg: 3rem",
+      "reason": "Root-font-relative viewport fallback: the spacing foundations are px, so aliasing this would change zoom and host-font scaling."
+    },
+    {
+      "declaration": "--shadow-switch-knob: 0 1px 3px rgba(0, 43, 85, 0.1), 0 1px 1px rgba(0, 43, 85, 0.05), 0 2px 1px -1px rgba(0, 43, 85, 0.1)",
+      "reason": "The switch knob needs decimal alpha, which is not byte-identical to the published hex alpha; requested as an effect foundation."
+    },
+    {
+      "declaration": "--drop-shadow-elevation-6: 0 1px 18px #002b551a, 0 6px 10px #002b550d, 0 3px 5px -1px #002b551a",
+      "reason": "SVG filters take the Elevation/6 layers as a drop-shadow, not as the published box-shadow effect."
+    },
+    {
+      "declaration": "--container-tablet-md: 56.25rem",
+      "reason": "Container query conditions cannot resolve var(), so the 900px device step repeats as the literal the generated layer publishes."
+    },
+    {
+      "declaration": "animation-duration: 0.01ms",
+      "reason": "Reduced-motion policy: every animation stops without removing the frame it settled on."
+    },
+    {
+      "declaration": "animation-duration: 1s",
+      "reason": "Reduced-motion policy: the loading spinner keeps one second so it still reads as motion."
+    }
+  ]
 }

@@ -25,7 +25,10 @@ validation keep working. The trigger is a labelled button that opens the panel
 right below the field; the floating label rests centred while the field is empty
 and unfocused and takes the notch while it has a value or is focused. `readOnly`
 keeps the committed value without a popup trigger, `today` moves the calendar's
-reference day, and `onValueChange` reports the committed local ISO date.
+reference day, and `onValueChange` reports the committed local ISO date. `ref`
+points at the trigger, and `className` and the standard attributes of a `div` land
+on the field's root rather than the trigger, so the caller can focus, measure,
+style or mark the field.
 
 The application owns any surrounding overlay beyond the field. The calendar does
 not create hidden form values or submit a form when selecting, saving or

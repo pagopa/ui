@@ -1,21 +1,10 @@
-import fs from "node:fs"
-
 import { declaredDevices, deviceAxes, type DeviceStats } from "./devices.ts"
 import { implementationOrder, type DeltaNode, type SnapshotDelta } from "./snapshot.ts"
 import { deltaWorkSet } from "./work-set.ts"
-import { EVIDENCE_DIR, evidencePaths, loadManifest } from "../parity/evidence.ts"
-import { readCorpus, type CaseCorpus } from "../parity/corpus.ts"
 import type { Workspace } from "../adapters/workspace.ts"
 import type { DevicePolicy } from "../schemas/devices.ts"
 import type { InventoryNode, Registry } from "../schemas/catalogue.ts"
-
-export interface CatalogueCoverageSummary {
-  sets: number
-  covered: number
-  missing: number
-  drafts: number
-  exceptions: number
-}
+import type { TokenDrift } from "./tokens.ts"
 
 export interface CatalogueRenderContext {
   workspace: Workspace
@@ -25,14 +14,13 @@ export interface CatalogueRenderContext {
   live: InventoryNode[] | null
   committed: InventoryNode[]
   liveVersion?: string
-  ratchet: { from: number; to: number } | null
-  evidenceBase?: string
   devicePolicy: DevicePolicy | null
   deviceStats: DeviceStats | null
-  deviceCoverage: CatalogueCoverageSummary | null
   bulkByNode: Map<string, { status?: string }>
   bulkByPage: Map<string, { status?: string }>
   entries: Registry["entries"]
+  /** The variables the same run read, when the run asked for them. */
+  tokenDrift?: TokenDrift | null
 }
 
 type DeltaKey = "added" | "changed" | "renamed" | "moved" | "removed" | "affected" | "baseline"
@@ -95,32 +83,7 @@ function renderDevices(
   return lines
 }
 
-type NodeEvidence = { ids: string[]; links: Array<{ id: string; href: string }> }
-
-function evidenceReader(workspace: Workspace, evidenceBase?: string) {
-  let caseCorpus: CaseCorpus | undefined
-  let manifestCache: ReturnType<typeof loadManifest> | null | undefined
-  return (nodeId: string): NodeEvidence => {
-    caseCorpus ??= readCorpus(workspace)
-    const corpus = caseCorpus.of(nodeId)
-    if (!corpus.length) return { ids: [], links: [] }
-    if (manifestCache === undefined) {
-      const manifestPath = evidencePaths(workspace.workspaceRoot).manifest
-      manifestCache = fs.existsSync(manifestPath) ? loadManifest(manifestPath) : null
-    }
-    const links = evidenceBase
-      ? corpus.flatMap((entry) => {
-          const record = manifestCache?.cases?.[entry.id]
-          return record
-            ? [{ id: entry.id, href: `${evidenceBase}/${EVIDENCE_DIR}/${record.png}` }]
-            : []
-        })
-      : []
-    return { ids: corpus.map((entry) => entry.id), links }
-  }
-}
-
-function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[] {
+function reviewInstructions(): string[] {
   return [
     "",
     "## Instructions — review",
@@ -130,12 +93,6 @@ function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[
     '1. still matches the source → set `status: "implemented"`;',
     "2. must change → update the component and its story in this PR, then set `implemented`;",
     "3. out of scope → set `excluded` with a reason.",
-    ...(ratchet
-      ? [
-          "",
-          `This refresh replaced the queued notes with the pending stub, so \`overLimit\` in \`src/catalog/figma/note-length-baseline.json\` ratcheted from ${ratchet.from} to ${ratchet.to}: a re-reviewed note stays under 600 characters, and the baseline is never raised.`,
-        ]
-      : []),
     "",
     "## Instructions — agent handoff",
     "",
@@ -155,12 +112,81 @@ function reviewInstructions(ratchet: CatalogueRenderContext["ratchet"]): string[
   ]
 }
 
+const valueOf = (value: unknown): string =>
+  typeof value === "string" ? value : JSON.stringify(value ?? null)
+
+/** The token half of the summary: named only when the run read the variables. */
+function tokenSummary(drift: TokenDrift | null | undefined): string[] {
+  if (!drift) return []
+  const total =
+    drift.added.length +
+    drift.changed.length +
+    drift.renamed.length +
+    drift.removed.length +
+    drift.unmapped.length +
+    drift.unreadable.length
+  return [`- Tokens: ${total}`]
+}
+
+/**
+ * The variables the same run compared with `packages/tokens/src/manifest.json`.
+ * A variable nobody curated is `unmapped` rather than silence: it is drift the
+ * review has to see, and the run never fails the scheduled job over it.
+ */
+function renderTokenDrift(drift: TokenDrift | null | undefined): string[] {
+  if (!drift) return []
+  const lines: string[] = ["## Token drift", ""]
+  const entries = [
+    ...drift.added.map(
+      (entry) => `- added: \`${entry.name}\` (\`${entry.id}\`) = ${valueOf(entry.value)}`,
+    ),
+    ...drift.changed.map(
+      (change) => `- changed: \`${change.name}\` ${valueOf(change.from)} → ${valueOf(change.to)}`,
+    ),
+    ...drift.renamed.map(
+      (rename) => `- renamed: \`${rename.from}\` → \`${rename.to}\` (id \`${rename.id}\`)`,
+    ),
+    ...drift.removed.map((entry) => `- removed: \`${entry.name}\` (id \`${entry.id}\`)`),
+    ...drift.unmapped.map((name) => `- unmapped: \`${name}\` — outside every curated namespace`),
+    ...drift.unreadable.map((line) => `- unreadable: ${line}`),
+  ]
+  if (!entries.length) return [...lines, "None: the variables match the committed manifest.", ""]
+  return [
+    ...lines,
+    "Compared with `packages/tokens/src/manifest.json`; `update tokens` pins the values once the review accepts them.",
+    "",
+    ...entries,
+    "",
+  ]
+}
+
+/** The record the review branch carries: what moved, one vector at a time. */
+export function renderTokenDriftRecord(drift: TokenDrift, fileKey: string) {
+  return {
+    generatedAt: new Date().toISOString(),
+    fileKey,
+    counts: {
+      added: drift.added.length,
+      changed: drift.changed.length,
+      renamed: drift.renamed.length,
+      removed: drift.removed.length,
+      unmapped: drift.unmapped.length,
+      unreadable: drift.unreadable.length,
+    },
+    added: drift.added,
+    changed: drift.changed,
+    renamed: drift.renamed,
+    removed: drift.removed,
+    unmapped: drift.unmapped,
+    unreadable: drift.unreadable,
+  }
+}
+
 function renderDriftNode(
   context: CatalogueRenderContext,
   node: DeltaNode,
   key: DeltaKey,
   changedVariants: Map<string, string>,
-  evidence: NodeEvidence,
 ): string[] {
   const { registry, inventory } = context
   const lines: string[] = []
@@ -179,22 +205,11 @@ function renderDriftNode(
   )
   if (key !== "removed")
     lines.push(...renderDevices(inventory.fileKey, context.devicePolicy, node, changedVariants))
-  if (evidence.ids.length) {
-    lines.push(`- evidence: ${evidence.ids.map((id) => `\`${id}\``).join(" · ")}`)
-    if (evidence.links.length) {
-      lines.push(
-        `  - references: ${evidence.links.map((item) => `[${item.id}](${item.href})`).join(" · ")}`,
-      )
-    }
-    lines.push(
-      "  - attach the local render after `parity check --case <id> --screenshot <file>`; CI never embeds a component image.",
-    )
-  }
   return [...lines, ""]
 }
 
 export function renderCataloguePrBody(context: CatalogueRenderContext): string {
-  const { workspace, inventory, delta, ratchet, evidenceBase } = context
+  const { inventory, delta } = context
   const date = new Date().toISOString().slice(0, 10)
   const changedVariants = new Map(
     delta.changedVariants.map((change) => [change.nodeId, change.class]),
@@ -203,7 +218,6 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
   for (const [key] of classes) {
     for (const node of delta[key]) pages.set(node.pageName, (pages.get(node.pageName) ?? 0) + 1)
   }
-  const evidenceFor = evidenceReader(workspace, evidenceBase)
   const lines = [
     `# Figma drift — ${date}`,
     "",
@@ -213,21 +227,23 @@ export function renderCataloguePrBody(context: CatalogueRenderContext): string {
     "## Summary",
     "",
     ...classes.map(([key, label]) => `- ${label}: ${delta[key].length}`),
+    ...tokenSummary(context.tokenDrift),
   ]
   if (pages.size)
     lines.push(
       "",
       `By page: ${[...pages].map(([page, count]) => `${page} (${count})`).join(" · ")}`,
     )
-  lines.push(...reviewInstructions(ratchet))
+  lines.push(...reviewInstructions())
   for (const [key, label] of classes) {
     const nodes = delta[key]
     if (!nodes.length) continue
     lines.push(`## ${label}`, "")
     for (const node of nodes) {
-      lines.push(...renderDriftNode(context, node, key, changedVariants, evidenceFor(node.nodeId)))
+      lines.push(...renderDriftNode(context, node, key, changedVariants))
     }
   }
+  lines.push(...renderTokenDrift(context.tokenDrift))
   lines.push(
     "## Artifacts",
     "",
@@ -278,6 +294,5 @@ export function renderCatalogueDelta(context: CatalogueRenderContext) {
     })),
     implementationOrder: implementationOrder(live ?? committed, selected),
     devices: context.deviceStats,
-    coverage: context.deviceCoverage,
   }
 }

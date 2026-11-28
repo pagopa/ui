@@ -2,12 +2,29 @@
 
 import * as React from "react"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { PagoPAPictogram } from "@/components/icons/PagoPAPictogram"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
 import { StatePanel, type StateProps } from "./state-panel"
+
+/** Props of the negative outcome state, plus the optional error-code row. */
+export type ErrorStateProps = Omit<StateProps, "extra"> & {
+  /** Error code of the state, shown in a copyable row. */
+  code?: string
+  /** Label of the code row; drives the copy button's accessible name. @default messages.errorState.codeLabel */
+  codeLabel?: string
+  /** Complete accessible name of the copy control, from the row label. @default messages.errorState.copyLabel */
+  copyLabel?: (codeLabel: string) => string
+  /** Announced text once the code is in the clipboard. @default messages.errorState.copiedLabel */
+  copiedLabel?: string
+  /** Announced text when the clipboard write fails. @default messages.errorState.copyErrorLabel */
+  copyErrorLabel?: string
+  /** Called only after a successful clipboard write. */
+  onCopy?: () => void
+}
 
 /**
  * Negative outcome: title, description, native actions and an optional copyable
@@ -24,20 +41,7 @@ function ErrorState({
   onCopy,
   className,
   ...props
-}: Omit<StateProps, "extra"> & {
-  /** Error code of the state, shown in a copyable row. */
-  code?: string
-  /** Label of the code row; drives the copy button's accessible name. @default messages.errorState.codeLabel */
-  codeLabel?: string
-  /** Complete accessible name of the copy control, from the row label. @default messages.errorState.copyLabel */
-  copyLabel?: (codeLabel: string) => string
-  /** Announced text once the code is in the clipboard. @default messages.errorState.copiedLabel */
-  copiedLabel?: string
-  /** Announced text when the clipboard write fails. @default messages.errorState.copyErrorLabel */
-  copyErrorLabel?: string
-  /** Called only after a successful clipboard write. */
-  onCopy?: () => void
-}) {
+}: ErrorStateProps) {
   const t = useMessages("errorState")
   const codeLabel = codeLabelProp ?? t.codeLabel
   const copyLabel = copyLabelProp ?? t.copyLabel
@@ -65,18 +69,18 @@ function ErrorState({
   return (
     <StatePanel
       {...props}
-      actionsClassName="mx-auto w-full max-w-(--state-width) flex-col flex-nowrap items-center gap-6"
-      className={cn("w-full max-w-none", className)}
-      contentClassName="w-full max-w-none tablet-md:max-w-(--state-width)"
+      actionsClassName="pui:mx-auto pui:w-full pui:max-w-(--pui-state-width) pui:flex-col pui:flex-nowrap pui:items-center pui:gap-6"
+      className={cn("pui:w-full pui:max-w-none", className)}
+      contentClassName="pui:w-full pui:max-w-none pui:tablet-md:max-w-(--pui-state-width)"
       extra={
         code ? (
           <div
             data-slot="ko-error-code-field"
-            className="flex min-h-12 w-full max-w-(--state-width) items-center gap-3 rounded-lg border border-border bg-background px-3 text-left"
+            className="pui:flex pui:min-h-12 pui:w-full pui:max-w-(--pui-state-width) pui:items-center pui:gap-3 pui:rounded-lg pui:border pui:border-border pui:bg-background pui:px-3 pui:text-left"
           >
             <span
               data-slot="ko-error-code-value"
-              className="min-w-0 flex-1 font-mono text-foreground text-mono wrap-anywhere"
+              className="pui:min-w-0 pui:flex-1 pui:font-mono pui:text-foreground pui:text-mono pui:wrap-anywhere"
             >
               {code}
             </span>
@@ -85,15 +89,15 @@ function ErrorState({
               onClick={copyCode}
               aria-label={copyLabel(codeLabel)}
               data-slot="ko-error-code-copy"
-              className="grid size-11 shrink-0 place-items-center rounded-md text-primary focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:grid pui:size-11 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-primary pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon name="content_copy" />
+              <Icon source={ContentCopyIcon} />
             </button>
-            <output aria-live="polite" className="sr-only">
+            <output aria-live="polite" className="pui:sr-only">
               {copyState === "copied" ? copiedLabel : ""}
             </output>
             {copyState === "failed" ? (
-              <span role="alert" className="sr-only">
+              <span role="alert" className="pui:sr-only">
                 {copyErrorLabel}
               </span>
             ) : null}
@@ -104,13 +108,13 @@ function ErrorState({
         <div aria-hidden="true">
           <PagoPAPictogram
             background="light"
-            className="grid size-14 place-items-center"
+            className="pui:grid pui:size-14 pui:place-items-center"
             name="Maintenance"
             size={56}
           />
         </div>
       }
-      messageClassName="w-full items-stretch gap-2"
+      messageClassName="pui:w-full pui:items-stretch pui:gap-2"
     />
   )
 }

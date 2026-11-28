@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { ButtonGroup, StickyButtonBar } from "@/components/inputs"
+import { ButtonGroup, StickyButtonBar } from "@/components/inputs/actions"
 import { Button } from "@/components/primitives/button"
 
 const meta = {
@@ -11,8 +11,8 @@ const meta = {
     // Source 3424:12354: the bar closes the flow with the full-width contained
     // action (312px block inside the 360px frame, 24px insets).
     children: (
-      <ButtonGroup className="w-full" orientation="vertical">
-        <Button type="submit" className="w-full">
+      <ButtonGroup className="pui:w-full" orientation="vertical">
+        <Button type="submit" className="pui:w-full">
           Continua
         </Button>
       </ButtonGroup>
@@ -44,8 +44,8 @@ export const SourceBar: Story = {
   tags: ["color-pinned"],
   args: {
     children: (
-      <ButtonGroup className="w-full" orientation="vertical">
-        <Button type="submit" className="w-full">
+      <ButtonGroup className="pui:w-full" orientation="vertical">
+        <Button type="submit" className="pui:w-full">
           Primary
         </Button>
       </ButtonGroup>
@@ -53,13 +53,13 @@ export const SourceBar: Story = {
   },
   render: (args) => (
     <form
-      className="flex w-full flex-col px-4"
+      className="pui:flex pui:w-full pui:flex-col pui:px-4"
       onSubmit={(event) => {
         event.preventDefault()
       }}
     >
       <StickyButtonBar {...args} />
-      <p className="py-6">Contenuto della pagina sotto la barra.</p>
+      <p className="pui:py-6">Contenuto della pagina sotto la barra.</p>
     </form>
   ),
 }
@@ -67,12 +67,12 @@ export const SourceBar: Story = {
 export const Playground: Story = {
   render: (args) => (
     <form
-      className="min-h-96 w-90 max-w-full px-4"
+      className="pui:min-h-96 pui:w-90 pui:max-w-full pui:px-4"
       onSubmit={(event) => {
         event.preventDefault()
       }}
     >
-      <p className="mb-96">Contenuto lungo del modulo che scorre sotto la barra.</p>
+      <p className="pui:mb-96">Contenuto lungo del modulo che scorre sotto la barra.</p>
       <StickyButtonBar {...args} />
     </form>
   ),
@@ -82,12 +82,12 @@ export const CtaFade: Story = {
   args: { variant: "fade" },
   render: (args) => (
     <form
-      className="min-h-96 w-90 max-w-full px-4"
+      className="pui:min-h-96 pui:w-90 pui:max-w-full pui:px-4"
       onSubmit={(event) => {
         event.preventDefault()
       }}
     >
-      <p className="mb-96">Contenuto lungo del modulo che scorre sotto il CTA.</p>
+      <p className="pui:mb-96">Contenuto lungo del modulo che scorre sotto il CTA.</p>
       <StickyButtonBar {...args} />
     </form>
   ),

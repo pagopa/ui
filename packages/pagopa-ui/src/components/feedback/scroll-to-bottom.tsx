@@ -4,19 +4,18 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Down as ArrowDownIcon } from "@/components/icons/generated/arrow"
 import { Button } from "@/components/primitives/button"
 
-function ScrollToBottom({
-  target,
-  label: labelProp,
-  className,
-}: {
+export interface ScrollToBottomProps {
   target?: React.RefObject<HTMLElement | null>
   /** Accessible name of the scroll control. @default messages.scrollToBottom.label */
   label?: string
   className?: string
-}) {
+}
+
+function ScrollToBottom({ target, label: labelProp, className }: ScrollToBottomProps) {
   const t = useMessages("scrollToBottom")
   const label = labelProp ?? t.label
 
@@ -38,7 +37,7 @@ function ScrollToBottom({
     <Button
       type="button"
       size="icon"
-      className={cn("size-14 rounded-full shadow-32", className)}
+      className={cn("pui:size-14 pui:rounded-full pui:shadow-32", className)}
       aria-label={label}
       onClick={() => {
         const element = target?.current
@@ -49,7 +48,7 @@ function ScrollToBottom({
         else window.scrollTo({ top: document.documentElement.scrollHeight, behavior })
       }}
     >
-      <PagoPAIcon name="arrow" variant="down" decorative className="size-6" />
+      <Icon source={ArrowDownIcon} decorative className="pui:size-6" />
     </Button>
   )
 }

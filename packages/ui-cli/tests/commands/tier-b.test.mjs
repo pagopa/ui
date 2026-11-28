@@ -125,77 +125,6 @@ test("figma handoff brief prints past a saved plan it must not read", async () =
   }
 })
 
-test("figma handoff media dry-run has an in-process CLI contract", async () => {
-  const fixture = fixtureTree(
-    {
-      ...shared,
-      "src/catalog/figma/parity-cases.json": [
-        {
-          id: "button-default",
-          nodeId: "4:4",
-          export: "Button",
-          storyId: "button--default",
-          width: 320,
-        },
-      ],
-      "packages/pagopa-ui/src/catalog/figma/inventory.json":
-        shared["src/catalog/figma/inventory.json"],
-      "packages/pagopa-ui/src/catalog/figma/registry.json":
-        shared["src/catalog/figma/registry.json"],
-      "packages/pagopa-ui/src/catalog/figma/parity-cases.json": [
-        {
-          id: "button-default",
-          nodeId: "4:4",
-          export: "Button",
-          storyId: "button--default",
-          width: 320,
-        },
-      ],
-      "packages/pagopa-ui/src/button.tsx": "after\n",
-    },
-    "cli-handoff-media-",
-  )
-  const calls = []
-  const external = {
-    ...ghExternal(calls),
-    git: (args) => {
-      calls.push(["git", ...args])
-      if (args[0] === "status") return ""
-      if (args[0] === "diff") return "packages/pagopa-ui/src/button.tsx\n"
-      if (args[0] === "remote") return "git@github.com:acme/ui.git\n"
-      if (
-        args[0] === "show" &&
-        args[1].endsWith(":packages/pagopa-ui/src/catalog/figma/registry.json")
-      )
-        return JSON.stringify({ entries: { "4:4": { status: "implemented" } } })
-      if (
-        args[0] === "show" &&
-        args[1].endsWith(":packages/pagopa-ui/src/catalog/figma/parity-cases.json")
-      )
-        return "[]"
-      if (args[0] === "show" && args[1] === "base:packages/pagopa-ui/src/button.tsx")
-        return "before\n"
-      if (args[0] === "show" && args[1] === "HEAD:packages/pagopa-ui/src/button.tsx")
-        return "after\n"
-      throw new Error(`unexpected git ${args.join(" ")}`)
-    },
-  }
-  try {
-    const result = await runCli(
-      ["figma", "handoff", "media", "--pr", "12", "--base", "base", "--dry-run"],
-      { root: fixture.root, env: { STORYBOOK_URL: "https://storybook.example.test" }, external },
-    )
-    assert.equal(result.status, 0, result.stderr)
-    assert.match(result.stdout, /would attach/)
-    assert.equal(
-      calls.some((call) => call[0] === "gh" && call[1] === "pr" && call[2] === "comment"),
-      false,
-    )
-  } finally {
-    fixture.dispose()
-  }
-})
-
 test("figma request open dry-run has an in-process CLI contract", async () => {
   const fixture = fixtureTree(
     {
@@ -433,8 +362,8 @@ test("figma surface sync prints candidates, missing verdicts and non-empty multi
               },
             ],
             compositions: [
-              { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1, mirrors: [] },
-              { nodeId: "6:7", name: "Deep board", device: "desktop", drawn: 1, mirrors: [] },
+              { nodeId: "6:6", name: "Deleted board", device: "desktop", drawn: 1 },
+              { nodeId: "6:7", name: "Deep board", device: "desktop", drawn: 1 },
             ],
           },
         ],

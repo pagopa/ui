@@ -30,11 +30,7 @@ function focusFieldTarget(fieldId: string) {
 // announces once (`role="alert"`), links each control, and the controls stay
 // associated with their own message through `aria-describedby`. Per-message
 // live regions would announce the same failure several times.
-function ErrorSummary({
-  errors,
-  title: titleProp,
-  className,
-}: {
+export interface ErrorSummaryProps {
   /** Errors to list: every message links back to its control. */
   errors: ErrorSummaryItem[]
   /**
@@ -44,7 +40,9 @@ function ErrorSummary({
   title?: React.ReactNode
   /** ClassName applied to the summary box. */
   className?: string
-}) {
+}
+
+function ErrorSummary({ errors, title: titleProp, className }: ErrorSummaryProps) {
   const t = useMessages("errorSummary")
   const title = titleProp ?? t.title
 
@@ -54,18 +52,18 @@ function ErrorSummary({
       role="alert"
       data-slot="error-summary"
       className={cn(
-        "rounded-lg border border-error-border bg-error-soft p-4 text-body-sb text-error-foreground",
+        "pui:rounded-lg pui:border pui:border-error-border pui:bg-error-soft pui:p-4 pui:text-body-sb pui:text-error-foreground",
         className,
       )}
     >
-      <p className="text-body-big-sb">{title}</p>
-      <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-caption">
+      <p className="pui:text-body-big-sb">{title}</p>
+      <ul className="pui:mt-2 pui:flex pui:list-disc pui:flex-col pui:gap-1 pui:pl-5 pui:text-caption">
         {errors.map((error) => (
           <li key={error.fieldId}>
             <a
               href={`#${error.fieldId}`}
               onClick={() => focusFieldTarget(error.fieldId)}
-              className="rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:rounded-sm pui:underline pui:underline-offset-4 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
               {error.message}
             </a>

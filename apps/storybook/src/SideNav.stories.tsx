@@ -1,9 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, waitFor, within } from "storybook/test"
 
-import { Avatar, Tag } from "@/components/content"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { SideNav } from "@/components/navigation"
+import { Avatar } from "@/components/content/avatar"
+import { Tag } from "@/components/content/tag"
+import { Icon } from "@/components/icons/icon"
+import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
+import { Default as DashboardIcon } from "@/components/icons/generated/dashboard"
+import { Default as PaymentsIcon } from "@/components/icons/generated/payments"
+import { Default as ReceiptLongIcon } from "@/components/icons/generated/receipt-long"
+import { Default as SupportIcon } from "@/components/icons/generated/support"
+import { SideNav } from "@/components/navigation/side-nav"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 
 import sideNavGuide from "./guides/side-nav.md?raw"
@@ -49,25 +55,24 @@ export const Playground: Story = {
 }
 
 export const NestedAndProfile: Story = {
-  // The play function reads the navigation links, which the narrow layout hides
-  // behind the drawer trigger: Chromatic captures and plays it at desktop only.
-  parameters: { chromatic: { viewports: [1200] } },
+  // The fixture pins the desktop width: the play function reads the navigation
+  // links, which the narrow layout hides behind the drawer trigger.
   args: {
     items: [
       {
         label: "Panoramica",
         href: "#",
         current: true,
-        icon: <PagoPAIcon name="dashboard" />,
+        icon: <Icon source={DashboardIcon} />,
       },
       {
         label: "Pagamenti",
         href: "#pagamenti",
-        icon: <PagoPAIcon name="credit_card" />,
+        icon: <Icon source={CreditCardIcon} />,
         badgeCount: 2,
         badgeLabel: "2 pagamenti",
         chip: (
-          <Tag status="info" className="normal-case">
+          <Tag status="info" className="pui:normal-case">
             Novità
           </Tag>
         ),
@@ -79,7 +84,7 @@ export const NestedAndProfile: Story = {
       {
         label: "Assistenza",
         href: "#assistenza",
-        icon: <PagoPAIcon name="support" />,
+        icon: <Icon source={SupportIcon} />,
       },
     ],
     profile: {
@@ -104,46 +109,46 @@ const condensedItems = [
   {
     label: "Panoramica",
     href: "#",
-    icon: <PagoPAIcon name="dashboard" />,
+    icon: <Icon source={DashboardIcon} />,
   },
   {
     label: "Pagamenti",
     href: "#pagamenti",
-    icon: <PagoPAIcon name="credit_card" />,
+    icon: <Icon source={CreditCardIcon} />,
     badgeCount: 2,
     badgeLabel: "2 pagamenti",
     chip: (
-      <Tag status="info" className="normal-case">
+      <Tag status="info" className="pui:normal-case">
         Novità
       </Tag>
     ),
     children: [
-      { label: "PagoPA", href: "#pagopa", current: true, icon: <PagoPAIcon name="payments" /> },
-      { label: "F24", href: "#f24", icon: <PagoPAIcon name="receipt_long" /> },
+      { label: "PagoPA", href: "#pagopa", current: true, icon: <Icon source={PaymentsIcon} /> },
+      { label: "F24", href: "#f24", icon: <Icon source={ReceiptLongIcon} /> },
     ],
   },
   {
     label: "Assistenza",
     href: "#assistenza",
-    icon: <PagoPAIcon name="support" />,
+    icon: <Icon source={SupportIcon} />,
   },
 ]
 
 function CondensedPage({ width }: { width: number }) {
   return (
-    <div style={{ width }} className="flex min-h-[32rem] items-stretch">
+    <div style={{ width }} className="pui:flex pui:min-h-[32rem] pui:items-stretch">
       <SideNav
         condensed
         title="Pagamenti"
         items={condensedItems}
-        className="shrink-0 border-r"
+        className="pui:shrink-0 pui:border-r"
         profile={{
           title: "Stai operando come",
           name: "Comune di Roma",
           avatar: <Avatar alt="Comune di Roma" initials="CR" size="compact" />,
         }}
       />
-      <main data-testid="page-content" className="min-w-0 flex-1 p-6">
+      <main data-testid="page-content" className="pui:min-w-0 pui:flex-1 pui:p-6">
         <p>Contenuto della pagina</p>
       </main>
     </div>
@@ -155,7 +160,6 @@ export const Condensed: Story = {
   // the overlay does not move the page, not a 320 product surface.
   parameters: {
     layout: "fullscreen",
-    chromatic: { viewports: [1440] },
     a11yContract: { reflow: false },
   },
   render: () => <CondensedPage width={1440} />,
@@ -197,12 +201,12 @@ export const Condensed: Story = {
 
 export const CondensedMobile: Story = {
   // The source `Condensed=True, Device=Mobile` composition (`1519:2721`): the
-  // declaration head and the full-bleed items at 320. The story is a Chromatic
-  // surface; the JS suite runs at the default viewport, where the desktop rail
-  // is the rendered composition.
-  parameters: { layout: "fullscreen", chromatic: { viewports: [320] } },
+  // declaration head and the full-bleed items at 320, the width the fixture
+  // pins. The JS suite runs at the default viewport, where the desktop rail is
+  // the rendered composition.
+  parameters: { layout: "fullscreen" },
   render: () => (
-    <div style={{ width: 320 }} className="min-h-[32rem]">
+    <div style={{ width: 320 }} className="pui:min-h-[32rem]">
       <SideNav
         condensed
         title="Pagamenti"
@@ -213,7 +217,7 @@ export const CondensedMobile: Story = {
           avatar: <Avatar alt="Comune di Roma" initials="CR" size="compact" />,
         }}
       />
-      <main data-testid="page-content" className="p-6">
+      <main data-testid="page-content" className="pui:p-6">
         <p>Contenuto della pagina</p>
       </main>
     </div>

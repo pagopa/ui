@@ -56,7 +56,7 @@ const sourceArgs = {
           the invisible ::after expansion, so the column keeps the source rhythm. */}
       <Button
         variant="link"
-        className="relative min-h-0 px-0 after:absolute after:inset-x-0 after:-inset-y-3"
+        className="pui:relative pui:min-h-0 pui:px-0 pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
       >
         Contatta l’assistenza
       </Button>
@@ -65,20 +65,20 @@ const sourceArgs = {
 }
 
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   // The fixture carries the source state (code row + both actions, `749:5694`).
   args: { code: sourceArgs.code, actions: sourceArgs.actions },
 }
 
 export const WithAction: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { actions: <Button>Riprova</Button> },
 }
 
 export const WithCode: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: {
     code: "PPT_001",

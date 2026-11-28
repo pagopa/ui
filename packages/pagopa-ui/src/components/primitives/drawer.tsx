@@ -34,11 +34,11 @@ const swipeDirectionByDirection: Record<DrawerDirection, DrawerSwipeDirection> =
 // the mobile sheets keep the 16px top radius. All panels carry the source
 // "Shadow 32" elevation (the Filters/Sort source variants omit it).
 const panelBySwipeDirection: Record<DrawerSwipeDirection, string> = {
-  down: "inset-x-0 bottom-0 max-h-dvh rounded-t-xl translate-y-[var(--drawer-swipe-movement-y)] data-starting-style:translate-y-full data-ending-style:translate-y-full",
-  up: "inset-x-0 top-0 max-h-dvh rounded-b-xl translate-y-[var(--drawer-swipe-movement-y)] data-starting-style:-translate-y-full data-ending-style:-translate-y-full",
+  down: "pui:inset-x-0 pui:bottom-0 pui:max-h-dvh pui:rounded-t-xl pui:translate-y-[var(--drawer-swipe-movement-y)] pui:data-starting-style:translate-y-full pui:data-ending-style:translate-y-full",
+  up: "pui:inset-x-0 pui:top-0 pui:max-h-dvh pui:rounded-b-xl pui:translate-y-[var(--drawer-swipe-movement-y)] pui:data-starting-style:-translate-y-full pui:data-ending-style:-translate-y-full",
   right:
-    "inset-y-0 right-0 h-full w-104 max-w-full translate-x-[var(--drawer-swipe-movement-x)] data-starting-style:translate-x-full data-ending-style:translate-x-full",
-  left: "inset-y-0 left-0 h-full w-104 max-w-full translate-x-[var(--drawer-swipe-movement-x)] data-starting-style:-translate-x-full data-ending-style:-translate-x-full",
+    "pui:inset-y-0 pui:right-0 pui:h-full pui:w-104 pui:max-w-full pui:translate-x-[var(--drawer-swipe-movement-x)] pui:data-starting-style:translate-x-full pui:data-ending-style:translate-x-full",
+  left: "pui:inset-y-0 pui:left-0 pui:h-full pui:w-104 pui:max-w-full pui:translate-x-[var(--drawer-swipe-movement-x)] pui:data-starting-style:-translate-x-full pui:data-ending-style:-translate-x-full",
 }
 
 function Drawer({
@@ -88,7 +88,7 @@ function DrawerOverlay({
     <DrawerPrimitive.Backdrop
       data-slot="drawer-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-overlay transition-opacity duration-300 data-starting-style:opacity-0 data-ending-style:opacity-0",
+        "pui:fixed pui:inset-0 pui:z-50 pui:bg-overlay pui:transition-opacity pui:duration-300 pui:data-starting-style:opacity-0 pui:data-ending-style:opacity-0",
         className,
       )}
       {...props}
@@ -110,13 +110,13 @@ function DrawerContent({
       <DrawerOverlay />
       <DrawerPrimitive.Viewport
         data-slot="drawer-viewport"
-        className="pointer-events-none fixed inset-0 z-50"
+        className="pui:pointer-events-none pui:fixed pui:inset-0 pui:z-50"
       >
         <DrawerPrimitive.Popup
           data-slot="drawer-content"
           className={(state) =>
             cn(
-              "group/drawer-popup pointer-events-auto fixed z-50 flex h-auto flex-col bg-popover text-label-mini text-popover-foreground shadow-32 outline-none transition-transform duration-300 data-swiping:transition-none",
+              "group/drawer-popup pui:pointer-events-auto pui:fixed pui:z-50 pui:flex pui:h-auto pui:flex-col pui:bg-popover pui:text-label-mini pui:text-popover-foreground pui:shadow-32 pui:outline-none pui:transition-transform pui:duration-300 pui:data-swiping:transition-none",
               panelBySwipeDirection[state.swipeDirection],
               className,
             )
@@ -127,12 +127,12 @@ function DrawerContent({
             <div
               data-slot="drawer-handle"
               aria-hidden="true"
-              className="mx-auto mt-4 hidden h-1 w-25 shrink-0 rounded-full bg-muted group-data-[swipe-direction=down]/drawer-popup:block"
+              className="pui:mx-auto pui:mt-4 pui:hidden pui:h-1 pui:w-25 pui:shrink-0 pui:rounded-full pui:bg-muted pui:group-data-[swipe-direction=down]/drawer-popup:block"
             />
           ) : null}
           <DrawerPrimitive.Content
             data-slot="drawer-content-body"
-            className="flex min-h-0 flex-1 flex-col"
+            className="pui:flex pui:min-h-0 pui:flex-1 pui:flex-col"
           >
             {children}
           </DrawerPrimitive.Content>
@@ -151,7 +151,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
         // `tablet-md:gap-*` here would beat the composed `gap-2` above
         // `tablet-md` and break
         // the source's 8px head-to-description spacing.
-        "flex flex-col gap-0.5 p-4 group-data-[swipe-direction=down]/drawer-popup:text-center group-data-[swipe-direction=up]/drawer-popup:text-center tablet-md:text-left",
+        "pui:flex pui:flex-col pui:gap-0.5 pui:p-4 pui:group-data-[swipe-direction=down]/drawer-popup:text-center pui:group-data-[swipe-direction=up]/drawer-popup:text-center pui:tablet-md:text-left",
         className,
       )}
       {...props}
@@ -163,7 +163,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      className={cn("pui:mt-auto pui:flex pui:flex-col pui:gap-2 pui:p-4", className)}
       {...props}
     />
   )
@@ -173,7 +173,7 @@ function DrawerTitle({ className, ...props }: React.ComponentProps<typeof Drawer
   return (
     <DrawerPrimitive.Title
       data-slot="drawer-title"
-      className={cn("font-heading text-body-sb text-foreground", className)}
+      className={cn("pui:font-heading pui:text-body-sb pui:text-foreground", className)}
       {...props}
     />
   )
@@ -186,7 +186,7 @@ function DrawerDescription({
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"
-      className={cn("text-body text-muted-foreground", className)}
+      className={cn("pui:text-body pui:text-muted-foreground", className)}
       {...props}
     />
   )

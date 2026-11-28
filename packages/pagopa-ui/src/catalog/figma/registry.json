@@ -184,7 +184,20 @@
         "module": "src/components/content/tag.tsx",
         "export": "Tag",
         "story": "apps/storybook/src/Tag.stories.tsx",
-        "storyExports": ["AllStatuses", "Fidelity", "Playground"]
+        "storyExports": ["AllStatuses", "Fidelity", "Playground"],
+        "props": {
+          "Status": {
+            "prop": "status",
+            "values": {
+              "Counter": "counter",
+              "Default": "default",
+              "Error": "error",
+              "Info": "info",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-23 (M5 wave): six committed cases, one per source variant (`105-2043-status-info|warning|success|error|default|counter`), each capturing `Fidelity` at its own variant width. The source is 30px high with a 6px radius, a 1px Color/Border/Border #e8ebf1 stroke, a #ffffff fill, 6px/8px insets, the 6px icon-label gap, 16px status artwork and Caption SB 12/18 uppercase #555c70; Info uses the Filled icon and Counter is iconless. Rendering uses `min-h-8` (32px, +2), `rounded-md` (radius-8 foundation, +2), `gap-1.5` (6px) and `px-2` (8px); the 1px CSS border sits inside the 8px inset (+1, the Icon measures left 9) and the taller centred content keeps the label at top 7, both within tolerance. Source→render widths are Info 68→69.19, Warning 96→97.8, Success 90→91.95, Error 78→79.83, Default 89→90.19 and Counter 31→32.33: every delta under 2px, no per-variant compensation, strict composition clean. The former removable Badge pill moved to InputChip, the source's removable-chip equivalent. Comments 2026-10-24 (F-13): `iconLabel` exposes the default status artwork to assistive technology (`decorative={false}` plus the caller's label); the thread labels are `Stato: informativo`, `Stato: avviso`, `Stato confermato`, `Stato: errore` and `Stato: standard`. The icon stays decorative by default, `counter` stays iconless and the semantic colour lock is unchanged."
     },
@@ -211,7 +224,23 @@
           "Loading",
           "ClickInteraction",
           "FontPreferenceReflow"
-        ]
+        ],
+        "props": {
+          "Variant": {
+            "prop": "variant",
+            "values": {
+              "Contained": "default",
+              "Contained contrast": "contrast",
+              "Contained error": "destructive",
+              "Outlined": "outline",
+              "Outlined contrast": "outline-contrast",
+              "Outlined error": "outline-destructive",
+              "Text": "ghost",
+              "Text contrast": "ghost-contrast",
+              "Text error": "ghost-destructive"
+            }
+          }
+        }
       },
       "note": "Reviewed 2026-10-22 after the 2026-10-14 delta: all 45 variants (9 appearances x label, left icon, right icon, skeleton, spinner) captured from FigmaStateMatrix at 1200 against the pinned source; 9 reviewed cases cover every appearance and every state (108-1402-*). Fixed: the outlined 2px stroke is an inset ring inside the 24px inset (the CSS border sat outside it, +4px), and contained variants dropped the 1px transparent border, so contained and outlined boxes are 96/128/140/72 against 96/128/141/72; forced colors fall back to a real border (FigmaStateMatrix rendered in Chromium with forced-colors active on 2026-10-22: 1px system border on contained and Text, 2px on outlined, labels, icons and spinners visible; the skeleton bar vanished, so it now paints CanvasText under forced colors). Adaptation `minimum-text-action-target`: Figma Text bounds only its 16-24px content; the library keeps a 48px native action target and its existing 16px horizontal hit area (Text-family box and padding residues). The source now paints the Outlined error and Text error spinners #d13333 (Contrast spinner 109:2458 with fill overrides), which matches the destructive currentColor: source-aligned, no longer an adaptation. Residues: the skeleton bar is rounded-full against radius 48 (the same full pill on the 16px bar) and uses the nearest 92px width token for 93. The parity probe reads a borderless inset ring as the stroke, so the outlined cases compare the 2px ring and its colour directly. `field.gap` is a single-child mapping artifact (ignored). Composition: the six contained and outlined cases run with compareOffset (label cases also compareBox height) and are clean under --strict; the three Text cases leave it off and record in their notes the measured offsets the minimum-text-action-target adaptation causes (+12 vertical centring, +17 horizontal from the 1px transparent border and 16px hit area). The FigmaStateMatrix fixture is fullscreen with each appearance row sized to its five buttons (2026-10-22 verification: the 548px rows clipped the fifth column out of the navy contrast panels). Prop-convention departures (the published API predates the node, so it keeps its names): the composite `Variant` axis (style x colour) folds into the existing `variant` prop under its shadcn-derived names, Contained → default, Outlined → outline, Text → ghost, `<style> contrast` → contrast/outline-contrast/ghost-contrast, `<style> error` → destructive/outline-destructive/ghost-destructive (destructive is the library-wide error name, as in Alert); `Icon` (None, <- Left, Right ->) is content, the icon child before or after the label, not a prop; `Skeleton=True` → `skeleton` and `Spinner=True` → `loading`, load flags named for the state the caller sets (both set aria-busy and keep focus), not for the drawn artwork. The mapping is in guides/actions.md.\n\nOpen design question: the focus perimeter — docs/design-requests/2026-10-24-focus-perimeter.md (issue #34). The node stays implemented; the question applies to every focusable control."
     },
@@ -221,7 +250,10 @@
         "module": "src/components/feedback/spinner.tsx",
         "export": "Spinner",
         "story": "apps/storybook/src/Spinner.stories.tsx",
-        "storyExports": ["SpinnerBrandVariants"]
+        "storyExports": ["SpinnerBrandVariants"],
+        "props": {
+          "Brand": { "prop": "variant", "values": { "Contrast": "contrast", "Primary": "primary" } }
+        }
       },
       "note": "Path C reviewed pinned Brand=Primary 109:2456 and Brand=Contrast 109:2458 against SpinnerBrandVariants at 320×240/1×. Both source and render are 24×24px; the 2px annulus/20px opening and rounded terminal match, with source/render terminal bounds 2.09×3.41px at 21.91×9.59px (under 0.001px difference). Default size-6 is 24px (0px delta); text-primary (#0B3EE3) and text-contrast (white) match source. size-5/size-12 remain 20px/48px API extensions. The 2px mask is source ring geometry, not a spacing/radius compensation. Contrast artwork is white on transparency and needs a caller-owned primary surface outside source bounds. A labeled Spinner exposes one status; unlabeled siblings stay decorative and the caller owns aria-busy. The documented 1s functional animation remains under reduced motion; the fidelity capture is static. Reviewed 2026-10-23 (second ring): the two cases `109-2455-primary` and `109-2455-contrast` reproduce the two variants at 24×24 from SpinnerBrandVariants, mapping the `Ellipse 8 (Stroke)` terminal (2.09×3.41 at 21.91/9.59) and both strict-composition clean. The ring is a conic-gradient, so its colour is verified by the reviewed render, not by a DOM background property. Guide: apps/storybook/src/guides/loading-indicators.md."
     },
@@ -818,7 +850,22 @@
         "module": "src/components/inputs/chips.tsx",
         "export": "Chip",
         "story": "apps/storybook/src/Chip.stories.tsx",
-        "storyExports": ["ChipSourceVariantMatrix", "ChipRemovalAction"]
+        "storyExports": ["ChipSourceVariantMatrix", "ChipRemovalAction"],
+        "props": {
+          "Type": {
+            "prop": "variant",
+            "values": {
+              "Default": "default",
+              "Error": "error",
+              "Highlight": "highlight",
+              "Informative": "informative",
+              "Neutral": "neutral",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          },
+          "Style": { "prop": "appearance", "values": { "Solid": "solid", "Outline": "outline" } }
+        }
       },
       "note": "Path C reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All 14 Type/Style variants have committed source-bound cases (`197-1985-*`) captured from ChipSourceVariantMatrix; the render preserves visible centered labels and 12/18 typography, while the matrix play verifies solid/outline paints, border state and 24px source height. Keep token-driven compact sizing (h-6, px-2, nearest py-0.5, rounded-full) and the bundled Titillio to Titillium Web Semibold mapping. With the bundled family the labels now measure the source widths exactly (57/58/63/62/40/44/66), so the earlier 2.05–5.12px narrower figures are historical; the only residue is the full-pill radius (source 100, rounded-full). Default 44px sizing and the 44×44 removal action remain accessibility adaptations; removal interaction verifies its name, keyboard use and non-submission. Manual zoom and screen-reader testing remain unverified."
     },
@@ -917,7 +964,22 @@
         "module": "src/components/primitives/alert.tsx",
         "export": "Alert",
         "story": "apps/storybook/src/Alert.stories.tsx",
-        "storyExports": ["AllStatuses", "Playground", "WithAction"]
+        "storyExports": ["AllStatuses", "Playground", "WithAction"],
+        "props": {
+          "Severity": {
+            "prop": "variant",
+            "values": {
+              "Error": "destructive",
+              "Info": "info",
+              "Success": "success",
+              "Warning": "warning"
+            }
+          },
+          "Direction": {
+            "prop": "direction",
+            "values": { "Horizontal": "horizontal", "Vertical": "vertical" }
+          }
+        }
       },
       "note": "Figma delta 2026-10-14: reviewed 2026-10-22 (M5 wave). Five principal states are committed cases against the pinned source: Severity=Error Direction=Vertical (212:1900, 272x166), Error Horizontal (245:1505, 852x84), Warning (212:1910), Info (212:1922) and Success (212:1932) Vertical, all 272x166. The source anatomy holds: 16px padding, the 8px icon-to-content gap, the 16px copy-to-action gap (64px on the horizontal composition), the 1px status stroke and soft fill, title 18/26 Semibold, body 16/22 and the 16/22 text action. The story action keeps its 22px source line (border-0 removes the transparent control border) and its 44px target on the invisible ::after. The three remaining Horizontal severities share the reviewed horizontal composition; the four Vertical severities are each a case. Adaptations retained: `minimum-text-action-target` (the source Text bounds its 16-24px content; the library keeps the 48px native target and its existing horizontal hit area) and `visible-error-spinner` (the pinned source paints a white Contrast spinner on the transparent red variant, which is invisible; the error variant uses the destructive currentColor)."
     },
@@ -1196,7 +1258,23 @@
         "module": "src/components/primitives/badge.tsx",
         "export": "Badge",
         "story": "apps/storybook/src/Badge.stories.tsx",
-        "storyExports": ["Fidelity", "Playground"]
+        "storyExports": ["Fidelity", "Playground"],
+        "props": {
+          "Property": {
+            "prop": "display",
+            "values": { "Numbered": "numbered", "Plain": "plain", "Sidenav icon": "sidenav-icon" }
+          },
+          "Selected": { "prop": "selected", "values": { "False": false, "True": true } },
+          "Background": {
+            "prop": "background",
+            "values": {
+              "Grey 50": "muted",
+              "Primary": "primary",
+              "Transparent": "transparent",
+              "White": "white"
+            }
+          }
+        }
       },
       "note": "Reviewed against pinned Figma v2412426961662147678 on 2026-10-23. All six Property/Selected/Background variants have source-bound cases: the numbered 24x24 frame with the 22x20 pill and the 14/20 Semibold count, the transparent and 14px plain frames with their 10px dot, and the two sidenav forms with the 10px indicator overhanging the 24x24 artwork. The separation stroke of the dot is painted by the ring-2 box-shadow in the background, muted and selection-soft tokens; the selected sidenav ring uses selection-soft (#e7ecfc) instead of the near-match accent, and the probe reads borders, so the ring is a recorded residue. The invisible radius 64 of the transparent 24px container is a recorded residue. Manual zoom and screen-reader testing remain unverified."
     },
@@ -1227,7 +1305,7 @@
           "Loading"
         ]
       },
-      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `382-7813-desktop-desktop` (382:7775 at 560) and `382-7813-mobile-mobile` (403:4160 at 272), both with the container scope verified. The mobile review found the stack gap at 12 where the source draws 8: `checkout-main` now uses `gap-2` for the mobile composition (the desktop branch keeps `@lg:gap-4`); the remaining deltas are the shared sm action row (+2) and the border. Adaptations `desktop-accessible-action-and-token-geometry` and `mobile-accessible-action-and-token-geometry`: the 22px source text action keeps the shared ghost Button's 16px inline inset and 48px minimum height (+26px); the card uses the token ladder (p-4, rounded-lg, gap-3, gap-2, gap-4 on desktop) and the 12px suggestion uses leading-5 (20px against the source 18px). Adaptation `token-first-skeleton-geometry`: skeleton widths are the 240/356/168px tokens against the source 241/357/170px with 24/16px heights and the 6px inset on existing tokens; the repeated 4px bar radius stays local because radius tokens start at 8px. Adaptation `mobile-runtime-viewport`: the 272px Figma frame is not a device width; the preview enforces a 320px minimum body width, so the mobile case uses the real 320px viewport without a width wrapper."
+      "note": "Reviewed per device 2026-10-15 (device burn-down wave 2): `382-7813-desktop-desktop` (382:7775 at 560) and `382-7813-mobile-mobile` (403:4160 at 272), both with the container scope verified. The mobile review found the stack gap at 12 where the source draws 8: `checkout-main` now uses `gap-2` for the mobile composition (the desktop branch keeps `@min-panel:gap-4`); the remaining deltas are the shared sm action row (+2) and the border. Adaptations `desktop-accessible-action-and-token-geometry` and `mobile-accessible-action-and-token-geometry`: the 22px source text action keeps the shared ghost Button's 16px inline inset and 48px minimum height (+26px); the card uses the token ladder (p-4, rounded-lg, gap-3, gap-2, gap-4 on desktop) and the 12px suggestion uses leading-5 (20px against the source 18px). Adaptation `token-first-skeleton-geometry`: skeleton widths are the 240/356/168px tokens against the source 241/357/170px with 24/16px heights and the 6px inset on existing tokens; the repeated 4px bar radius stays local because radius tokens start at 8px. Adaptation `mobile-runtime-viewport`: the 272px Figma frame is not a device width; the preview enforces a 320px minimum body width, so the mobile case uses the real 320px viewport without a width wrapper."
     },
     "3823:36774": {
       "status": "mocked",
@@ -1345,7 +1423,10 @@
         "module": "src/components/primitives/separator.tsx",
         "export": "Separator",
         "story": "apps/storybook/src/Separator.stories.tsx",
-        "storyExports": ["Playground", "Padded", "WithText", "Fidelity"]
+        "storyExports": ["Playground", "Padded", "WithText", "Fidelity"],
+        "props": {
+          "Padding": { "prop": "padding", "values": { "0": 0, "16": 16, "24": 24, "32": 32 } }
+        }
       },
       "note": "Reviewed 2026-10-23 (second ring, implemented node without a case): all five source variants at the 320px set width, no Device axis — `61-2786-line` (Padding=0, Type=Line, 320x1 #e8ebf1), `61-2786-padding-16`, `61-2786-padding-24` and `61-2786-padding-32` (the line inset 16/24/32, 288/272/256x1, the spacers unpainted) and `61-2786-with-text` (320x20, 8px root gap, the 130x1 lines at y9.5, the Text layer `oppure` 14/20 Regular #555c70 at x138 measuring 43.47 against 44, a font metric). All five are strict-composition clean. The `With text` source `Line-Left`/`Line-Right` are empty frames that carry a 10px padding with no DOM counterpart, so they are mapped through the root gap and the centred text (mapping note). The `Fidelity` story renders all five variants at 320. `--border` is Figma Color/Border/Border fill #e8ebf1 (grey-100); do not swap in grey-200 #d2d6e3, which is reserved for nodes whose source stroke is grey-200 (Stepper 1314:10512). Text contract: `label` is consumer-owned content, translated outside the component. Guide: apps/storybook/src/guides/separator.md."
     },
@@ -1442,13 +1523,16 @@
           "Playground",
           "WithDisabledItem",
           "Loading",
+          "ControlledValue",
+          "UncontrolledMultiple",
+          "ForwardedContract",
           "FidelityClosed",
           "FidelityOpen",
           "FidelityDisabled",
           "FidelitySkeleton"
         ]
       },
-      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data and `defaultValue`; `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). Open design question: avatar and coloured icon in the header — docs/design-requests/2026-10-24-accordion-avatar-icons.md (issue #35). The node stays implemented for the drawn states."
+      "note": "Reviewed 2026-10-23 (closing the 2026-10-14 delta): the set has no Device axis (its `State` values are states, not devices), so each of the four drawn states is verified once at the source 580 width. `759-6399-closed` (State=Close 759:6398): the item is 580x100 against the source 580x98 because Figma draws the 1px stroke inside the frame while CSS border-box adds it (+1px per edge); pad 24, radius 8, #e8ebf1 stroke, white fill; the header is 532x50 with the 24px photo, the 8px gap, the 16/22 Semibold title, the 24px Status chip at a 4px gap and the 24px chevron 12px after the title frame; the root gap is the single-child phantom gap. `759-6399-open` (State=Open 759:6537): the header is 50, the description sits at offset 82 (the 8px step) and the caller content starts at 136 (the 32px step); the item height follows the content slot, so the case records a height residue (the fixture carries one paragraph against the source three-section sample list) and leaves the content subtree unmapped as caller data. `759-6399-disabled` (State=Disabled 13027:5052): grey-100 item fill, the Status chip as a 1px #0e0f13 outline, the title at full #0e0f13 and only the chevron at #bbc2d6. `759-6399-skeleton` (State=Skeleton 13027:5623): the header plus the 32px step and six 68px placeholder rows (100x22 and 200x16 bars, 6px gap, #e8ebf1 fill) with five 1px dividers, so the content is 532x413 and the item 580x543, every offset exact. Component fixes in this wave: the loading item now renders the source skeleton composition instead of a generic two-bar card, the disabled item no longer fades its title (only the chevron changes colour), and the header title/chip stacks fill their row (496/464) like the source fill frames so the chevron keeps the 12px gap. The guide apps/storybook/src/guides/accordion.md records the source mapping. Prop conventions: the source `State` axis maps to the caller's `disabled`/`skeleton` data, `value` with `onValueChange` owns the open sections and `defaultValue` opens them at mount; `multiple` keeps several open at once, an extension of the primitive rather than a source variant, since the source draws one open card. `AccordionItemData` carries the caller copy (`title`, `description`, `chip`, `icon`, `content`); `ref`, `className` and the standard `div` attributes land on the root; the announced strings are `aria-label` for the group (default `Approfondimenti`) and `loadingLabel` for the skeleton (default `Caricamento in corso`). Open design question: avatar and coloured icon in the header — docs/design-requests/2026-10-24-accordion-avatar-icons.md (issue #35). The node stays implemented for the drawn states."
     },
     "760:7432": {
       "status": "pending",

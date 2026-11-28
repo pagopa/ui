@@ -3,19 +3,12 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
+import { Icon } from "@/components/icons/icon"
+import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 
 import { Snackbar } from "./snackbar"
 
-function SnackbarErrorCode({
-  message: messageProp,
-  description,
-  code,
-  onDismiss,
-  copyLabel: copyLabelProp,
-  copiedLabel: copiedLabelProp,
-  copyErrorLabel: copyErrorLabelProp,
-}: {
+export interface SnackbarErrorCodeProps {
   /** Visible error message. @default messages.snackbarErrorCode.message */
   message?: React.ReactNode
   description?: React.ReactNode
@@ -27,7 +20,17 @@ function SnackbarErrorCode({
   copiedLabel?: string
   /** Announced text when the clipboard write fails. @default messages.snackbarErrorCode.copyErrorLabel */
   copyErrorLabel?: string
-}) {
+}
+
+function SnackbarErrorCode({
+  message: messageProp,
+  description,
+  code,
+  onDismiss,
+  copyLabel: copyLabelProp,
+  copiedLabel: copiedLabelProp,
+  copyErrorLabel: copyErrorLabelProp,
+}: SnackbarErrorCodeProps) {
   const t = useMessages("snackbarErrorCode")
   const message = messageProp ?? t.message
   const copyLabel = copyLabelProp ?? t.copyLabel
@@ -58,14 +61,14 @@ function SnackbarErrorCode({
       title={message}
       message={description ?? null}
       footer={
-        <div className="grid gap-2">
+        <div className="pui:grid pui:gap-2">
           <div
             data-slot="snackbar-error-code-field"
-            className="flex h-12 items-start gap-3 rounded-lg border border-input bg-background px-3 pt-3"
+            className="pui:flex pui:h-12 pui:items-start pui:gap-3 pui:rounded-lg pui:border pui:border-input pui:bg-background pui:px-3 pui:pt-3"
           >
             <span
               data-slot="snackbar-error-code-value"
-              className="min-w-0 flex-1 font-mono text-foreground text-mono wrap-anywhere"
+              className="pui:min-w-0 pui:flex-1 pui:font-mono pui:text-foreground pui:text-mono pui:wrap-anywhere"
             >
               {code}
             </span>
@@ -74,16 +77,16 @@ function SnackbarErrorCode({
               onClick={copyCode}
               aria-label={copyLabel}
               data-slot="snackbar-error-code-copy"
-              className="relative grid size-6 shrink-0 place-items-center rounded-md p-0 text-primary after:absolute after:-inset-2.5 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:p-0 pui:text-primary pui:after:absolute pui:after:-inset-2.5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <PagoPAIcon name="content_copy" />
+              <Icon source={ContentCopyIcon} />
             </button>
           </div>
-          <output aria-live="polite" className="sr-only">
+          <output aria-live="polite" className="pui:sr-only">
             {copyState === "copied" ? copiedLabel : ""}
           </output>
           {copyState === "failed" ? (
-            <span role="alert" className="text-label-mini">
+            <span role="alert" className="pui:text-label-mini">
               {copyErrorLabel}
             </span>
           ) : null}

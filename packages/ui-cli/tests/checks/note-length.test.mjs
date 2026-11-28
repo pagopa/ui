@@ -1,15 +1,11 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import {
-  longNoteErrors,
-  loweredNoteLengthBaseline,
-  NOTE_LENGTH_LIMIT,
-  RegistrySchema,
-} from "../../src/schemas/catalogue.ts"
+import { noteLengthWarnings } from "../../src/figma/catalogue/validation.ts"
+import { NOTE_LENGTH_LIMIT, RegistrySchema } from "../../src/schemas/catalogue.ts"
 
 // The fixtures hold the notes only: the registry schema owns the shape, so the
-// ratchet is tested against a registry a person could commit.
+// report is tested against a registry a person could commit.
 function registry(notes) {
   return RegistrySchema.parse({
     entries: Object.fromEntries(
@@ -18,54 +14,33 @@ function registry(notes) {
   })
 }
 
-function baseline(overLimit, maxLength = NOTE_LENGTH_LIMIT) {
-  return { maxLength, overLimit, note: "fixture" }
-}
-
 const short = "one residue: the source insets 28px"
 const long = "x".repeat(NOTE_LENGTH_LIMIT + 1)
 
-test("a note past the limit above the baseline fails", () => {
-  const errors = longNoteErrors(registry([short, long]), baseline(0), "registry.json")
-  assert.equal(errors.length, 1)
-  assert.match(errors[0], /1 registry notes exceed 600 characters, the baseline allows 0/)
-  // A migrated rule names the fix and the command that applies it.
-  assert.match(errors[0], /shorten the note/)
-  assert.match(errors[0], /pnpm nx run pagopa-ui:check:catalogue/)
+test("a registry within the limit has nothing to report", () => {
+  assert.deepEqual(noteLengthWarnings(registry([short])), [])
 })
 
-test("a count below the baseline asks to lower it", () => {
-  const errors = longNoteErrors(registry([short]), baseline(90), "registry.json")
-  assert.equal(errors.length, 1)
-  assert.match(errors[0], /lower overLimit to 0/)
-  assert.match(errors[0], /pnpm nx run pagopa-ui:check:catalogue/)
-})
-
-test("a count equal to the baseline passes", () => {
-  assert.deepEqual(longNoteErrors(registry([short, long]), baseline(1), "registry.json"), [])
+// The limit is a writer guard, not a baseline: `figma registry set` refuses a
+// longer note, and the notes already past it are counted on the report so the
+// residue stays visible without holding the branch.
+test("the notes past the limit are reported once with their count", () => {
+  const warnings = noteLengthWarnings(registry([short, long, long]))
+  assert.equal(warnings.length, 1)
+  assert.match(warnings[0], /2 of 3 registry notes exceed 600 characters/)
+  assert.match(warnings[0], /pnpm ui-cli figma registry set/)
 })
 
 test("a note of exactly the limit is not over it", () => {
-  const errors = longNoteErrors(registry(["y".repeat(NOTE_LENGTH_LIMIT)]), baseline(0), "x.json")
-  assert.deepEqual(errors, [])
+  assert.deepEqual(noteLengthWarnings(registry(["y".repeat(NOTE_LENGTH_LIMIT)])), [])
 })
 
-test("the baseline cannot loosen the limit", () => {
-  const errors = longNoteErrors(registry([short]), baseline(0, 1_200), "x.json")
-  assert.equal(errors.length, 1)
-  assert.match(errors[0], /maxLength is 1200, the limit is 600/)
-})
-
-// The drift refresh replaces a reviewed note with the pending stub, so the
-// writer that shortens the note owns the move the check would otherwise demand
-// from a person. It only ever lowers.
-test("a shortened note lowers the baseline the writer reads", () => {
-  const tightened = loweredNoteLengthBaseline(registry([short]), baseline(1))
-  assert.equal(tightened?.overLimit, 0)
-  assert.equal(tightened?.maxLength, NOTE_LENGTH_LIMIT)
-})
-
-test("a count that did not drop leaves the baseline alone", () => {
-  assert.equal(loweredNoteLengthBaseline(registry([short, long]), baseline(1)), null)
-  assert.equal(loweredNoteLengthBaseline(registry([short, long]), baseline(0)), null)
+test("a rule note counts like an entry note", () => {
+  const withRule = RegistrySchema.parse({
+    entries: { "1:1": { status: "pending", note: short } },
+    bulkRules: [{ pageId: "1:0", note: long }],
+  })
+  const warnings = noteLengthWarnings(withRule)
+  assert.equal(warnings.length, 1)
+  assert.match(warnings[0], /1 of 2 registry notes exceed 600 characters/)
 })

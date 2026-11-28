@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { XCircle } from "lucide-react"
+import { Icon } from "@/components/icons/icon"
+import { Default as CancelIcon } from "@/components/icons/generated/cancel"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { MenuDropdown } from "@/components/inputs"
+import { MenuDropdown } from "@/components/inputs/menus"
 
 const notifyMenuItem = fn()
 const documentsMenuItem = fn()
@@ -25,7 +25,7 @@ const meta = {
       {
         id: "delete",
         label: "Elimina",
-        icon: XCircle,
+        icon: CancelIcon,
         destructive: true,
         onSelect: deleteMenuItem,
       },
@@ -69,17 +69,17 @@ export const SourcePanel: Story = {
         id: "cancel",
         label: "Value",
         // Source row: the destructive action leads with the 24px `cancel`
-        // artwork, so the fixture uses the design system's own icon rather than
-        // a lucide silhouette; the public `icon` prop paints any component it
-        // receives with the destructive colour.
-        leading: <PagoPAIcon name="cancel" size={24} />,
+        // artwork, so the fixture uses the design system's own icon; the public
+        // `icon` prop paints any component it receives with the destructive
+        // colour.
+        leading: <Icon source={CancelIcon} size={24} />,
         destructive: true,
         onSelect: () => undefined,
       },
     ],
   },
   render: (args) => (
-    <div className="w-[274px] max-w-full">
+    <div className="pui:w-[274px] pui:max-w-full">
       <MenuDropdown {...args} />
     </div>
   ),

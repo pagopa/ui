@@ -117,37 +117,6 @@ const rules = {
   },
 }
 
-const cases = [
-  {
-    id: "widget-mobile",
-    nodeId: "4:4",
-    export: "Widget",
-    storyId: "components-widget--playground",
-    variant: "4:5",
-    device: "mobile",
-    layoutScope: "viewport",
-    width: 320,
-    viewport: 320,
-    height: 40,
-    root: "#storybook-root",
-    note: "Reviewed at 320: the widget fills its container.",
-  },
-  {
-    id: "widget-desktop",
-    nodeId: "4:4",
-    export: "Widget",
-    storyId: "components-widget--playground",
-    variant: "4:6",
-    device: "desktop",
-    layoutScope: "viewport",
-    width: 1200,
-    viewport: 1200,
-    height: 40,
-    root: "#storybook-root",
-    note: "draft: the desktop frame is not captured yet.",
-  },
-]
-
 const policy = {
   axes: ["Device"],
   any: ["Any"],
@@ -157,33 +126,12 @@ const policy = {
   },
 }
 
-const manifest = {
-  schemaVersion: 2,
-  fileKey: "file",
-  version: "1",
-  capturedAt: "2026-01-02T00:00:00Z",
-  sourceSha256: "c".repeat(64),
-  cases: {
-    "widget-mobile": {
-      png: "references/widget-mobile.png",
-      sha256: "d".repeat(64),
-      nodeId: "4:4",
-      variant: "4:5",
-      designFingerprint: "a".repeat(64),
-      width: 320,
-      height: 40,
-    },
-  },
-}
-
 function catalogue(overrides = {}) {
   return fixtureTree({
     "src/catalog/figma/inventory.json": inventory,
     "src/catalog/figma/registry.json": registry,
     "src/catalog/figma/rules.json": rules,
-    "src/catalog/figma/parity-cases.json": cases,
     "src/catalog/figma/device-policy.json": policy,
-    "docs/figma-parity/manifest.json": manifest,
     "docs/design-requests/2026-01-02-widget-width.md":
       "# Design request — Widget width\n\nOrigin: node `4:4`.\n",
     ...overrides,
@@ -210,13 +158,11 @@ test("the card renders one line per section from the committed catalogue", () =>
       "target     src/components/widget.tsx · Widget",
       "story      apps/storybook/src/Widget.stories.tsx · Playground, Fidelity",
       "devices    mobile 320 · desktop 1200",
-      "cases      mobile 320 viewport reviewed — Reviewed at 320: the widget fills its container. · desktop 1200 viewport draft — draft: the desktop frame is not captured yet.",
       "rules      2 (1 pending) · I4:4;4:9 recorded — Width · I4:4;4:10 pending — Allineamento · guide apps/storybook/src/guides/widget.md",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   docs/design-requests/2026-01-02-widget-width.md",
       "delta      (no live snapshot: run figma export to compare)",
-      "verdict    devices desktop has no reviewed case",
-      "evidence   docs/figma-parity/references/widget-mobile.png",
+      "verdict    no check names this node",
       "note       Reviewed 2026-01-02: one composition at every device.",
       "detail     (no detail written: figma brief --node <id> --card)",
     ])
@@ -254,17 +200,9 @@ test("figma brief --card prints the card, --card --json prints the record", asyn
       { device: "mobile", width: 320 },
       { device: "desktop", width: 1200 },
     ])
-    assert.deepEqual(
-      record.cases.map((item) => [item.id, item.verdict]),
-      [
-        ["widget-mobile", "reviewed"],
-        ["widget-desktop", "draft"],
-      ],
-    )
-    assert.deepEqual(record.verdict, ["devices desktop has no reviewed case"])
-    assert.deepEqual(record.evidence, [
-      { path: "docs/figma-parity/references/widget-mobile.png", stale: false },
-    ])
+    // The record carries the gate results; the empty list is what the text
+    // renders as "no check names this node".
+    assert.deepEqual(record.verdict, [])
     assert.equal(record.comments, null)
     assert.equal(record.delta, null)
   } finally {
@@ -326,13 +264,11 @@ test("every section states its absence instead of vanishing", () => {
       "target     (no target)",
       "story      (no story declared)",
       "devices    (no device declared)",
-      "cases      (no parity case)",
       "rules      no rule targets this node",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   none",
       "delta      (no live snapshot: run figma export to compare)",
       "verdict    no check names this node",
-      "evidence   (no evidence: run figma evidence)",
       "note       (no registry note)",
       "detail     (no detail written: figma brief --node <id> --card)",
     ])
@@ -388,16 +324,7 @@ test("a cut section carries a marker and the card stays under the ceiling", () =
       `card is ${Buffer.byteLength(text)} bytes`,
     )
     assert.match(text, /… \+\d+ more/)
-    for (const label of [
-      "node",
-      "page",
-      "status",
-      "target",
-      "story",
-      "devices",
-      "cases",
-      "rules",
-    ]) {
+    for (const label of ["node", "page", "status", "target", "story", "devices", "rules"]) {
       assert.ok(
         text.startsWith(`${label} `) || text.includes(`\n${label} `),
         `${label} section survived the cut`,
@@ -454,13 +381,11 @@ test("the local exports add to the card and the ceiling covers both", () => {
       "target     (no target)",
       "story      (no story declared)",
       "devices    (no device declared)",
-      "cases      (no parity case)",
       "rules      no rule targets this node",
       "comments   (no snapshot: run figma comments --refresh)",
       "requests   none",
       "delta      (no live snapshot: run figma export to compare)",
       "verdict    no check names this node",
-      "evidence   (no evidence: run figma evidence)",
       "note       (no registry note)",
       "detail     (no detail written: figma brief --node <id> --card)",
     ].join("\n")
@@ -684,72 +609,6 @@ test("a variant the live file added is part of the delta", () => {
   }
 })
 
-// A component without variants pins its own PNG, so its own fingerprint is the
-// one the manifest carries. Indexing only the variants reported that pin stale
-// on every read.
-test("a component without variants pins its own evidence", () => {
-  const component = {
-    nodeId: "5:5",
-    name: "Spinner",
-    type: "COMPONENT",
-    pageId: "1:1",
-    pageName: "• Components",
-    designFingerprint: "e".repeat(64),
-  }
-  // The committed inventory already carries the Spinner: the case is the
-  // component's own design, which is what the manifest pins for it.
-  const withSpinner = (fingerprint) => ({
-    ...inventory,
-    components: inventory.components.map((entry) =>
-      entry.nodeId === component.nodeId ? { ...component, designFingerprint: fingerprint } : entry,
-    ),
-  })
-  const pin = (designFingerprint) => ({
-    ...manifest,
-    cases: {
-      spinner: {
-        png: "references/spinner.png",
-        sha256: "f".repeat(64),
-        nodeId: "5:5",
-        // A component without variants pins itself, so the manifest's variant
-        // is the component's own node id.
-        variant: "5:5",
-        designFingerprint,
-        width: 40,
-        height: 40,
-      },
-    },
-  })
-  const plain = catalogue({
-    "src/catalog/figma/inventory.json": withSpinner(component.designFingerprint),
-    "docs/figma-parity/manifest.json": pin(component.designFingerprint),
-  })
-  try {
-    const card = nodeCard(workspaceAt(plain.root), "5:5")
-    assert.deepEqual(card.evidence, [
-      { path: "docs/figma-parity/references/spinner.png", stale: false },
-    ])
-    assert.match(
-      formatNodeCard(card).join("\n"),
-      /^evidence +docs\/figma-parity\/references\/spinner\.png$/m,
-    )
-  } finally {
-    plain.dispose()
-  }
-
-  const drifted = catalogue({
-    "src/catalog/figma/inventory.json": withSpinner(component.designFingerprint),
-    "docs/figma-parity/manifest.json": pin("0".repeat(64)),
-  })
-  try {
-    assert.deepEqual(nodeCard(workspaceAt(drifted.root), "5:5").evidence, [
-      { path: "docs/figma-parity/references/spinner.png", stale: true },
-    ])
-  } finally {
-    drifted.dispose()
-  }
-})
-
 // The registry's own read is the gate that catches a node naming a module, a
 // story or an export that does not exist. It is hermetic — the committed
 // inventory and registry, never the live file — so the card stays cheap.
@@ -828,7 +687,7 @@ test("a rule diagnostic that names the card id reaches the verdict", () => {
 // The device line states the width the source declares: the variant's own box,
 // else the width a case captured, else the policy's canonical width, which is a
 // default rather than a measurement of this component.
-test("the device line reads the source width before the canonical one", () => {
+test("the device line reads the variant box before the canonical width", () => {
   const widget = inventory.components[0]
   const fixture = catalogue({
     "src/catalog/figma/inventory.json": {
@@ -844,23 +703,19 @@ test("the device line reads the source width before the canonical one", () => {
         inventory.components[1],
       ],
     },
-    "src/catalog/figma/parity-cases.json": [
-      { ...cases[0], width: 320, viewport: 320 },
-      { ...cases[1], width: 1280, viewport: 1280 },
-    ],
   })
   try {
     const card = nodeCard(workspaceAt(fixture.root), "4:4")
     assert.deepEqual(card.devices, [
       { device: "mobile", width: 360 },
-      { device: "desktop", width: 1280 },
+      { device: "desktop", width: 1200 },
     ])
-    assert.match(formatNodeCard(card).join("\n"), /^devices {4}mobile 360 · desktop 1280$/m)
+    assert.match(formatNodeCard(card).join("\n"), /^devices {4}mobile 360 · desktop 1200$/m)
   } finally {
     fixture.dispose()
   }
 
-  // With no capture and no box, the policy's canonical width is all there is.
+  // With no box, the policy's canonical width is all there is.
   const bare = catalogue({
     "src/catalog/figma/inventory.json": {
       ...inventory,
@@ -869,7 +724,6 @@ test("the device line reads the source width before the canonical one", () => {
         inventory.components[1],
       ],
     },
-    "src/catalog/figma/parity-cases.json": [],
   })
   try {
     assert.deepEqual(nodeCard(workspaceAt(bare.root), "4:4").devices, [

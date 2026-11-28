@@ -34,6 +34,7 @@
     "test": {
       "dependsOn": [
         "api:check",
+        "consumer:typecheck",
         "check:catalogue",
         "figma:map:check",
         "plugin:check",
@@ -43,9 +44,10 @@
         "foundation:check",
         "tokens:public:check",
         "client:check",
+        "utility-prefix:check",
+        "consumer-dx:check",
         "a11y:conformance:check",
         "pagopa-ui-cli:test",
-        "pagopa-ui-cli:check:parity",
         "pagopa-ui-tokens:test"
       ],
       "configurations": {
@@ -68,6 +70,21 @@
     "api:update": {
       "dependsOn": ["build"],
       "cache": false
+    },
+    "consumer:typecheck": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tsconfig.consumer.json",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "default",
+        {
+          "dependentTasksOutputFiles": "**/*.d.ts"
+        }
+      ],
+      "cache": true
     },
     "docs": {
       "executor": "nx:run-commands",
@@ -117,7 +134,6 @@
         "tooling",
         "{workspaceRoot}/packages/artwork/src/**",
         "{workspaceRoot}/apps/storybook/src/**/*",
-        "{workspaceRoot}/docs/figma-parity/**",
         "{workspaceRoot}/pnpm-lock.yaml",
         { "runtime": "node --version" }
       ],
@@ -182,6 +198,17 @@
     "client:check": {
       "options": {
         "command": "node src/cli.ts check client-directives"
+      }
+    },
+    "utility-prefix:check": {
+      "options": {
+        "command": "node src/cli.ts check utility-prefix"
+      },
+      "inputs": ["default", "tooling", "{workspaceRoot}/apps/storybook/src/**"]
+    },
+    "consumer-dx:check": {
+      "options": {
+        "command": "node src/cli.ts check consumer-dx"
       }
     },
     "a11y:conformance:check": {

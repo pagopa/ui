@@ -2,7 +2,49 @@
    plus the stories, the guides and this application's Storybook configuration.
    The package stylesheet scans the design system and the data packages; the
    published artifact narrows that surface in packages/pagopa-ui/src/library.css. */
+/* The demo surface only: the package stylesheet resets a component by its own
+   root (`[data-slot]`), which is what a host can coexist with. The stories also
+   write plain markup — a `<figure>`, a `<ul>`, a heading — that must measure
+   like the design rather than like the browser's defaults, so the documentation
+   surface takes the preflight the artifact deliberately leaves out. The layer
+   order is declared here so the preflight sits under both library layers: a
+   `border` utility still outranks the reset that zeroes the width. */
+@layer base, pagopa-ui.base, pagopa-ui.utilities;
+
+@import "tailwindcss/preflight.css" layer(base);
 @import "../../../packages/pagopa-ui/src/index.css";
+
+/* The demo surface's forced-colors perimeter, the twin of the one the package
+   stylesheet paints inside a component: forced colours erase every authored
+   colour, so the outline is the one cue a focus can paint. It is unlayered on
+   purpose. The package rule sits in `pagopa-ui.utilities` because every component
+   root carries the `outline-none` reset of `pagopa-ui.base`, so the guarantee has
+   to outrank it; a story that writes plain markup meets the same reset, which is
+   why the demo surface's guarantee has to outrank the utilities too. */
+@media (forced-colors: active) {
+  [data-pagopa-ui-root]:focus-visible,
+  [data-pagopa-ui-root] :focus-visible {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+}
+
+/* Demo geometry: the artboard heights, the frame widths and the grid columns
+   only the templates and the artboards read. A consumer's styles.css declares
+   only what a shipped component renders, so these values live here; the demos
+   still resolve them under the same UIProvider root. */
+.pagopa-ui-root {
+  --pui-artboard-height-tall: 800px; /* Feedback Page, Informative Drawer (right) */
+  --pui-login-width: 520px; /* LogIn frame, 32.5rem */
+  --pui-drawer-width: 416px; /* Informative Drawer frame, 26rem */
+  --pui-dialog-width-compact: 272px; /* Dialog mobile and LogIn, 17rem */
+  --pui-drawer-width-wide: 417px; /* Informative Drawer, 26.0625rem */
+  --pui-grid-aside: 20rem; /* demo grid aside column */
+  --pui-grid-fields: 10rem; /* demo grid field column */
+  --pui-grid-actions: 3rem; /* demo grid action column */
+}
 
 @source "../src";
 @source "../.storybook";
+/* The candidate mirror the utility-prefix build writes, as in the package. */
+@source "../.generated/prefixed-candidates.txt";

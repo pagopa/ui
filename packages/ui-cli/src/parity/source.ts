@@ -19,13 +19,11 @@ import { normalizeLive } from "../figma/snapshot.ts"
 import { UsageError } from "../lib/command.ts"
 import { decodeJsonBytes } from "../lib/json.ts"
 import { parseSchema } from "../lib/validate.ts"
-import { readInventory } from "../records/committed.ts"
 import type { InventoryNode } from "../schemas/catalogue.ts"
-import { evidencePaths } from "./evidence.ts"
 
 export const SNAPSHOT_PATH = ".figma/live-rest.json"
 export const SCHEMA_VERSION = 1
-export type SourceOrigin = "input" | "snapshot" | "evidence"
+export type SourceOrigin = "input" | "snapshot"
 
 type Paint = {
   type?: string
@@ -220,8 +218,8 @@ export function hexOf(paint: Paint | undefined): string | undefined {
 }
 
 // The source a parity run reads, in order: an explicit `--input`, the local
-// pinned snapshot, the committed evidence slice. The slice makes the source side
-// reproducible in a clone without `.figma/` and without a token.
+// pinned snapshot. Nothing is committed for the source side (ADR-0015): a clone
+// without `.figma/` asks for `--input` or re-exports.
 export function resolveExport(
   workspace: Workspace,
   input?: string,
@@ -232,11 +230,8 @@ export function resolveExport(
     return { file: path.isAbsolute(input) ? input : workspace.path(input), origin: "input" }
   const snapshot = workspace.path(SNAPSHOT_PATH)
   if (fs.existsSync(snapshot)) return { file: snapshot, origin: "snapshot" }
-  const evidence = evidencePaths(workspace.workspaceRoot).source
-  if (fs.existsSync(evidence)) return { file: evidence, origin: "evidence" }
   throw new UsageError(
-    `${SNAPSHOT_PATH} and the committed evidence slice are both missing: the parity source is ` +
-      `the pinned export the user produces with the live export, or the committed evidence slice.`,
+    `${SNAPSHOT_PATH} is missing: pass an existing --input file or export the source again.`,
   )
 }
 
@@ -246,14 +241,7 @@ export function loadExport(workspace: Workspace, input?: string): Project {
     throw new UsageError(`${file} is missing: pass an existing --input file`)
   const contents = decodeJsonBytes(fs.readFileSync(file), file)
   const raw = parseSchema(ExportSchema, JSON.parse(contents.toString("utf8")), file)
-  // The committed slice carries only the documents a case points at, so it
-  // cannot satisfy `normalizeLive` (which needs every published node): the
-  // catalogue comes from the committed inventory instead. The full-snapshot
-  // path stays the normalizer's.
-  const catalogue =
-    raw.kind === "parity-source"
-      ? readInventory(workspace.root).components
-      : normalizeLive(raw, { workspace })
+  const catalogue = normalizeLive(raw, { workspace })
   const sourceSha256 = createHash("sha256").update(contents).digest("hex")
   return { file, origin, version: raw.version, sourceSha256, raw, catalogue }
 }

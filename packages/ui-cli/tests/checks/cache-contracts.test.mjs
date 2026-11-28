@@ -183,8 +183,7 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "packages/artwork/src/assets/figma-pictograms/manifest.json",
         "packages/artwork/src/components/icons/icon-assets.ts",
-        "docs/figma-parity/manifest.json",
-        "docs/figma-parity/source.json.br",
+        "apps/storybook/src/guides/probe.md",
       ],
     ],
     [
@@ -214,27 +213,7 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
       [
         "packages/pagopa-ui/src/catalog/figma/inventory.json",
         "packages/pagopa-ui/src/catalog/figma/device-policy.json",
-        "packages/pagopa-ui/src/catalog/figma/device-exceptions.json",
-      ],
-    ],
-    [
-      tooling,
-      "check:parity",
-      [
-        "packages/pagopa-ui/src/catalog/figma/parity-cases.json",
-        "apps/storybook/src/Probe.stories.tsx",
-        "docs/figma-parity/manifest.json",
-        "docs/figma-parity/source.json.br",
-        "docs/figma-parity/references/probe.png",
-      ],
-    ],
-    [
-      tooling,
-      "check:evidence",
-      [
-        "packages/pagopa-ui/src/catalog/figma/registry.json",
-        "docs/figma-parity/manifest.json",
-        "docs/figma-parity/references/probe.png",
+        "apps/storybook/src/guides/probe.md",
       ],
     ],
     [
@@ -245,7 +224,7 @@ test("cache-contract: sibling reads invalidate cached checks without widening ev
         "packages/tokens/src/tokens.generated.css",
         "packages/artwork/src/assets/figma-icons/manifest.json",
         "packages/pagopa-ui/project.json",
-        "docs/figma-parity/manifest.json",
+        "packages/pagopa-ui/src/catalog/figma/page-surface.json",
       ],
     ],
   ]

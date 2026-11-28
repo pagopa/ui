@@ -2,10 +2,18 @@ import type { ReactNode } from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Avatar } from "@/components/content"
-import { ErrorState, SuccessState, WaitingState } from "@/components/feedback"
-import { PagoPAIcon } from "@/components/icons/PagoPAIcon"
-import { Footer, Header, Preheader } from "@/components/navigation"
+import { Avatar } from "@/components/content/avatar"
+import { ErrorState } from "@/components/feedback/error-state"
+import { SuccessState } from "@/components/feedback/success-state"
+import { WaitingState } from "@/components/feedback/waiting-state"
+import { Icon } from "@/components/icons/icon"
+import { Default as AccountCircleIcon } from "@/components/icons/generated/account-circle"
+import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
+import { Default as MenuBookIcon } from "@/components/icons/generated/menu-book"
+import { Default as SupportIcon } from "@/components/icons/generated/support"
+import { Footer } from "@/components/navigation/footer"
+import { Header } from "@/components/navigation/header"
+import { Preheader } from "@/components/navigation/preheader"
 import { Button } from "@/components/primitives/button"
 import { FeedbackPage } from "./templates/FeedbackPage"
 
@@ -41,15 +49,15 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Manuale operativo",
               href: "#manuale",
-              icon: <PagoPAIcon name="menu_book" />,
+              icon: <Icon source={MenuBookIcon} />,
             },
-            { label: "Assistenza", href: "#assistenza", icon: <PagoPAIcon name="support" /> },
+            { label: "Assistenza", href: "#assistenza", icon: <Icon source={SupportIcon} /> },
             // Source `User` row: the account icon and the name on desktop, the
             // 32px Gravatar on mobile.
             {
               label: "Mario Rossi",
               href: "#utente",
-              icon: <PagoPAIcon name="account_circle" />,
+              icon: <Icon source={AccountCircleIcon} />,
               avatar: <Avatar size="compact" initials="MR" alt="Mario Rossi" />,
             },
           ]}
@@ -69,7 +77,7 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Italiano",
               href: "#lingua",
-              trailing: <PagoPAIcon name="chevron" variant="down" />,
+              trailing: <Icon source={ChevronDownIcon} />,
             },
           ]}
         />
@@ -86,7 +94,7 @@ function TextAction({ label }: { label: string }) {
   return (
     <button
       type="button"
-      className="relative inline-flex min-h-0 items-center justify-center text-center text-base leading-[1.375] font-semibold text-primary whitespace-normal [overflow-wrap:anywhere] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-ring after:absolute after:inset-x-0 after:-inset-y-3"
+      className="pui:relative pui:inline-flex pui:min-h-0 pui:items-center pui:justify-center pui:text-center pui:text-base pui:leading-[1.375] pui:font-semibold pui:text-primary pui:whitespace-normal pui:[overflow-wrap:anywhere] pui:underline-offset-4 pui:hover:underline pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring pui:after:absolute pui:after:inset-x-0 pui:after:-inset-y-3"
     >
       {label}
     </button>
@@ -144,7 +152,7 @@ export const KO: Story = {
 }
 
 export const Waiting: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   name: "In attesa",
   render: () => (

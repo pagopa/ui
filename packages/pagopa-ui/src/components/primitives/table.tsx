@@ -15,14 +15,14 @@ function Table({
       aria-label={props["aria-label"]}
       aria-labelledby={props["aria-labelledby"]}
       tabIndex={0}
-      className="relative w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="pui:relative pui:w-full pui:overflow-x-auto pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
       <table
         data-slot="table"
         data-variant={variant}
         className={cn(
-          "w-full caption-bottom",
-          variant === "data" ? "text-body" : "text-label-mini",
+          "pui:w-full pui:caption-bottom",
+          variant === "data" ? "pui:text-body" : "pui:text-label-mini",
           className,
         )}
         {...props}
@@ -35,7 +35,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b in-data-[variant=data]:bg-secondary", className)}
+      className={cn("pui:[&_tr]:border-b pui:in-data-[variant=data]:bg-secondary", className)}
       {...props}
     />
   )
@@ -45,7 +45,10 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
       data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0 in-data-[variant=data]:bg-background", className)}
+      className={cn(
+        "pui:[&_tr:last-child]:border-0 pui:in-data-[variant=data]:bg-background",
+        className,
+      )}
       {...props}
     />
   )
@@ -55,7 +58,10 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   return (
     <tfoot
       data-slot="table-footer"
-      className={cn("border-t bg-muted/50 text-label-mini-sb [&>tr]:last:border-b-0", className)}
+      className={cn(
+        "pui:border-t pui:bg-muted/50 pui:text-label-mini-sb pui:[&>tr]:last:border-b-0",
+        className,
+      )}
       {...props}
     />
   )
@@ -66,7 +72,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-accent in-data-[variant=data]:border-secondary",
+        "pui:border-b pui:transition-colors pui:hover:bg-muted/50 pui:has-aria-expanded:bg-muted/50 pui:data-[state=selected]:bg-accent pui:in-data-[variant=data]:border-secondary",
         className,
       )}
       {...props}
@@ -79,7 +85,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-10 px-2 text-left align-middle text-label-mini-sb whitespace-nowrap text-foreground in-data-[variant=data]:h-12 in-data-[variant=data]:px-4 [&:has([role=checkbox])]:pr-0",
+        "pui:h-10 pui:px-2 pui:text-left pui:align-middle pui:text-label-mini-sb pui:whitespace-nowrap pui:text-foreground pui:in-data-[variant=data]:h-12 pui:in-data-[variant=data]:px-4 pui:[&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}
@@ -92,7 +98,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap in-data-[variant=data]:h-12 in-data-[variant=data]:px-4 in-data-[variant=data]:py-3 in-data-[variant=data]:data-actions:py-0 in-data-[variant=data]:@max-narrow/table:h-auto [&:has([role=checkbox])]:pr-0",
+        "pui:p-2 pui:align-middle pui:whitespace-nowrap pui:in-data-[variant=data]:h-12 pui:in-data-[variant=data]:px-4 pui:in-data-[variant=data]:py-3 pui:in-data-[variant=data]:data-actions:py-0 pui:in-data-[variant=data]:@max-narrow/table:h-auto pui:[&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}
@@ -104,7 +110,7 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-4 text-caption text-muted-foreground", className)}
+      className={cn("pui:mt-4 pui:text-caption pui:text-muted-foreground", className)}
       {...props}
     />
   )

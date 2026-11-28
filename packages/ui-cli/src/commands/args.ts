@@ -15,6 +15,12 @@ export const inputArg = {
   description: "Path to the pinned snapshot the command reads",
 } as const
 
+export const stringArg = { type: "string" } as const
+
+export const booleanArg = { type: "boolean" } as const
+
+export const boolArg = { ...booleanArg, default: false } as const
+
 export function acceptsOptionalValue(
   arg: { type?: string; optionalValues?: true | readonly string[] },
   value: string,

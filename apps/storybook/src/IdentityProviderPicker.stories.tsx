@@ -65,7 +65,7 @@ function sourceLogo(src: string) {
   return (
     <img
       alt=""
-      className="block max-h-full max-w-full object-contain"
+      className="pui:block pui:max-h-full pui:max-w-full pui:object-contain"
       height={28}
       src={src}
       width={115}
@@ -106,7 +106,7 @@ type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
@@ -129,7 +129,7 @@ export const Playground: Story = {
 
 export const Desktop: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
@@ -138,19 +138,19 @@ export const Desktop: Story = {
 
 export const SingleProvider: Story = {
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("731:20386") },
   },
   render: () => (
-    <div className="w-80 px-1">
+    <div className="pui:w-80 pui:px-1">
       <IdentityProviderPicker.Provider {...providerOptions[0]} />
     </div>
   ),
 }
 
 export const ConfigurableHeading: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   args: { titleAs: "h3" },
   play: async ({ canvasElement }) => {
@@ -186,7 +186,7 @@ async function applyViewport(width: number, height: number) {
 export const ResponsiveWidth: Story = {
   parameters: {
     layout: "fullscreen",
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
   },
   play: async ({ canvasElement }) => {

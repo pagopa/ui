@@ -23,16 +23,7 @@ interface TableListEmptyState {
   pictogram?: React.ReactNode
 }
 
-function TableList<Row extends { id: React.Key }>({
-  label,
-  rows,
-  fields,
-  action,
-  actionFallbackLabel: actionFallbackLabelProp,
-  pagination,
-  emptyLabel: emptyLabelProp,
-  emptyState: emptyStateProp,
-}: {
+export interface TableListProps<Row extends { id: React.Key }> {
   /** Accessible name of the list region (source wrapper `aria-label`). */
   label: string
   rows: Row[]
@@ -48,7 +39,18 @@ function TableList<Row extends { id: React.Key }>({
   emptyState?: TableListEmptyState
   /** Announced text of an empty state with no visible copy. @default messages.tableList.emptyLabel */
   emptyLabel?: string
-}) {
+}
+
+function TableList<Row extends { id: React.Key }>({
+  label,
+  rows,
+  fields,
+  action,
+  actionFallbackLabel: actionFallbackLabelProp,
+  pagination,
+  emptyLabel: emptyLabelProp,
+  emptyState: emptyStateProp,
+}: TableListProps<Row>) {
   const t = useMessages("tableList")
   const actionFallbackLabel = actionFallbackLabelProp ?? t.actionFallbackLabel
   const emptyLabel = emptyLabelProp ?? t.emptyLabel
@@ -56,8 +58,12 @@ function TableList<Row extends { id: React.Key }>({
 
   if (!rows.length) {
     return (
-      <section aria-label={label} className="flex flex-col gap-8">
-        <Empty role="status" className="rounded-lg border">
+      <section
+        data-slot="table-list"
+        aria-label={label}
+        className="pui:flex pui:flex-col pui:gap-8"
+      >
+        <Empty role="status" className="pui:rounded-lg pui:border">
           <EmptyHeader>
             <EmptyMedia aria-hidden="true">
               {emptyState.pictogram ?? <PagoPAPictogram name="Message" size={56} />}
@@ -70,7 +76,7 @@ function TableList<Row extends { id: React.Key }>({
                 ) : null}
               </>
             ) : (
-              <span className="sr-only">{emptyLabel}</span>
+              <span className="pui:sr-only">{emptyLabel}</span>
             )}
           </EmptyHeader>
           {emptyState.actions ? <EmptyContent>{emptyState.actions}</EmptyContent> : null}
@@ -79,8 +85,8 @@ function TableList<Row extends { id: React.Key }>({
     )
   }
   return (
-    <section aria-label={label} className="flex flex-col gap-8">
-      <ul className="flex flex-col gap-4">
+    <section aria-label={label} className="pui:flex pui:flex-col pui:gap-8">
+      <ul className="pui:flex pui:flex-col pui:gap-4">
         {rows.map((row) => (
           <TableListItem
             key={row.id}

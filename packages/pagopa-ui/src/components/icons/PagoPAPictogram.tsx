@@ -33,7 +33,13 @@ function PagoPAPictogram({
   if (!asset) throw new Error(`Pictogram "${name}" has no Figma asset mapping`)
 
   return (
-    <figure className={cn("inline-grid justify-items-center gap-2 text-center", className)}>
+    <figure
+      data-slot="pictogram"
+      className={cn(
+        "pui:inline-grid pui:justify-items-center pui:gap-2 pui:text-center",
+        className,
+      )}
+    >
       <img
         src={asset[background].url}
         data-figma-node-id={asset[background].nodeId}
@@ -43,13 +49,13 @@ function PagoPAPictogram({
         alt=""
         style={typeof size === "number" ? { width: size, height: size } : undefined}
         className={cn(
-          "object-contain",
-          size === "sm" && "size-12",
-          size === "md" && "size-20",
-          size === "lg" && "size-28",
+          "pui:object-contain",
+          size === "sm" && "pui:size-12",
+          size === "md" && "pui:size-20",
+          size === "lg" && "pui:size-28",
         )}
       />
-      {label ? <figcaption className="text-label-mini-sb">{label}</figcaption> : null}
+      {label ? <figcaption className="pui:text-label-mini-sb">{label}</figcaption> : null}
     </figure>
   )
 }

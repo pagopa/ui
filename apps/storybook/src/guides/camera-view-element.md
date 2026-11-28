@@ -12,8 +12,8 @@ line, with the crop inset kept proportional at any width.
 
 ## Behaviour
 
-The frame is `aspect-square` at the width the caller sets in `--camera-size`,
-capped at the space it receives. The crop and the line are decorative
+The frame is `aspect-square` at the width the caller sets in `--pui-camera-size`
+(376px by default), capped at the space it receives. The crop and the line are decorative
 (`aria-hidden`): the instruction is announced once through the `announcement`
 function, which receives the label and the camera state and returns the whole
 sentence, so the caller owns grammar and language. With no children the component

@@ -1,6 +1,8 @@
 # ADR-0007 — The committed records are read through one reader, and it never writes
 
-- **Status:** Accepted — 2026-11-10.
+- **Status:** Accepted — 2026-11-10, amended 2026-11-26 by
+  [ADR-0015](./0015-ephemeral-parity-diagnostic.md) — the reader owns three
+  records, not four (§7).
 - **Date:** 2026-11-10
 - **Context:** the four committed records — `inventory.json`, `registry.json`,
   `device-policy.json` and `parity-cases.json` — were read by five loaders
@@ -185,3 +187,35 @@ card used to report.
 - `packages/ui-cli/src/records/committed.ts` — the reader this ADR decides.
 - `packages/ui-cli/src/figma/card.ts` — the gate that reads a `null` base as
   "no diagnostics", the defect RD4 closes.
+
+## 7. Amendment — the boundary holds, and it now surrounds three records (2026-11-26)
+
+[ADR-0015](./0015-ephemeral-parity-diagnostic.md) deletes the case corpus, so the
+fourth record this ADR was written around no longer exists. The boundary is
+unchanged and is what the migration left behind:
+
+- **RD1's four records are three.** `inventory.json`, `registry.json` and
+  `device-policy.json` are read through the reader;
+  `packages/pagopa-ui/src/catalog/figma/parity-cases.json` is gone. `readCases`,
+  `forgetCommitted("cases")` and the optional-record clause that went with it are
+  deleted with the file, so the reader no longer has a record that may
+  legitimately be absent: a missing inventory, registry or device policy is the
+  repository-state failure RD4 describes, and nothing else.
+- **RD2 and RD4 are untouched.** The reader still never writes, still owns each
+  default path once, and still raises one error naming the record, the file and
+  the reason.
+- **RD3's example changes, the rule does not.** `saveCase` was the writer that
+  paid the invalidation price; the writers that remain — `setRegistry`,
+  `catalogue/finish.ts`, `catalogue-refresh.ts` and `design-requests.ts` — carry
+  the same obligation after each write. A committed record handed out by the
+  reader is still shared, and a writer that changes one still clones it first.
+- **One deferred row is closed by deletion.** "The case corpus as one judged
+  value" waited on judgments over the whole population; with no population, the
+  judgments went with the corpus and ADR-0008 is superseded rather than
+  implemented. The row that remains live is the one about records beyond these
+  three.
+- **The reader's surface in the parity package narrows to reads.** The
+  diagnostic reads the three records through `readInventory`, `readRegistry` and
+  `readDevicePolicy` and writes none of them: a run leaves the checked-in
+  documents byte-identical, which is the read-only posture this ADR decided,
+  now observable from the other side.

@@ -1,7 +1,8 @@
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { MultiSelectField } from "@/components/inputs"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
 
 const serviceOptions = [
   { value: "tributi", label: "Tributi locali" },
@@ -42,10 +43,10 @@ type Story = StoryObj<typeof meta>
 
 // Source frame: 274x48 (`617:19990`). The story carries the source width.
 export const Playground: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   render: (args) => (
-    <div className="w-68 max-w-full">
+    <div className="pui:w-68 pui:max-w-full">
       <MultiSelectField {...args} />
     </div>
   ),
@@ -62,5 +63,38 @@ export const Playground: Story = {
     await expect(firstOption).toHaveAttribute("aria-selected", "false")
     await userEvent.keyboard("{Escape}")
     await waitFor(() => expect(screen.queryByRole("listbox")).not.toBeInTheDocument())
+  },
+}
+
+function FocusableMultiSelectField() {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="servizi-note">Puoi selezionare più di un servizio.</p>
+      <MultiSelectField
+        ref={ref}
+        className="pui:min-w-0"
+        data-testid="servizi"
+        aria-describedby="servizi-note"
+        label="Servizi di interesse"
+        options={serviceOptions}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const HostAttributes: Story = {
+  render: () => <FocusableMultiSelectField />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByTestId("servizi")).toHaveClass("pui:min-w-0")
+    const trigger = canvas.getByRole("combobox", { name: /Servizi di interesse/ })
+    // The caller's description joins the field's own, on the control.
+    await expect(trigger).toHaveAttribute("aria-describedby", expect.stringMatching(/servizi-note/))
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(trigger).toHaveFocus()
   },
 }

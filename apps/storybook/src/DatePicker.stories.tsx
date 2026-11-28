@@ -1,9 +1,10 @@
-import { useState } from "react"
+import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 import type { DateRange } from "react-day-picker"
 
-import { DatePicker, DatePickerField } from "@/components/inputs"
+import { DatePicker } from "@/components/inputs/date-picker"
+import { DatePickerField } from "@/components/inputs/text-fields"
 import { Button } from "@/components/primitives/button"
 import { Calendar } from "@/components/primitives/calendar"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -29,9 +30,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 function SingleDateExample() {
-  const [value, setValue] = useState(new Date(2026, 4, 11))
+  const [value, setValue] = React.useState(new Date(2026, 4, 11))
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker value={value} onConfirm={setValue} onCancel={fn()} />
       <output aria-label="Data confermata">
         {value.toLocaleDateString("it-IT", {
@@ -115,7 +116,7 @@ export const SingleDateConfirmation: Story = {
 }
 
 function RangeDateExample() {
-  const [value, setValue] = useState<{ from: Date; to: Date }>()
+  const [value, setValue] = React.useState<{ from: Date; to: Date }>()
   const format = new Intl.DateTimeFormat("it-IT", {
     day: "2-digit",
     month: "2-digit",
@@ -123,7 +124,7 @@ function RangeDateExample() {
   })
 
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker
         mode="range"
         label="Seleziona intervallo"
@@ -162,10 +163,10 @@ export const RangeDateConfirmation: Story = {
 }
 
 function ControlledDateExample() {
-  const [value, setValue] = useState<Date | undefined>(new Date(2026, 4, 11))
-  const [action, setAction] = useState("")
+  const [value, setValue] = React.useState<Date | undefined>(new Date(2026, 4, 11))
+  const [action, setAction] = React.useState("")
   return (
-    <div className="grid w-[310px] max-w-full gap-4">
+    <div className="pui:grid pui:w-[310px] pui:max-w-full pui:gap-4">
       <DatePicker
         value={value}
         today={new Date(2026, 4, 11)}
@@ -229,7 +230,7 @@ export const RangeValidation: Story = {
   render: () => (
     <DatePicker
       mode="range"
-      className="w-[310px] max-w-full"
+      className="pui:w-[310px] pui:max-w-full"
       today={new Date(2026, 4, 11)}
       onConfirm={confirmRange}
       onCancel={cancelRange}
@@ -307,14 +308,14 @@ export const KeyboardNavigation: Story = {
 }
 
 function CalendarStatesExample() {
-  const [date, setDate] = useState(new Date(2026, 4, 14))
-  const [range, setRange] = useState<DateRange | undefined>({
+  const [date, setDate] = React.useState(new Date(2026, 4, 14))
+  const [range, setRange] = React.useState<DateRange | undefined>({
     from: new Date(2026, 4, 12),
     to: new Date(2026, 4, 15),
   })
   return (
-    <div className="flex flex-wrap gap-6">
-      <fieldset className="min-w-0 w-85 max-w-full">
+    <div className="pui:flex pui:flex-wrap pui:gap-6">
+      <fieldset className="pui:min-w-0 pui:w-85 pui:max-w-full">
         <legend>Stati singoli</legend>
         <Calendar
           mode="single"
@@ -325,7 +326,7 @@ function CalendarStatesExample() {
           defaultMonth={date}
         />
       </fieldset>
-      <fieldset className="min-w-0 w-85 max-w-full">
+      <fieldset className="pui:min-w-0 pui:w-85 pui:max-w-full">
         <legend>Stati intervallo</legend>
         <Calendar
           mode="range"
@@ -434,12 +435,12 @@ export const FieldStates: Story = {
   tags: ["color-pinned"],
   name: "Campo: stati",
   parameters: {
-    // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+    // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
     a11yContract: { reflow: false },
     design: { type: "figma", url: figmaEmbedUrl("8049:39452") },
   },
   render: () => (
-    <div className="grid w-[min(28rem,calc(100vw-2rem))] gap-6">
+    <div className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-6">
       <DatePickerField label="Data vuota" today={new Date(2026, 4, 11)} />
       <DatePickerField
         label="Data confermata"
@@ -510,13 +511,13 @@ export const FieldStates: Story = {
 const submitDate = fn()
 
 export const FieldNativeForm: Story = {
-  // Reflow exemption pending a design request: docs/design-requests/2026-10-16-a11y-reflow-conditions.md.
+  // Reflow exemption debt, tracked in docs/design-requests/2026-11-26-reflow-exemption-debt.md.
   parameters: { a11yContract: { reflow: false } },
   name: "Campo: form nativo",
   render: () => (
     <form
       aria-label="Appuntamento"
-      className="grid w-[min(28rem,calc(100vw-2rem))] gap-4"
+      className="pui:grid pui:w-[min(28rem,calc(100vw-2rem))] pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         submitDate(new FormData(event.currentTarget).get("appointment"))
@@ -550,5 +551,45 @@ export const FieldNativeForm: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Ripristina data" }))
     await waitFor(() => expect(field).not.toHaveTextContent("12 mag 2026"))
     await expect(form.checkValidity()).toBe(false)
+  },
+}
+
+function FocusableDatePickerField() {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  return (
+    <div className="pui:grid pui:w-68 pui:max-w-full pui:gap-2">
+      <p id="appuntamento-note">La data viene confermata dal pulsante Salva.</p>
+      <DatePickerField
+        ref={ref}
+        className="pui:min-w-0 pui:bg-muted"
+        data-testid="appuntamento"
+        aria-describedby="appuntamento-note"
+        label="Data dell'appuntamento"
+        today={new Date(2026, 4, 11)}
+      />
+      <button type="button" onClick={() => ref.current?.focus()}>
+        Vai al campo
+      </button>
+    </div>
+  )
+}
+
+export const FieldHostAttributes: Story = {
+  name: "Campo: attributi dell'host",
+  render: () => <FocusableDatePickerField />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const root = canvas.getByTestId("appuntamento")
+    // `className` lands on the field's root grid, not on the trigger.
+    await expect(root).toHaveClass("pui:bg-muted")
+    const trigger = canvas.getByRole("button", { name: /Data dell'appuntamento/ })
+    await expect(trigger).not.toHaveClass("pui:bg-muted")
+    // The caller's description joins the field's own, on the trigger.
+    await expect(trigger).toHaveAttribute(
+      "aria-describedby",
+      expect.stringMatching(/appuntamento-note/),
+    )
+    await userEvent.click(canvas.getByRole("button", { name: "Vai al campo" }))
+    await expect(trigger).toHaveFocus()
   },
 }

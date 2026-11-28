@@ -21,10 +21,48 @@ motion.
 The title is the drawer's accessible name. The optional header `icon` is
 decorative, `description` is associated supporting copy, and `footer` holds the
 actions (full width when stacked, intrinsic and end-aligned from `sm`). The close
-button is a native icon button with an accessible name. The title keeps the
-mobile type scale through the tablet range and switches to the desktop title
-scale from the `tablet-md` device step.
+button is a native icon button whose accessible name is `closeLabel`. The title
+keeps the mobile type scale through the tablet range and switches to the desktop
+title scale from the `tablet-md` device step.
 
 `direction` stays caller-owned: the component does not choose a bottom sheet on
 mobile. The drag-handle pill appears only when the drawer opens from the bottom
 edge and is decorative.
+
+## Text
+
+Every announced string is consumer-owned. `title` names the panel, and
+`closeLabel` names the close button (default `messages.drawer.closeLabel`), so
+`UIProvider` can also set it once for the whole application. `description`
+and the `footer` actions are your content, and a `DrawerClose` you place carries
+its own label.
+
+```tsx
+// Per instance.
+<Drawer trigger={<Button>Apri</Button>} title="Filtri" closeLabel="Chiudi i filtri" />
+
+// Once for every drawer in the tree.
+<UIProvider messages={{ drawer: { closeLabel: "Chiudi il pannello" } }}>
+  <AppContent />
+</UIProvider>
+```
+
+## Controlling the panel
+
+`open` with `onOpenChange` makes the drawer controlled; `defaultOpen` opens it
+initially when `open` is omitted. Both modes share one lifecycle: `onOpenChange`
+runs whenever the drawer asks to open or close, so a single handler answers the
+trigger, an outside press, Escape, the close button and a `DrawerClose`.
+
+`trigger` is optional. Omit it to open the panel from the caller's own state — an
+async handler that resolves before opening, a selection that fills the panel, a
+route. With no trigger there is no element to return focus to, so the drawer
+gives focus back to the element focused before it opened.
+
+`DrawerClose` is a button that closes the panel it sits in. Use it for the
+drawer's own actions, such as a cancel action in `footer`, where wiring the same
+`onOpenChange` by hand would repeat the close path.
+
+`ref`, `className` and the standard `div` attributes land on the panel, so the
+panel can be measured, styled and marked by the caller. `className` is merged
+with the panel's own classes; `direction` still owns the geometry of the edge.

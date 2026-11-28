@@ -1489,6 +1489,24 @@
       "id": "breakpoint-xl",
       "cssName": "figma-breakpoint-xl"
     },
+    "container-compact": {
+      "name": "Foundations/container-compact",
+      "type": "FLOAT",
+      "value": 448,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which Alert, PaymentModule and ProductModule pair their rows (the Tailwind md container step they read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": {
+        "namespace": "container",
+        "key": "compact"
+      },
+      "id": "container-compact",
+      "cssName": "figma-container-compact"
+    },
     "container-narrow": {
       "name": "Foundations/container-narrow",
       "type": "FLOAT",
@@ -1507,6 +1525,42 @@
       "id": "container-narrow",
       "cssName": "figma-container-narrow"
     },
+    "container-page": {
+      "name": "Foundations/container-page",
+      "type": "FLOAT",
+      "value": 768,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which the Dialog page template shortens its title row (the Tailwind 3xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": {
+        "namespace": "container",
+        "key": "page"
+      },
+      "id": "container-page",
+      "cssName": "figma-container-page"
+    },
+    "container-panel": {
+      "name": "Foundations/container-panel",
+      "type": "FLOAT",
+      "value": 512,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the width at which the Checkout module lays its card rows out horizontally (the Tailwind lg step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": {
+        "namespace": "container",
+        "key": "panel"
+      },
+      "id": "container-panel",
+      "cssName": "figma-container-panel"
+    },
     "container-tight": {
       "name": "Foundations/container-tight",
       "type": "FLOAT",
@@ -1524,6 +1578,42 @@
       },
       "id": "container-tight",
       "cssName": "figma-container-tight"
+    },
+    "container-wide": {
+      "name": "Foundations/container-wide",
+      "type": "FLOAT",
+      "value": 896,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the Footer width at which its link columns become a four-column grid (the Tailwind 4xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": {
+        "namespace": "container",
+        "key": "wide"
+      },
+      "id": "container-wide",
+      "cssName": "figma-container-wide"
+    },
+    "container-wider": {
+      "name": "Foundations/container-wider",
+      "type": "FLOAT",
+      "value": 1152,
+      "category": "container",
+      "origin": "local-extension",
+      "source": {
+        "kind": "code",
+        "note": "the Footer width at which its side padding widens (the Tailwind 6xl step it read before)"
+      },
+      "reason": "layout hand-off threshold, not a published variable — requested to design",
+      "theme": {
+        "namespace": "container",
+        "key": "wider"
+      },
+      "id": "container-wider",
+      "cssName": "figma-container-wider"
     },
     "radius-2": {
       "name": "Foundations/radius-2",
@@ -1854,6 +1944,25 @@
       "id": "spacing-24",
       "cssName": "figma-spacing-24"
     },
+    "spacing-28": {
+      "name": "Foundations/spacing-28",
+      "type": "FLOAT",
+      "value": 28,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "3262:40787",
+        "note": "menu label, timeline and microevento content inset (also 12812:16248 and 9676:5633)"
+      },
+      "reason": "recurs as a content inset in three component nodes and no published step carries it; requested to design",
+      "theme": {
+        "namespace": "spacing",
+        "key": "7"
+      },
+      "id": "spacing-28",
+      "cssName": "figma-spacing-28"
+    },
     "spacing-3": {
       "name": "Foundations/spacing-3",
       "type": "FLOAT",
@@ -1890,6 +1999,25 @@
       },
       "id": "spacing-32",
       "cssName": "figma-spacing-32"
+    },
+    "spacing-36": {
+      "name": "Foundations/spacing-36",
+      "type": "FLOAT",
+      "value": 36,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "602:9417",
+        "note": "menu item trailing inset for the selection mark: 24 icon + 12 padding"
+      },
+      "reason": "composite of the published parts (24 + 12) with no single step behind it; requested to design",
+      "theme": {
+        "namespace": "spacing",
+        "key": "9"
+      },
+      "id": "spacing-36",
+      "cssName": "figma-spacing-36"
     },
     "spacing-4": {
       "name": "Foundations/spacing-4",
@@ -1928,6 +2056,25 @@
       },
       "id": "spacing-40",
       "cssName": "figma-spacing-40"
+    },
+    "spacing-44": {
+      "name": "Foundations/spacing-44",
+      "type": "FLOAT",
+      "value": 44,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "529:6102",
+        "note": "field leading inset: 12 padding + 24 icon + 8 gap (also 824:8839)"
+      },
+      "reason": "the composite docs/design-defaults.md §3 ratifies for a field with a leading icon; the parts are published, the total is recorded here",
+      "theme": {
+        "namespace": "spacing",
+        "key": "11"
+      },
+      "id": "spacing-44",
+      "cssName": "figma-spacing-44"
     },
     "spacing-48": {
       "name": "Foundations/spacing-48",
@@ -2038,6 +2185,25 @@
       },
       "id": "spacing-80",
       "cssName": "figma-spacing-80"
+    },
+    "spacing-88": {
+      "name": "Foundations/spacing-88",
+      "type": "FLOAT",
+      "value": 88,
+      "category": "spacing",
+      "origin": "local-extension",
+      "source": {
+        "kind": "node",
+        "ref": "8049:39452",
+        "note": "calendar caption trailing inset for the two navigation buttons"
+      },
+      "reason": "reserves the two navigation buttons inside the caption; no published step carries it — requested to design",
+      "theme": {
+        "namespace": "spacing",
+        "key": "22"
+      },
+      "id": "spacing-88",
+      "cssName": "figma-spacing-88"
     },
     "z-0": {
       "name": "Foundations/z-0",

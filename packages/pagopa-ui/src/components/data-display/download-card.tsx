@@ -1,6 +1,8 @@
 "use client"
 
-import { Download, ImageIcon } from "@/components/primitives/icons"
+import { Icon } from "@/components/icons/icon"
+import { Default as DownloadIcon } from "@/components/icons/generated/download"
+import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
@@ -25,11 +27,14 @@ function DownloadCard({
     throw new TypeError("DownloadCard href must not be empty")
   }
   return (
-    <div className="flex items-center gap-3 rounded-xl border p-4">
-      <ImageIcon aria-hidden="true" className="text-primary" />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-body-sb">{fileName}</p>
-        {meta ? <p className="text-caption text-muted-foreground">{meta}</p> : null}
+    <div
+      data-slot="download-card"
+      className="pui:flex pui:items-center pui:gap-3 pui:rounded-xl pui:border pui:p-4"
+    >
+      <Icon source={PhotoIcon} className="pui:text-primary" />
+      <div className="pui:min-w-0 pui:flex-1">
+        <p className="pui:truncate pui:text-body-sb">{fileName}</p>
+        {meta ? <p className="pui:text-caption pui:text-muted-foreground">{meta}</p> : null}
       </div>
       {href !== undefined ? (
         <Link
@@ -38,11 +43,11 @@ function DownloadCard({
           href={href}
           download={fileName}
         >
-          <Download aria-hidden="true" />
+          <Icon source={DownloadIcon} />
         </Link>
       ) : onDownload ? (
         <Button size="icon" variant="ghost" aria-label={downloadLabel} onClick={onDownload}>
-          <Download aria-hidden="true" />
+          <Icon source={DownloadIcon} />
         </Button>
       ) : null}
     </div>
@@ -50,3 +55,4 @@ function DownloadCard({
 }
 
 export { DownloadCard }
+export type { DownloadCardProps }

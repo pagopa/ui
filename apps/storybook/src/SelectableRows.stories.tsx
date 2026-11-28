@@ -3,15 +3,12 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Avatar } from "@/components/content"
-import {
-  Autocomplete,
-  Chip,
-  Dropdown,
-  MenuDropdown,
-  MultiSelectField,
-  SelectField,
-} from "@/components/inputs"
+import { Avatar } from "@/components/content/avatar"
+import { Autocomplete } from "@/components/inputs/autocomplete"
+import { Chip } from "@/components/inputs/chips"
+import { Dropdown, MenuDropdown } from "@/components/inputs/menus"
+import { MultiSelectField } from "@/components/inputs/multi-select-field"
+import { SelectField } from "@/components/inputs/select-field"
 import { Button } from "@/components/primitives/button"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { usePortalHost } from "@/lib/ui-provider"
@@ -48,7 +45,7 @@ function NativeSourceChoice() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(String(new FormData(event.currentTarget).get("city") ?? ""))
@@ -105,7 +102,7 @@ function NativeSourceChoices() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(
@@ -142,7 +139,7 @@ export const RichMultipleChoices: Story = {
     await expect(option).toHaveAttribute("aria-selected", "false")
     await waitFor(() => expect(option.getBoundingClientRect().height).toBe(96))
     const uncheckedGlyph = option.querySelector("[data-figma-node-id='96:666']")
-    if (!(uncheckedGlyph instanceof HTMLElement))
+    if (!(uncheckedGlyph instanceof Element))
       throw new Error("Expected the visible source unchecked square, not a second form control")
     await expect(uncheckedGlyph).toBeVisible()
     await expect(uncheckedGlyph.getBoundingClientRect().width).toBe(24)
@@ -157,8 +154,7 @@ export const RichMultipleChoices: Story = {
     await userEvent.click(option)
     await expect(option).toHaveAttribute("aria-selected", "true")
     const checkedGlyph = option.querySelector("[data-figma-node-id='96:667']")
-    if (!(checkedGlyph instanceof HTMLElement))
-      throw new Error("Expected the source checked square")
+    if (!(checkedGlyph instanceof Element)) throw new Error("Expected the source checked square")
     await expect(checkedGlyph).toBeVisible()
     await expect(checkedGlyph.getBoundingClientRect().width).toBe(24)
     await expect(list).toBeVisible()
@@ -179,7 +175,7 @@ function NativeSourceAutocomplete() {
   const [submitted, setSubmitted] = React.useState("")
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(String(new FormData(event.currentTarget).get("city") ?? ""))
@@ -232,7 +228,7 @@ function NativeSourceActionMenus() {
   ]
   return (
     <form
-      className="grid w-[274px] max-w-full gap-4"
+      className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitted(true)
@@ -291,7 +287,7 @@ function SourceChoiceCommand({
   return (
     <>
       <form
-        className="grid w-[274px] max-w-full gap-4"
+        className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
         onSubmit={(event) => {
           event.preventDefault()
           setSubmitCount((count) => count + 1)
@@ -325,8 +321,8 @@ function SourceChoiceCommand({
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogPrimitive.Portal container={portalHost}>
-          <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
-          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
+          <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-40 pui:bg-black/45" />
+          <DialogPrimitive.Popup className="pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:grid pui:-translate-x-1/2 pui:-translate-y-1/2 pui:gap-4 pui:rounded-lg pui:bg-background pui:p-6 pui:shadow-lg">
             <DialogPrimitive.Title>Comando completato</DialogPrimitive.Title>
             <Button type="button">Continua nel dialog</Button>
           </DialogPrimitive.Popup>
@@ -423,14 +419,9 @@ export const ChoiceCommandOpensOverlay: Story = {
   },
 }
 
+// The story lets the callback error reach the window on purpose, proving the
+// field does not swallow it.
 export const ChoiceCommandSurfacesCallbackErrors: Story = {
-  parameters: {
-    // The story lets the callback error reach the window on purpose, proving
-    // the field does not swallow it. Chromatic's runner reports that as an
-    // unhandled error and fails the story, so the opt-in visual run skips it;
-    // the browser suite still asserts the surfacing behaviour.
-    chromatic: { disableSnapshot: true },
-  },
   render: () => (
     <SelectField
       label="Comune con callback fallibile"
@@ -480,7 +471,7 @@ function SourceMultiChoiceCommand({
   return (
     <>
       <form
-        className="grid w-[274px] max-w-full gap-4"
+        className="pui:grid pui:w-[274px] pui:max-w-full pui:gap-4"
         aria-label="Comuni con comando"
         onSubmit={(event) => {
           event.preventDefault()
@@ -516,8 +507,8 @@ function SourceMultiChoiceCommand({
       </form>
       <DialogPrimitive.Root open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogPrimitive.Portal container={portalHost}>
-          <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-black/45" />
-          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 grid -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg bg-background p-6 shadow-lg">
+          <DialogPrimitive.Backdrop className="pui:fixed pui:inset-0 pui:z-40 pui:bg-black/45" />
+          <DialogPrimitive.Popup className="pui:fixed pui:top-1/2 pui:left-1/2 pui:z-50 pui:grid pui:-translate-x-1/2 pui:-translate-y-1/2 pui:gap-4 pui:rounded-lg pui:bg-background pui:p-6 pui:shadow-lg">
             <DialogPrimitive.Title>Comando dei comuni completato</DialogPrimitive.Title>
             <Button type="button">Continua con i comuni</Button>
           </DialogPrimitive.Popup>
