@@ -44,6 +44,26 @@ test("an ordinary pull request runs only the story files its diff reaches", () =
   assert.doesNotMatch(complete.run, /--changed/, "the complete pass is scoped to a diff")
 })
 
+// The condition projects render the same stories in a forced render, so the
+// statements and branches they reach are the story pass's: the gates are
+// measured once. The conditions still judge a diff, but only the stories it
+// moves, and the nightly keeps the whole catalogue.
+test("the coverage job measures the story project and scopes the conditions", () => {
+  const job = jobRunning(deepChecks, "affected -t test:coverage")
+  const covered = stepRunning(job, "affected -t test:coverage")
+  assert.match(covered.run, /--project storybook$/, "the gates are measured on one project")
+  assert.doesNotMatch(
+    covered.run,
+    /storybook-conditions|storybook-reduced-motion/,
+    "the condition projects run in the conditions step, not under coverage",
+  )
+
+  const conditions = stepRunning(job, "affected -t test:conditions")
+  assert.equal(conditions.if, "steps.scope.outputs.full == 'false'")
+  assert.equal(conditions.env.BASE, "${{ github.event.pull_request.base.sha }}")
+  assert.match(conditions.run, /--changed="\$BASE"/, "the conditions judge the whole catalogue")
+})
+
 // The release pull request carries the version, not the work that produced it,
 // so a diff-scoped run would prove almost nothing of what it publishes: the
 // scope step is the event and the ref, and no job skips the ref any more.

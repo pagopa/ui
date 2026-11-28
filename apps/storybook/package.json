@@ -10,11 +10,12 @@
   },
   "scripts": {
     "storybook": "node scripts/storybook-dev.mjs",
-    "build": "storybook build -o dist --stats-json",
+    "build": "storybook build -o dist",
     "chromatic": "chromatic",
     "test:stories": "vitest --run",
     "test:webkit": "vitest --run --mode webkit --project storybook",
     "test:coverage": "vitest --run --coverage --mode coverage",
+    "test:conditions": "vitest --run --mode coverage --project storybook-conditions --project storybook-reduced-motion",
     "typecheck": "tsc -b --force",
     "lint": "oxlint --fix",
     "lint:check": "oxlint",

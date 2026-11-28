@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
+import isChromatic from "chromatic/isChromatic"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
@@ -138,6 +139,9 @@ export const LoggedUserFalseDesktop: Story = {
     // four-column geometry: the fixture pins that width.
   },
   play: async ({ canvasElement }) => {
+    // Chromatic's renderer fails this play while `test:stories` passes it
+    // on three engines, so only the capture judges the build (#195).
+    if (isChromatic()) return
     const canvas = within(canvasElement)
 
     // Four columns: brand column first, then the three source headings.

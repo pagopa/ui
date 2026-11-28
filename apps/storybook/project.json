@@ -45,6 +45,14 @@
         "{workspaceRoot}/packages/tokens/src/**"
       ]
     },
+    "test:conditions": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/packages/pagopa-ui/src/**",
+        "{workspaceRoot}/packages/artwork/src/**",
+        "{workspaceRoot}/packages/tokens/src/**"
+      ]
+    },
     "typecheck": {
       "dependsOn": ["pagopa-ui-artwork:build", "pagopa-ui-tokens:build"],
       "inputs": ["default", "{workspaceRoot}/packages/pagopa-ui/src/**"]

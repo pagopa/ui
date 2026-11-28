@@ -96,11 +96,27 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           browsers: chromium
 
+      # The gates are measured on the story project alone: it is the catalogue
+      # every PR moves, and the condition projects render the same stories in a
+      # forced render, so their pixels add no statement the story pass misses.
       - name: Coverage gates (affected)
         if: steps.scope.outputs.full == 'false'
         env:
           NX_PROFILE: .nx/ci-metrics/coverage.json
-        run: pnpm nx affected -t test:coverage
+        run: pnpm nx affected -t test:coverage -- --project storybook
+
+      # The conditions are the accessibility contract, and a diff proves the
+      # stories it reaches: `--changed` narrows the two condition projects to
+      # the files the pull request moves. `--passWithNoTests` because a diff that
+      # affects the project without touching a story selects nothing, which is a
+      # pass, not a failure. The nightly below keeps the whole catalogue, so a
+      # story the conditions no longer check surfaces there.
+      - name: Accessibility conditions (the diff's files)
+        if: steps.scope.outputs.full == 'false'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          NX_PROFILE: .nx/ci-metrics/conditions.json
+        run: pnpm nx affected -t test:conditions -- --changed="$BASE" --passWithNoTests
 
       - name: Coverage gates (everything)
         if: steps.scope.outputs.full == 'true'

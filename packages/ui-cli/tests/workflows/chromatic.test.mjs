@@ -86,29 +86,25 @@ test("a failed build says why, and the report outlives the run", () => {
   assert.ok(names.indexOf(REPORT) < names.indexOf(UPLOAD))
 })
 
-test("the scope follows the event: an ordinary pull request asks for TurboSnap", () => {
-  const scope = step("Resolve the scope")
-  assert.match(scope.run, /nx-release\/\*/)
-  assert.match(scope.run, /scope=all/)
-  assert.match(scope.run, /scope=changed/)
-  // The scheduled and the manual run carry no head ref: they are the whole
-  // catalogue, like the release pull request.
-  assert.match(scope.run, /nx-release\/\*\|""\)/)
+// The pull request is no longer the cadence: every pass that runs compares the
+// whole catalogue, so the run carries no scope flag and nothing TurboSnap needs.
+test("every pass compares the whole catalogue", () => {
+  assert.equal(
+    job.steps.some((candidate) => candidate.name === "Resolve the scope"),
+    false,
+    "a scope step survived the weekly cadence",
+  )
 
   const ui = step("Chromatic")
-  // `--only-changed` is the changed scope's flag and nothing else's.
-  assert.match(ui.run, /flags=\(--ci\)/)
-  assert.match(ui.run, /flags\+=\(--only-changed\)/)
-  assert.equal((ui.run.match(/--only-changed/g) ?? []).length, 1)
-  assert.match(ui.run, /flags\[@\]/)
+  assert.match(ui.run, /chromatic -- --ci /)
+  assert.doesNotMatch(ui.run, /--only-changed/, "the changed scope is retired")
+  assert.doesNotMatch(ui.run, /flags\[@\]/, "a flag array survived the scope")
   // The build precedes the upload: Chromatic uploads, it does not build.
   assert.ok(names.indexOf("Build the Storybook") < names.indexOf("Chromatic"))
-  // TurboSnap traces through the stats file the Vite builder writes only when
-  // asked: without `--stats-json` a build past the tenth fails at "Prepare your
-  // built Storybook" instead of comparing (run 46028216052).
+  // TurboSnap is what read the stats file, and it is not wired.
   const build = JSON.parse(read("apps/storybook/package.json")).scripts.build
   assert.match(build, /^storybook build\b/)
-  assert.match(build, /--stats-json\b/, "the build emits no stats for TurboSnap")
+  assert.doesNotMatch(build, /--stats-json\b/, "the build still emits stats nothing reads")
 })
 
 test("the comparison reports, it does not gate", () => {
@@ -123,28 +119,46 @@ test("the comparison reports, it does not gate", () => {
   assert.doesNotMatch(ui.run, /--auto-accept-changes/)
 })
 
-test("the triggers are the pull request, the nightly and the manual run", () => {
+test("the cadence is weekly, the release pull request and the manual run", () => {
   // `on` is a YAML 1.1 boolean: js-yaml may parse it under the boolean key.
   const on = workflow.on ?? workflow[true]
   assert.deepEqual(on.pull_request.types, ["opened", "synchronize", "reopened", "ready_for_review"])
-  assert.equal(on.schedule?.[0]?.cron, "0 4 * * *")
+  // Mondays, not every night: a capture surfaces within a week.
+  assert.equal(on.schedule?.[0]?.cron, "0 4 * * 1")
   assert.ok("workflow_dispatch" in on)
   assert.equal(on.push, undefined, "a merge to main re-compares what the pull request did")
+  // The trigger stays for the version pull request, and the condition is what
+  // keeps an ordinary one out.
+  assert.match(job.if, /startsWith\(github\.head_ref, 'nx-release\/'\)/)
 })
 
 test("no fork, no draft and no review branch reaches the token", () => {
   assert.match(job.if, /github\.event\.pull_request\.draft == false/)
   assert.match(job.if, /github\.event\.pull_request\.head\.repo\.full_name == github\.repository/)
   assert.match(job.if, /github\.head_ref != 'feedback\/previews'/)
-  // TurboSnap computes the changed files from the history a shallow clone
-  // cannot see.
-  assert.equal(step("Checkout").with["fetch-depth"], 0)
+  // Nothing computes a diff from the history any more, so the checkout is the
+  // default depth and the credentials still never persist.
+  assert.equal(step("Checkout").with["fetch-depth"], undefined)
   assert.equal(step("Checkout").with["persist-credentials"], false)
 })
 
 test("the Storybook declares the widths Chromatic renders", () => {
   // ADR-0004's breakpoints, not Chromatic's default set.
   assert.match(read("apps/storybook/.storybook/preview.tsx"), /viewports:\s*\[320, 600, 1200\]/)
+
+  // A fixture that pins its own width captures only that width: the other two
+  // are the same composition cropped, and a capture is what the plan bills.
+  const pinned = read("apps/storybook/src/SideNav.stories.tsx")
+  assert.match(
+    pinned,
+    /chromatic: \{ viewports: \[1200\] \}/,
+    "the 1440 fixture captures three widths",
+  )
+  assert.match(
+    pinned,
+    /chromatic: \{ viewports: \[320\] \}/,
+    "the 320 fixture captures three widths",
+  )
 })
 
 test("the catalogues that change with everything else are exempted by parameter", () => {

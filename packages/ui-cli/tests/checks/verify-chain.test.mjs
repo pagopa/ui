@@ -77,10 +77,15 @@ const STATIC = [
   "pagopa-ui-cli:format:check",
   "pagopa-ui-cli:lint:check",
   "pagopa-ui-cli:test",
+  // The Storybook app's own lint and format: CI gates them, so a locally green
+  // fast chain has to gate them too. Everything else the app owns needs a
+  // browser build and stays in the tail below.
+  "pagopa-ui-storybook:lint:check",
+  "pagopa-ui-storybook:format:check",
 ]
 
-// The tail verify-fast stops before: the Storybook app's own gates, browser
-// suites included.
+// The tail verify-fast stops before: the Storybook app's remaining gates, the
+// browser suites included.
 const TAIL = [
   "pagopa-ui-storybook:typecheck",
   "pagopa-ui-storybook:test:coverage",

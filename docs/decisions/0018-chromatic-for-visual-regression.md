@@ -225,6 +225,40 @@ one that turns the dashboard into a gate.
 - `apps/storybook/chromatic.config.json` — the flags the target always uses.
 - `apps/storybook/.storybook/preview.tsx` — the viewports the capture takes.
 - `packages/ui-cli/tests/workflows/chromatic.test.mjs` — the wiring: the probe
-  step precedes every step that spends the token, the nightly and the release
-  pull request drop `--only-changed`, and the fork never receives the secret.
+  step precedes every step that spends the token, every pass compares the whole
+  catalogue, and the fork never receives the secret.
 - `CONTRIBUTING.md` §CI and §Visual regression — the same contract in prose.
+
+## 7. Amendment — the capture is weekly and the plays stay with `test:stories` (2026-11-28)
+
+Two rows of §5 met their trigger: the pull request is no longer where a play is
+judged, and it is no longer when the capture runs.
+
+The plays (§5, "Whether the build judges the plays") are decided by the third
+option, which is also the only one a workflow can express. The ten stories §4
+names pin desktop geometry — a fixed 236 px row, an 852 px table, 899 px and
+900 px regions, a four-column footer, a 1440 px page whose rail expands on hover,
+links the narrow layout hides — and Chromatic renders every story at 320, 600 and
+1200 px and runs the play at each one, so the narrow rendering is what failed.
+`test:stories` passes the same ten because the browser runner's viewport is wide.
+No Storybook parameter disables only the play: `disableSnapshot` stops the
+capture too, which is the wrong trade for stories whose pixels are worth
+comparing. The guard therefore lives in the play, through Chromatic's own
+`isChromatic` helper, which is false at build time and under `test:stories` and
+true only in its renderer. The judgement of the plays stays with `test:stories`,
+where they run on two engines, and the capture judges the pixels.
+
+The cadence (§4, and the daily slot) is now weekly plus the release pull request
+and a manual dispatch. A pull request is gated by the browser suites and the
+accessibility contract, which run in minutes; a capture bills per snapshot,
+reports rather than gates, and is read against a history that exists to be read
+later. With no run scoped any more, TurboSnap is not wired at all: `--only-changed`
+is gone, the build no longer passes `--stats-json`, and the checkout is shallow.
+What §4 records about TurboSnap staying inert for the first ten CI builds stays
+true and stops mattering.
+
+One consequence is accepted: a visual regression now surfaces within a week of
+reaching `main` rather than on the pull request that carried it, and the weekly
+run is what names the commit. That is the trade the captures' cost buys, and
+the §5 row "Making the Chromatic check required" still holds the trigger that
+would change it.

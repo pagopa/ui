@@ -485,12 +485,11 @@ workflow would leave a required check pending instead. It does not skip the deep
 checks, which run there at the whole-catalogue scope of the nightly, because
 what the release guards is the publish and a publish answers to every story.
 
-The visual diff runs there in full, because that pull request is the last moment
-before `@pagopa/ui` is published: it compares the whole catalogue, at every
-width, where an ordinary pull request asks Chromatic for the stories its diff
-reaches. A diff the nightly or this pass finds is accepted in the Chromatic
-dashboard, and the pass that reports after the acceptance is the one that proves
-the fix.
+The visual diff runs there, because that pull request is the last moment before
+`@pagopa/ui` is published: it compares the whole catalogue, at every width an
+ordinary pull request does not capture it at all. A diff the weekly or this pass
+finds is accepted in the Chromatic dashboard, and the pass that reports after the
+acceptance is the one that proves the fix.
 
 Merging a release therefore starts the release and the production Storybook
 deploy, not seven runs at once. A hand-written pull request runs everything:
@@ -499,9 +498,10 @@ its deep checks and visual pass take the whole catalogue.
 
 No merge to `main` runs the deep checks or the visual diff: a merge carries the
 diff its pull request already proved, and the nightly schedules are what re-prove
-the whole repository. For the visual diff the proof a change carries is the
-comparison its pull request reported; the nightly and the release pass are where
-the whole catalogue is compared again.
+the whole repository. The visual diff is the exception on the pull request side:
+it is not captured there at all, so the weekly pass and the release pass are
+where the whole catalogue is compared, and a regression is named within a week of
+reaching `main`.
 
 ## The green chain
 
@@ -563,14 +563,14 @@ in its dashboard. The decision and its reasons are
 section is how to use it.
 
 **The run is experimental.** [ADR-0018 §4](./docs/decisions/0018-chromatic-for-visual-regression.md)
-records why: a live build reported ten stories failing their plays that
-`test:stories` passes, a build over the plan's limit publishes and runs no test
-while staying green, and TurboSnap is inert for the first ten CI builds. A green
-Chromatic check therefore reports that the run happened, not that the pixels did
-not move — it is a dashboard to read beside the change, never the proof that the
-change looks the same, and it is not a required check. ADR-0018 §5 names what
-ends the experimental status; the work is tracked in
-[#195](https://github.com/pagopa/ui/issues/195).
+records why: a build over the plan's limit publishes and runs no test while
+staying green, and the capture reports rather than gates. A green Chromatic check
+therefore reports that the run happened, not that the pixels did not move — it is
+a dashboard to read beside a change, never the proof that the change looks the
+same, and it is not a required check. ADR-0018 §5 names what ends the
+experimental status, and
+[§7](./docs/decisions/0018-chromatic-for-visual-regression.md) amends it with the
+two decisions below.
 
 The integration is opt-in through the `CHROMATIC_PROJECT_TOKEN` environment
 secret of `app-dev-ci` ([Figma drift secrets](./docs/figma-drift-secrets.md) has
@@ -581,21 +581,23 @@ nothing else to change. Run it locally with the token in the environment:
 
 ```bash
 pnpm nx run pagopa-ui-storybook:build
-CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --only-changed
+CHROMATIC_PROJECT_TOKEN=… pnpm nx run pagopa-ui-storybook:chromatic -- --ci
 ```
 
-What a run compares follows the event. An ordinary pull request passes
-`--only-changed`, and Chromatic's TurboSnap traces the changed files through the
-module graph the build writes to `preview-stats.json` to the stories they reach —
-the scope walk this repository used to own. The build passes `--stats-json` for
-that reason: the Vite builder emits the stats only when asked, and a prebuilt
-Storybook without them fails the run instead of tracing. The nightly at 04:00
-UTC, a manual dispatch and the **Version Packages** pull request compare every
-story, because those are the passes where a story nothing else proved has to
-surface and the publish is the last moment to notice. The first run of a project
-captures everything and becomes the baseline the next one traces against;
-TurboSnap itself needs ten builds from CI before it traces anything, so
-`--only-changed` captures the whole catalogue until then.
+The cadence is weekly, on the **Version Packages** pull request and on a manual
+dispatch — never on an ordinary pull request. A pull request is gated instead by
+the story suite, the two condition renderings and the accessibility contract in
+`deep-checks.yml`, which run in minutes and fail the check; a capture bills per
+snapshot, reports rather than gates, and is read against a history that is worth
+reading a week later. Every pass compares the whole catalogue, so nothing is
+scoped and TurboSnap is not wired: no `--only-changed`, no stats file, and a
+shallow checkout. The trade is accepted: a visual regression surfaces within a
+week of reaching `main`, and the weekly run names the commit it appeared in.
+
+Two stories pin their own width, and they capture only that width: `SideNav >
+Condensed` renders a 1440 px page fixture and `SideNav > CondensedMobile` its
+320 px counterpart, so the other two widths are a crop of a composition that does
+not respond. A story that does respond keeps the three widths.
 
 The comparison reports, it does not gate: `exitZeroOnChanges` in
 `apps/storybook/chromatic.config.json` keeps a non-empty diff green and the
@@ -613,13 +615,31 @@ so on the pull request instead of looking like a clean one — but the plan stil
 has to cover the catalogue before the run means anything.
 
 The build also runs the stories' `play` functions as interaction tests, and one
-of those failing fails the build even with `exitZeroOnChanges`. `test:stories`
-runs the same plays in two engines, so a story that fails only here is read in
-the interaction report before it is treated as a regression — and the report is
-the only place the message appears, since the dashboard needs a sign-in while
-the published Storybook does not. The first live build named ten stories that
-`test:stories` passes at 320 and at 414 px, on both engines; ADR-0018 §5 holds
-the decision, and no flag exists to make the build ignore only the plays.
+of those failing fails the build even with `exitZeroOnChanges`. Ten stories pin
+desktop geometry — a fixed row height, an 852 px table, 899 px and 900 px
+regions, four footer columns, a 1440 px page whose rail expands on hover — and
+Chromatic renders each story at 320, 600 and 1200 px, so the narrow rendering is
+what failed their plays; `test:stories` passes them because the browser runner's
+viewport is wide. No Storybook parameter disables only the play
+(`disableSnapshot` stops the capture too), so those ten plays open with the
+guard below and the capture judges their pixels while `test:stories` judges their
+behaviour on two engines:
+
+```tsx
+import isChromatic from "chromatic/isChromatic"
+
+export const Pinned: Story = {
+  play: async ({ canvasElement }) => {
+    if (isChromatic()) return
+    // …
+  },
+}
+```
+
+`isChromatic()` is false at build time and under `test:stories` and true only in
+Chromatic's renderer, so the guard costs the other runs nothing. Write it only
+for a play whose assertions are desktop geometry: a play that holds at every
+width should keep running here.
 
 Two catalogues change whenever everything else does, so they are exempt by
 parameter rather than by a tag: `Foundations/Tokens` and the Figma inventory
