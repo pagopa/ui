@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 
 // Source "CameraViewElement" (1134:6812): a 376×378 Color/Surface/Surface
@@ -54,11 +53,7 @@ function CameraView({
       {...props}
     >
       <div className="pui:absolute pui:inset-0 pui:grid pui:place-items-center">
-        {children === undefined ? (
-          <Icon source={PhotoIcon} className="pui:size-16 pui:opacity-40" />
-        ) : (
-          children
-        )}
+        {children === undefined ? <PhotoIcon className="pui:size-16 pui:opacity-40" /> : children}
       </div>
       <span
         aria-hidden="true"

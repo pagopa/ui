@@ -564,13 +564,17 @@ file, `docs/` and `mise.toml` included.
 What the graph holds:
 
 - `workspace:verify-full` — the whole chain: `workspace:verify-fast` plus the
-  Storybook tail, `pagopa-ui-storybook:typecheck`, `build`, `test:coverage`,
-  `test:stories` and `pagopa-ui:library:check`;
+  browser end, `pagopa-ui-storybook` `typecheck`, `test:coverage`,
+  `test:stories`, `build`, and `pagopa-ui:library:check`;
 - `workspace:verify-fast` — the static half, gate by gate:
   `workspace:check:format`; `pagopa-ui` `typecheck`, `format:check`,
   `lint:check`, `docs`, `check:catalogue`, `foundation:check`, `layers:check`,
-  `build`, `test`; `pagopa-ui-artwork`, `pagopa-ui-tokens` and `pagopa-ui-cli`
-  `typecheck`, `format:check`, `lint:check`, `test`. The `.Regole` card report
+  `utility-prefix:check`, `consumer-dx:check`, `build`, `test`;
+  `pagopa-ui-artwork` and `pagopa-ui-tokens` `typecheck`, `format:check`,
+  `lint:check`, `test`; `pagopa-ui-cli` `typecheck`, `format:check`,
+  `lint:check`, `test:unit`, `test:contracts`; `pagopa-ui-storybook`
+  `lint:check` and `format:check`, because a story that lint or format rejects
+  fails the browser end before it starts. The `.Regole` card report
   (`pagopa-ui-cli:check:rules`) is not a gate: it prints the drift and exits 0,
   and `--strict` is the caller that wants it to fail.
 

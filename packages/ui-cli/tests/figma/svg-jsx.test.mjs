@@ -57,3 +57,14 @@ test("redundant artwork needs no namespace at all", () => {
   assert.doesNotMatch(markup, /mask/)
   assert.match(markup, /fill="currentColor"/)
 })
+
+test("an id on the root asks for the namespace its markup is compiled with", () => {
+  // The root attributes go through the same compiler as the body, so an id
+  // there emits `id={uid + "…"}`: a caller that skipped `useId` would reference
+  // an unbound name.
+  const source = '<svg id="root_1" viewBox="0 0 24 24"><path d="M2 2h20v20H2z" /></svg>'
+  const { markup, declaresIds } = svgToJsx(source, options)
+  assert.equal(declaresIds, true)
+  assert.match(markup, /id=\{uid \+ "root_1"\}/)
+  assert.throws(() => svgToJsx(source, { monochrome: true }), /pass the identifier/)
+})

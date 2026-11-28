@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as DownloadIcon } from "@/components/icons/generated/download"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
 import { Button, buttonVariants } from "@/components/primitives/button"
@@ -42,7 +41,7 @@ function DownloadCard({
       )}
       {...props}
     >
-      <Icon source={PhotoIcon} className="pui:text-primary" />
+      <PhotoIcon className="pui:text-primary" />
       <div className="pui:min-w-0 pui:flex-1">
         <p className="pui:truncate pui:text-body-sb">{fileName}</p>
         {meta ? <p className="pui:text-caption pui:text-muted-foreground">{meta}</p> : null}
@@ -54,11 +53,11 @@ function DownloadCard({
           href={href}
           download={fileName}
         >
-          <Icon source={DownloadIcon} />
+          <DownloadIcon />
         </Link>
       ) : onDownload ? (
         <Button size="icon" variant="ghost" aria-label={downloadLabel} onClick={onDownload}>
-          <Icon source={DownloadIcon} />
+          <DownloadIcon />
         </Button>
       ) : null}
     </div>

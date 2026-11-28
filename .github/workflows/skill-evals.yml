@@ -32,6 +32,12 @@ name: Skill evals
 # of the documented recipe: `FIGMA_TOKEN` stays out of `--ae` so each live task
 # forwards it to itself alone and the guardrail boolean keeps grading the absence
 # of a token. Every action is pinned to a full commit SHA.
+#
+# `PAGOPA_UI_REF` is the commit under test: both skills' `prepare.sh` default to
+# `main`, so without it the graded image checks out whatever `main` holds rather
+# than the tree the skill being graded lives in, and a renamed `ui-cli` flag
+# reads as a skill regression. It is workflow-wide because `convert` compiles the
+# image reference and the grade step builds it.
 on:
   pull_request:
     paths:
@@ -64,6 +70,9 @@ concurrency:
 
 permissions:
   contents: read
+
+env:
+  PAGOPA_UI_REF: ${{ github.sha }}
 
 jobs:
   compile:

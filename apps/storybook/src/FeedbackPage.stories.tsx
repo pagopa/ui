@@ -6,7 +6,6 @@ import { Avatar } from "@/components/content/avatar"
 import { ErrorState } from "@/components/feedback/error-state"
 import { SuccessState } from "@/components/feedback/success-state"
 import { WaitingState } from "@/components/feedback/waiting-state"
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountCircleIcon } from "@/components/icons/generated/account-circle"
 import { Down as ChevronDownIcon } from "@/components/icons/generated/chevron"
 import { Default as MenuBookIcon } from "@/components/icons/generated/menu-book"
@@ -49,15 +48,15 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Manuale operativo",
               href: "#manuale",
-              icon: <Icon source={MenuBookIcon} />,
+              icon: <MenuBookIcon />,
             },
-            { label: "Assistenza", href: "#assistenza", icon: <Icon source={SupportIcon} /> },
+            { label: "Assistenza", href: "#assistenza", icon: <SupportIcon /> },
             // Source `User` row: the account icon and the name on desktop, the
             // 32px Gravatar on mobile.
             {
               label: "Mario Rossi",
               href: "#utente",
-              icon: <Icon source={AccountCircleIcon} />,
+              icon: <AccountCircleIcon />,
               avatar: <Avatar size="compact" initials="MR" alt="Mario Rossi" />,
             },
           ]}
@@ -77,7 +76,7 @@ function SourceChrome({ children }: { children: ReactNode }) {
             {
               label: "Italiano",
               href: "#lingua",
-              trailing: <Icon source={ChevronDownIcon} />,
+              trailing: <ChevronDownIcon />,
             },
           ]}
         />

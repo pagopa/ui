@@ -1,6 +1,5 @@
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import {
   Drawer,
@@ -88,7 +87,7 @@ function InformativeDrawer({
                 aria-label="Chiudi pannello"
                 className="pui:relative pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-sm pui:text-foreground pui:outline-none pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-accent pui:active:bg-accent-active pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
               >
-                <Icon source={CloseIcon} size={24} />
+                <CloseIcon size={24} />
               </DrawerClose>
             </div>
             <DrawerDescription className="pui:mt-2 pui:text-body pui:text-muted-foreground">

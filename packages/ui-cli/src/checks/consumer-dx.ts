@@ -13,6 +13,7 @@ import fs from "node:fs"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { asNode, nodes, walk, type Ast } from "../lib/ast.ts"
 import { readJson } from "../lib/json.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -56,38 +57,11 @@ const HOST_TYPES: Readonly<Record<string, { className: boolean; ref: boolean }>>
   ElementProps: { className: true, ref: true },
 }
 
-// An oxc node without its union: the walk reads by `type` and by the keys a node
-// kind carries, so the checker stays a reader of shapes, not of one union.
-interface Ast {
-  type: string
-  start: number
-  end: number
-  [key: string]: unknown
-}
-
-const isNode = (value: unknown): value is Ast =>
-  typeof value === "object" && value !== null && typeof Reflect.get(value, "type") === "string"
-
-const asNode = (value: unknown): Ast | null => (isNode(value) ? value : null)
-
 // The string a slot holds, as on a module specifier's `source.value`.
 const asText = (value: unknown): string | null => (typeof value === "string" ? value : null)
 
 // The last segment of a spelled name: `React.ComponentProps` reads `ComponentProps`.
 const leafOf = (name: string): string => name.split(".").at(-1) ?? name
-
-const nodes = (value: unknown): Ast[] =>
-  Array.isArray(value) ? value.map(asNode).filter((entry): entry is Ast => entry !== null) : []
-
-function walk(node: Ast, visit: (node: Ast) => void): void {
-  visit(node)
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "type" || key === "start" || key === "end") continue
-    const child = asNode(value)
-    if (child) walk(child, visit)
-    else for (const entry of nodes(value)) walk(entry, visit)
-  }
-}
 
 // The key a member or a pattern property is named with.
 function keyName(key: unknown): string | null {
@@ -130,30 +104,36 @@ function restName(parameter: Ast | null): string | null {
 }
 
 // The names a component takes out of its props, which no longer travel inside
-// the rest object it spreads onto the element, and the name that object has.
-// A component reads them either straight in its signature or from the props
-// parameter it destructures further down.
+// the rest object it spreads onto the element, the name that object has, and
+// the pattern the names came out of. A component reads them either straight in
+// its signature or from the props parameter it destructures further down.
+// The pattern is carried out because the keys it names are reads of `props`,
+// not uses of the prop: only a reference past the pattern applies it.
 function propsShape(
   parameter: Ast | null,
   body: Ast,
-): { destructured: Set<string>; rest: string | null } {
-  const fromPattern = (pattern: Ast): { destructured: Set<string>; rest: string | null } => {
+): { destructured: Set<string>; rest: string | null; pattern: Ast | null } {
+  const fromPattern = (
+    pattern: Ast,
+  ): { destructured: Set<string>; rest: string | null; pattern: Ast } => {
     const destructured = new Set<string>()
     for (const property of nodes(pattern.properties)) {
       if (property.type === "RestElement") continue
       const name = keyName(property.key)
       if (name) destructured.add(name)
     }
-    return { destructured, rest: restName(pattern) }
+    return { destructured, rest: restName(pattern), pattern }
   }
 
   if (parameter?.type === "ObjectPattern") return fromPattern(parameter)
   const parameterName = parameter?.type === "Identifier" ? parameter.name : null
-  if (typeof parameterName !== "string") return { destructured: new Set(), rest: null }
+  if (typeof parameterName !== "string")
+    return { destructured: new Set(), rest: null, pattern: null }
 
-  let found: { destructured: Set<string>; rest: string | null } = {
+  let found: { destructured: Set<string>; rest: string | null; pattern: Ast | null } = {
     destructured: new Set(),
     rest: parameterName,
+    pattern: null,
   }
   walk(body, (node) => {
     if (node.type !== "VariableDeclarator") return
@@ -593,14 +573,23 @@ export function componentFindings(
   // The object a component does not name again — `...props` — reaches the
   // element through `useRender` and `mergeProps` too, so the rest name counts
   // as applied wherever it is handed on.
-  const { destructured, rest } = propsShape(parameter, body)
+  const { destructured, rest, pattern } = propsShape(parameter, body)
+  // The pattern that took the props apart reads them; it does not apply them.
+  const from = typeof pattern?.start === "number" ? pattern.start : null
+  const to = typeof pattern?.end === "number" ? pattern.end : null
+  const inPattern = (node: Ast): boolean =>
+    from !== null &&
+    to !== null &&
+    typeof node.start === "number" &&
+    node.start >= from &&
+    node.start < to
   let spreads = false
   walk(body, (node) => {
     // Only the rest object hands the element the props the component declares. An
     // array or object spread inside the body — `<List items={[...items]} />` —
     // carries nothing to the host element.
     if (rest && handsOn(node, rest)) spreads = true
-    if (typeof node.name === "string") used.add(node.name)
+    if (typeof node.name === "string" && !inPattern(node)) used.add(node.name)
   })
   // A prop the body destructured out of that object is no longer inside it, so
   // the spread cannot stand in for applying it: it has to be named again.

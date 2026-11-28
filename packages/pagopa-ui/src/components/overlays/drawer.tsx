@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 import {
@@ -138,7 +137,7 @@ function Drawer({
               />
             }
           >
-            <Icon source={CloseIcon} className="pui:size-3.5 pui:text-foreground" />
+            <CloseIcon className="pui:size-3.5 pui:text-foreground" />
           </DrawerClosePrimitive>
         </DrawerHeader>
         {flow ? (

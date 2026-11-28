@@ -76,6 +76,34 @@ test("request open dry-run plans the create and writes nothing", () => {
   }
 })
 
+test("request open validates the rules card before it creates anything", () => {
+  const fixture = fixtureTree(files, "design-request-card-")
+  const calls = []
+  try {
+    // `.figma/rules.json` is absent, so the card cannot be validated — and a
+    // create that ran first could not be undone by the failure that follows.
+    const input = { ...files["packages/ui-cli/request.json"], rulesCard: "R-999" }
+    const inputFile = path.join(fixture.root, "packages/ui-cli/request.json")
+    fs.writeFileSync(inputFile, JSON.stringify(input))
+    assert.throws(
+      () =>
+        openDesignRequest(workspaceAt(fixture.root), inputFile, false, (args) => {
+          calls.push(args)
+          return noOpenQuestion(args)
+        }),
+      /\.figma\/rules\.json is missing/,
+    )
+    assert.deepEqual(calls, [])
+    const registry = fs.readFileSync(
+      path.join(fixture.root, "src/catalog/figma/registry.json"),
+      "utf8",
+    )
+    assert.doesNotMatch(registry, /Design request/)
+  } finally {
+    fixture.dispose()
+  }
+})
+
 test("request open creates the issue, points the note at it and keeps the node pending", () => {
   const fixture = fixtureTree(files, "design-request-open-")
   const calls = []

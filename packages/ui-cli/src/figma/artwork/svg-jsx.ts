@@ -102,11 +102,18 @@ export function svgToJsx(source: string, options: SvgJsxOptions): SvgJsx {
   const close = text.lastIndexOf("</svg>")
   if (!open || close < 0) throw new Error("Expected one standalone <svg> document")
   const body = text.slice(open[0].length, close)
-  const declaresIds = DECLARATION.test(body) || body.includes("url(#")
+  // The root is compiled against the same namespace as the body, so an id it
+  // carries asks for the namespace too.
+  const rootAttributes = open[1] ?? ""
+  const declaresIds =
+    DECLARATION.test(rootAttributes) ||
+    DECLARATION.test(body) ||
+    rootAttributes.includes("url(#") ||
+    body.includes("url(#")
   if (declaresIds && !options.namespace)
     throw new Error("Artwork keeps an id: pass the identifier of its namespace")
   // The root paint is decided here, not by the source document.
-  const root = jsxAttributes(open[1] ?? "", options.namespace).replace(/(?:^|\s)fill="[^"]*"/, "")
+  const root = jsxAttributes(rootAttributes, options.namespace).replace(/(?:^|\s)fill="[^"]*"/, "")
   // The definitions keep their source paint; everything that paints the symbol
   // itself becomes the inherited text colour. With no `<defs>` the whole body
   // paints the symbol, so the boundary falls at its start.

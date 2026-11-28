@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { useMessages, usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 import { Dialog as DialogPrimitive } from "@/components/primitives/dialog"
@@ -109,7 +108,7 @@ function Dialog({
               />
             }
           >
-            <Icon source={CloseIcon} />
+            <CloseIcon />
           </DialogPrimitive.Close>
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>

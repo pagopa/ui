@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import {
   Default as ChevronDownIcon,
@@ -93,11 +92,11 @@ const statusText: Record<TimelineItemStatus, string> = {
 }
 
 const statusIcons: Record<TimelineItemStatus, React.ReactElement> = {
-  default: <Icon source={GavelIcon} size={24} />,
-  success: <Icon source={CheckCircleIcon} size={24} />,
-  error: <Icon source={ReportIcon} size={24} />,
-  warning: <Icon source={WarningIcon} size={24} />,
-  info: <Icon source={InfoIcon} size={24} />,
+  default: <GavelIcon size={24} />,
+  success: <CheckCircleIcon size={24} />,
+  error: <ReportIcon size={24} />,
+  warning: <WarningIcon size={24} />,
+  info: <InfoIcon size={24} />,
 }
 
 function TimelineDot({
@@ -147,6 +146,7 @@ function TimelineTimestamp({ month, day, time }: { month?: string; day?: string;
 
 function TimelineTouchpointRow({ touchpoint }: { touchpoint: TimelineTouchpoint }) {
   const [open, setOpen] = React.useState(touchpoint.defaultOpen ?? false)
+  const ToggleChevron = open ? ChevronUpIcon : ChevronDownIcon
   return (
     <div className="pui:grid pui:gap-2">
       <button
@@ -167,11 +167,7 @@ function TimelineTouchpointRow({ touchpoint }: { touchpoint: TimelineTouchpoint 
           {touchpoint.label}
         </span>
         {touchpoint.correction}
-        <Icon
-          source={open ? ChevronUpIcon : ChevronDownIcon}
-          className="pui:size-6 pui:shrink-0 pui:text-primary"
-          aria-hidden="true"
-        />
+        <ToggleChevron className="pui:size-6 pui:shrink-0 pui:text-primary" aria-hidden="true" />
       </button>
       {open && touchpoint.events?.length ? (
         <ul className="pui:grid pui:gap-2">

@@ -1,11 +1,10 @@
 // Shared tone vocabulary of the feedback components (internal module, not
 // re-exported by the family barrel).
-import type { IconSource } from "@/components/icons/icon"
-
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
 import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { Default as WarningIcon } from "@/components/icons/generated/warning"
+import type { Glyph } from "@/components/icons/icon"
 
 /**
  * Semantic tone of the feedback surfaces: it selects the source colors and,
@@ -22,8 +21,9 @@ export const toneStyles: Record<Tone, string> = {
 }
 
 // One glyph per tone as a component reference: a live region that renders the
-// four tones imports four icons, not the whole pinned set.
-export const statusIcons: Record<Tone, IconSource> = {
+// four tones imports four icons, not the whole pinned set. Each value is a
+// published glyph, so it renders as a component, never as an `Icon` source.
+export const statusIcons: Record<Tone, Glyph> = {
   info: InfoFilledIcon,
   success: CheckCircleIcon,
   warning: WarningIcon,

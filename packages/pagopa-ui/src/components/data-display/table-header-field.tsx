@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Down as ArrowDownIcon, Up as ArrowUpIcon } from "@/components/icons/generated/arrow"
 import { Default as UnfoldIcon } from "@/components/icons/generated/unfold"
 import { TableHead } from "@/components/primitives/table"
@@ -19,6 +18,7 @@ type TableHeaderFieldProps = React.ComponentProps<"th"> & {
 
 function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
   const t = useMessages("table")
+  const SortGlyph = sort?.direction === "ascending" ? ArrowUpIcon : ArrowDownIcon
   return (
     <TableHead data-slot="table-header-field" scope="col" aria-sort={sort?.direction} {...props}>
       {sort ? (
@@ -30,9 +30,9 @@ function TableHeaderField({ children, sort, ...props }: TableHeaderFieldProps) {
         >
           {children}
           {sort.direction === "none" ? (
-            <Icon source={UnfoldIcon} className="pui:size-6 pui:shrink-0" />
+            <UnfoldIcon className="pui:size-6 pui:shrink-0" />
           ) : (
-            <Icon source={sort.direction === "ascending" ? ArrowUpIcon : ArrowDownIcon} />
+            <SortGlyph />
           )}
         </button>
       ) : (

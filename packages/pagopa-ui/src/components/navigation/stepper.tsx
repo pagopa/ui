@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 
 export interface StepperItem {
@@ -58,7 +57,7 @@ function StepIndicator({
       {item.status === "complete" ? (
         <>
           {labelled ? <span className="pui:sr-only">{completedLabel} </span> : null}
-          <Icon source={CheckCircleIcon} aria-hidden="true" className="pui:text-primary" />
+          <CheckCircleIcon aria-hidden="true" className="pui:text-primary" />
         </>
       ) : (
         <span

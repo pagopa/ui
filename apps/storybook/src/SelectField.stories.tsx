@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, screen, userEvent, waitFor, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 import { Autocomplete } from "@/components/inputs/autocomplete"
 import { DatePickerField } from "@/components/inputs/text-fields"
@@ -172,7 +171,7 @@ export const SourceFrame: Story = {
       <SelectField
         id="source-select"
         label="Label text"
-        leadingIcon={<Icon source={AccountBalanceIcon} />}
+        leadingIcon={<AccountBalanceIcon />}
         options={[{ value: "value", label: "Value" }]}
         required
       />

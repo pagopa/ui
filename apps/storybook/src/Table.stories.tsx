@@ -7,7 +7,6 @@ import { Table, type TableColumn } from "@/components/data-display/table"
 import { TableCellRow } from "@/components/data-display/table-cell-row"
 import { TableHeaderField } from "@/components/data-display/table-header-field"
 import { TableListField } from "@/components/data-display/table-list-field"
-import { Icon } from "@/components/icons/icon"
 import { Default as AttachFileIcon } from "@/components/icons/generated/attach-file"
 import { Default as SellIcon } from "@/components/icons/generated/sell"
 
@@ -459,9 +458,7 @@ function SourceTable() {
           ) : (
             <span className="pui:font-mono">{value}</span>
           )}
-          <Icon
-            source={AttachFileIcon}
-
+          <AttachFileIcon
             aria-hidden="true"
             className="pui:ml-auto pui:hidden pui:size-5 pui:shrink-0 pui:text-primary pui:@max-[40rem]/table:block"
           />
@@ -476,9 +473,7 @@ function SourceTable() {
       label: "Category",
       render: (value) => (
         <span className="pui:inline-flex pui:items-center pui:gap-1">
-          <Icon
-            source={SellIcon}
-
+          <SellIcon
             aria-hidden="true"
             className="pui:hidden pui:size-4 pui:@max-[40rem]/table:block"
           />

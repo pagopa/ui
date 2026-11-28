@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
@@ -37,10 +36,10 @@ interface HeaderAlertProps extends Omit<React.ComponentProps<"div">, "children">
 // `1322:6542` (info, the filled variant `98:1115`), `7635:3910` (check_circle),
 // `1322:6534` (warning) and `7635:3924` (report).
 const toneIcons: Record<Tone, React.ReactElement> = {
-  info: <Icon source={InfoFilledIcon} size={24} className="pui:shrink-0" />,
-  success: <Icon source={CheckCircleIcon} size={24} className="pui:shrink-0" />,
-  warning: <Icon source={WarningIcon} size={24} className="pui:shrink-0" />,
-  error: <Icon source={ReportIcon} size={24} className="pui:shrink-0" />,
+  info: <InfoFilledIcon size={24} className="pui:shrink-0" />,
+  success: <CheckCircleIcon size={24} className="pui:shrink-0" />,
+  warning: <WarningIcon size={24} className="pui:shrink-0" />,
+  error: <ReportIcon size={24} className="pui:shrink-0" />,
 }
 
 function HeaderAlert({
@@ -98,7 +97,7 @@ function HeaderAlert({
                 : "pui:flex-1",
           )}
         >
-          {toneIcon ?? <Icon source={KidStarIcon} size={24} className="pui:shrink-0" />}
+          {toneIcon ?? <KidStarIcon size={24} className="pui:shrink-0" />}
           <div className={cn("pui:min-w-0 pui:flex-1", centred && "pui:tablet:flex-initial")}>
             {children}
           </div>
@@ -115,7 +114,7 @@ function HeaderAlert({
             onClick={onDismiss}
             className="pui:flex pui:size-10 pui:items-center pui:justify-center pui:rounded-md pui:focus-visible:outline-2 pui:focus-visible:outline-current"
           >
-            <Icon source={CloseIcon} className="pui:size-5" />
+            <CloseIcon className="pui:size-5" />
           </button>
         )}
       </div>

@@ -21,6 +21,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { lineOf } from "../lib/ast.ts"
 import { walkFiles } from "../lib/fs.ts"
 import { readNx } from "./docs/nx.ts"
 import { report as checkReport, type CheckReport } from "./report.ts"
@@ -523,8 +524,6 @@ const toPosix = (file: string): string => file.split(path.sep).join("/")
 
 const label = (ctx: DocsContext, file: string): string =>
   toPosix(path.relative(ctx.workspace, file))
-
-const lineOf = (text: string, index: number): number => text.slice(0, index).split("\n").length
 
 function markdownFiles(ctx: DocsContext): string[] {
   return [

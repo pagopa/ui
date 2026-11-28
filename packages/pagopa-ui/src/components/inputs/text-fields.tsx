@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLocale, useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Down as ChevronDownIcon, Up as ChevronUpIcon } from "@/components/icons/generated/chevron"
 import { Default as EventIcon } from "@/components/icons/generated/event"
@@ -157,14 +156,14 @@ function TextField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} size={20} />
+            <CheckCircleIcon size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:inset-y-0 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} size={20} />
+            <ReportIcon size={20} />
           </span>
         ) : null}
       </div>
@@ -239,14 +238,14 @@ function TextareaField({
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-success pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={CheckCircleIcon} size={20} />
+            <CheckCircleIcon size={20} />
           </span>
         ) : error ? (
           <span
             aria-hidden="true"
             className="pui:pointer-events-none pui:absolute pui:top-3 pui:right-3 pui:flex pui:items-center pui:text-destructive pui:[&_svg:not(.pagopa-icon)]:size-5"
           >
-            <Icon source={ReportIcon} size={20} />
+            <ReportIcon size={20} />
           </span>
         ) : null}
       </div>
@@ -444,7 +443,7 @@ function DatePickerField({
   "aria-describedby": ariaDescribedBy,
   className,
   ref,
-  leadingIcon = <Icon source={EventIcon} />,
+  leadingIcon = <EventIcon />,
   ...rootProps
 }: DatePickerFieldProps) {
   const t = useMessages("datePickerField")
@@ -466,6 +465,7 @@ function DatePickerField({
   const currentValue = value ?? internalValue
   const selected = parseLocalIsoDate(currentValue)
   const filled = Boolean(selected)
+  const TriggerChevron = open ? ChevronUpIcon : ChevronDownIcon
   const trigger = (
     <button
       type="button"
@@ -497,8 +497,7 @@ function DatePickerField({
       >
         {selected ? dateFieldFormat.format(selected) : null}
       </span>
-      <Icon
-        source={open ? ChevronUpIcon : ChevronDownIcon}
+      <TriggerChevron
         size={24}
         className={
           disabled

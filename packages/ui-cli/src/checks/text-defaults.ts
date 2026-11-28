@@ -17,6 +17,7 @@ import path from "node:path"
 import { parseSync } from "oxc-parser"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { lineOf } from "../lib/ast.ts"
 import { walkRelative } from "../lib/fs.ts"
 import { report, type CheckReport } from "./report.ts"
 
@@ -192,10 +193,6 @@ function textValue(node: Node, source: string): string | undefined {
     return body ? textValue(body, source) : undefined
   }
   return undefined
-}
-
-function lineOf(source: string, position: number): number {
-  return source.slice(0, position).split("\n").length
 }
 
 // The static text a template renders, its substitutions removed: a `${count}

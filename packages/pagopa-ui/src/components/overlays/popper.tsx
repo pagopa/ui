@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { statusIcons, toneStyles, type Tone } from "@/components/feedback/tones"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
@@ -61,6 +60,7 @@ function Popper({
 }: PopperProps) {
   const t = useMessages("popper")
   const dismissLabel = dismissLabelProp ?? t.dismissLabel
+  const ToneIcon = statusIcons[tone]
 
   return (
     <div
@@ -106,7 +106,7 @@ function Popper({
           data-slot="popper-icon"
           className="pui:grid pui:size-6 pui:shrink-0 pui:place-items-center"
         >
-          <Icon source={statusIcons[tone]} />
+          <ToneIcon />
         </span>
         <div
           id={id}
@@ -122,7 +122,7 @@ function Popper({
           data-slot="popper-dismiss"
           className="pui:relative pui:grid pui:size-6 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-foreground pui:after:absolute pui:after:-inset-2.5 pui:hover:bg-foreground/5 pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-current"
         >
-          <Icon source={CloseIcon} className="pui:size-5" />
+          <CloseIcon className="pui:size-5" />
         </button>
       </div>
     </div>

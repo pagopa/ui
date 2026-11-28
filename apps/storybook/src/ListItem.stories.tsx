@@ -3,7 +3,6 @@ import { expect, userEvent, within } from "storybook/test"
 
 import { Avatar } from "@/components/content/avatar"
 import { ListItem } from "@/components/content/list-item"
-import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
 import { Default as PhotoIcon } from "@/components/icons/generated/photo"
@@ -16,7 +15,7 @@ const meta = {
   title: "Components/Content/ListItem",
   component: ListItem,
   args: {
-    leading: <Icon source={PhotoIcon} className="pui:text-decorative-secondary" />,
+    leading: <PhotoIcon className="pui:text-decorative-secondary" />,
     description: "Pagamento TARI 2025",
     value: "Accertamento 00016/2025",
   },
@@ -114,7 +113,7 @@ export const Actionable: Story = {
   parameters: { a11yContract: { reflow: false } },
   args: {
     variant: "actionable",
-    trailingIcon: <Icon source={ContentCopyIcon} />,
+    trailingIcon: <ContentCopyIcon />,
     chip: <Chip size="compact">Default</Chip>,
   },
 }
@@ -126,7 +125,7 @@ export const Transactional: Story = {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <Icon source={CreditCardIcon} />
+        <CreditCardIcon />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -142,7 +141,7 @@ export const WithSuggestion: Story = {
     variant: "transactional",
     leading: (
       <span className="pui:grid pui:size-11 pui:place-items-center pui:rounded-lg pui:border">
-        <Icon source={CreditCardIcon} />
+        <CreditCardIcon />
       </span>
     ),
     value: "Carta •••• 4532",
@@ -165,7 +164,7 @@ export const Amount: Story = {
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    leading: <Icon source={ReportIcon} className="pui:text-destructive" />,
+    leading: <ReportIcon className="pui:text-destructive" />,
     value: "Avviso non trovato",
     description: undefined,
     helperText: "Controlla il codice avviso e riprova.",

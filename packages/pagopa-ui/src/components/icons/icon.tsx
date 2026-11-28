@@ -2,7 +2,7 @@ import type { ComponentType, SVGProps } from "react"
 
 import { cn } from "@/lib/cn"
 
-/** A pinned source glyph: one `SVGProps` component from `generated/`. */
+/** A pinned source drawing: one `SVGProps` component from `generated/`. */
 type IconSource = ComponentType<SVGProps<SVGSVGElement>>
 
 type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> & {
@@ -23,8 +23,11 @@ type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> 
    */
   size?: number
   /**
-   * The pinned glyph to render, imported from `generated/`: a component
+   * The pinned drawing to render, imported from `generated/`: a component
    * reference keeps every icon the caller did not import out of its bundle.
+   * This is the raw artwork, such as a `variants` entry or a hand-authored
+   * component; a published glyph (`@pagopa/ui/icons/*`) is already boxed, so
+   * render it as a component instead of passing it here.
    */
   source: IconSource
 }
@@ -35,6 +38,13 @@ type IconProps = Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> 
  * the shell, so `@pagopa/ui/icons/<slug>` and `PagoPAIcon` cannot drift.
  */
 type GlyphProps = Omit<IconProps, "source">
+
+/**
+ * A published glyph, already boxed by the shell. Render it directly: feeding it
+ * back to `Icon` as `source` wraps a second box that overrides the props the
+ * outer one passes, so the call site's `size` and accessible name are lost.
+ */
+type Glyph = ComponentType<GlyphProps>
 
 /**
  * The shell every library glyph renders through: the shared box, the
@@ -76,4 +86,4 @@ function Icon({
   )
 }
 
-export { Icon, type GlyphProps, type IconProps, type IconSource }
+export { Icon, type Glyph, type GlyphProps, type IconProps, type IconSource }

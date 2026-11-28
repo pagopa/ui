@@ -25,7 +25,6 @@ export interface CalendarLocale {
   }
 }
 
-import { Icon } from "@/components/icons/icon"
 import {
   Default as ChevronIcon,
   Down as ChevronDownIcon,
@@ -83,9 +82,10 @@ function Calendar({
       components={{
         // Month paging is a widget control, not a page navigation landmark.
         Nav: (navProps) => <Nav {...navProps} role="presentation" aria-label={undefined} />,
-        Chevron: ({ orientation, className: iconClassName }) => (
-          <Icon source={chevronByOrientation[orientation ?? "down"]} className={iconClassName} />
-        ),
+        Chevron: ({ orientation, className: iconClassName }) => {
+          const ChevronGlyph = chevronByOrientation[orientation ?? "down"]
+          return <ChevronGlyph className={iconClassName} />
+        },
         DayButton: CalendarDayButton,
         ...components,
       }}

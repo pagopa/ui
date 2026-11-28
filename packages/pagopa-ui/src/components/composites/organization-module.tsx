@@ -1,6 +1,5 @@
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as AccountBalanceIcon } from "@/components/icons/generated/account-balance"
 
 import { BoxedModule } from "./boxed-module"
@@ -27,7 +26,7 @@ function OrganizationModule({
       data-slot="organization-module"
       title={name}
       description={fiscalCode}
-      icon={<Icon source={AccountBalanceIcon} />}
+      icon={<AccountBalanceIcon />}
       {...props}
     >
       {children}

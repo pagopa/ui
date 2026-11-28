@@ -4,7 +4,6 @@ import { expect, userEvent, within } from "storybook/test"
 import { figmaEmbedUrl } from "@/catalog/figma/file"
 import { CorrectionTag } from "@/components/content/correction-tag"
 import { Timeline, type TimelineItemStatus } from "@/components/data-display/timeline"
-import { Icon } from "@/components/icons/icon"
 import { Default as MailIcon } from "@/components/icons/generated/mail"
 import { Default as MarkEmailReadIcon } from "@/components/icons/generated/mark-email-read"
 import { Default as SecondLetterIcon } from "@/components/icons/generated/second-letter"
@@ -137,19 +136,19 @@ export const Touchpoints: Story = {
         id: "validation",
         title: "Notifica in validazione",
         status: "default",
-        icon: <Icon source={TroubleshootIcon} size={24} />,
+        icon: <TroubleshootIcon size={24} />,
         correction: <CorrectionTag status="valid" />,
         touchpoints: [
           {
             id: "digital",
             label: "Prima comunicazione digitale",
-            icon: <Icon source={MarkEmailReadIcon} size={24} />,
+            icon: <MarkEmailReadIcon size={24} />,
             correction: <CorrectionTag status="valid" />,
           },
           {
             id: "paper",
             label: "Seconda {Raccomandata A/R}",
-            icon: <Icon source={SecondLetterIcon} size={24} />,
+            icon: <SecondLetterIcon size={24} />,
             defaultOpen: true,
             events: [
               {
@@ -166,7 +165,7 @@ export const Touchpoints: Story = {
           {
             id: "analog",
             label: "Invio analogico",
-            icon: <Icon source={MailIcon} size={24} />,
+            icon: <MailIcon size={24} />,
           },
         ],
       },
@@ -195,7 +194,7 @@ export const Multidestinatario: Story = {
         id: "multi",
         title: "Notifica in validazione",
         status: "default",
-        icon: <Icon source={TroubleshootIcon} size={24} />,
+        icon: <TroubleshootIcon size={24} />,
         correction: <CorrectionTag status="valid" />,
         recipients: [
           {
@@ -205,12 +204,12 @@ export const Multidestinatario: Story = {
               {
                 id: "mario-digital",
                 label: "Prima comunicazione digitale",
-                icon: <Icon source={MarkEmailReadIcon} size={24} />,
+                icon: <MarkEmailReadIcon size={24} />,
               },
               {
                 id: "mario-paper",
                 label: "Seconda {Raccomandata A/R}",
-                icon: <Icon source={SecondLetterIcon} size={24} />,
+                icon: <SecondLetterIcon size={24} />,
               },
             ],
           },
@@ -221,7 +220,7 @@ export const Multidestinatario: Story = {
               {
                 id: "ente-digital",
                 label: "Prima comunicazione digitale",
-                icon: <Icon source={MarkEmailReadIcon} size={24} />,
+                icon: <MarkEmailReadIcon size={24} />,
                 correction: <CorrectionTag status="valid" />,
               },
             ],

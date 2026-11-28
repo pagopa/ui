@@ -4,7 +4,6 @@ import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { Avatar } from "@/components/content/avatar"
 import { Tag } from "@/components/content/tag"
-import { Icon } from "@/components/icons/icon"
 import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
 import { Default as DashboardIcon } from "@/components/icons/generated/dashboard"
 import { Default as PaymentsIcon } from "@/components/icons/generated/payments"
@@ -64,12 +63,12 @@ export const NestedAndProfile: Story = {
         label: "Panoramica",
         href: "#",
         current: true,
-        icon: <Icon source={DashboardIcon} />,
+        icon: <DashboardIcon />,
       },
       {
         label: "Pagamenti",
         href: "#pagamenti",
-        icon: <Icon source={CreditCardIcon} />,
+        icon: <CreditCardIcon />,
         badgeCount: 2,
         badgeLabel: "2 pagamenti",
         chip: (
@@ -85,7 +84,7 @@ export const NestedAndProfile: Story = {
       {
         label: "Assistenza",
         href: "#assistenza",
-        icon: <Icon source={SupportIcon} />,
+        icon: <SupportIcon />,
       },
     ],
     profile: {
@@ -113,12 +112,12 @@ const condensedItems = [
   {
     label: "Panoramica",
     href: "#",
-    icon: <Icon source={DashboardIcon} />,
+    icon: <DashboardIcon />,
   },
   {
     label: "Pagamenti",
     href: "#pagamenti",
-    icon: <Icon source={CreditCardIcon} />,
+    icon: <CreditCardIcon />,
     badgeCount: 2,
     badgeLabel: "2 pagamenti",
     chip: (
@@ -127,14 +126,14 @@ const condensedItems = [
       </Tag>
     ),
     children: [
-      { label: "PagoPA", href: "#pagopa", current: true, icon: <Icon source={PaymentsIcon} /> },
-      { label: "F24", href: "#f24", icon: <Icon source={ReceiptLongIcon} /> },
+      { label: "PagoPA", href: "#pagopa", current: true, icon: <PaymentsIcon /> },
+      { label: "F24", href: "#f24", icon: <ReceiptLongIcon /> },
     ],
   },
   {
     label: "Assistenza",
     href: "#assistenza",
-    icon: <Icon source={SupportIcon} />,
+    icon: <SupportIcon />,
   },
 ]
 

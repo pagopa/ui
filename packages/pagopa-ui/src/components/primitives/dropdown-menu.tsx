@@ -3,7 +3,6 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import { Default as ChevronIcon } from "@/components/icons/generated/chevron"
 
@@ -128,7 +127,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <Icon source={ChevronIcon} size={16} className="pui:ml-auto" />
+      <ChevronIcon size={16} className="pui:ml-auto" />
     </MenuPrimitive.SubmenuTrigger>
   )
 }
@@ -202,7 +201,7 @@ function DropdownMenuCheckboxItem({
           />
         ) : (
           <MenuPrimitive.CheckboxItemIndicator>
-            {indicator ?? <Icon source={CheckIcon} size={16} />}
+            {indicator ?? <CheckIcon size={16} />}
           </MenuPrimitive.CheckboxItemIndicator>
         )}
       </span>
@@ -238,7 +237,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
-          <Icon source={CheckIcon} size={16} />
+          <CheckIcon size={16} />
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}

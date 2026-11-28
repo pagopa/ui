@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/primitives/popover"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 
 /**
@@ -127,7 +126,7 @@ function Popover({
               {children}
             </div>
             <PopoverClose aria-label={closeLabel}>
-              <Icon source={CloseIcon} className="pui:size-2.5 pui:text-primary" />
+              <CloseIcon className="pui:size-2.5 pui:text-primary" />
             </PopoverClose>
           </div>
           {arrowPosition === "bottom" ? (

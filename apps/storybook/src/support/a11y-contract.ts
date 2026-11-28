@@ -50,7 +50,8 @@ const TABBABLE = [
   "[tabindex]",
 ].join(",")
 
-function isTestRun() {
+/** Whether the page is running inside the Vitest browser run. */
+export function isTestRun() {
   return Boolean(globalThis.__vitest_browser__)
 }
 
@@ -355,7 +356,10 @@ async function measureFocusPaint(element: HTMLElement): Promise<FocusMeasurement
 // `expectFocusContrast`, which each component asserts on the surfaces it is
 // documented for; making every story carry the measurement is the harness
 // upgrade tracked separately.
-async function expectFocusPaint(element: HTMLElement) {
+// Exported for its own negative test: `A11yContract.stories.tsx` runs it
+// against a control with no cue and asserts the failure, so the check cannot
+// quietly stop checking.
+export async function expectFocusPaint(element: HTMLElement) {
   const measured = await measureFocusPaint(element)
   expect(
     measured?.paint ?? null,
@@ -911,7 +915,10 @@ function expectFieldErrors(root: ParentNode) {
 // WCAG 1.4.10 reflow at 320px, then 1.4.12 text spacing with 1.4.4 text at
 // 200%: the page must not scroll horizontally. The same technique the packed
 // artifact test uses (scripts/check-library/browser.spec.mjs).
-async function expectReflowConditions(storyId: string) {
+// Exported for the same negative test: the story widens the page past the
+// viewport and asserts this rejects, so the condition is proven to be able to
+// fail rather than pass on every layout.
+export async function expectReflowConditions(storyId: string) {
   const { page } = await import("@vitest/browser/context").catch(() => ({ page: undefined }))
   if (!page) {
     // A broken import would otherwise switch the condition off for every story

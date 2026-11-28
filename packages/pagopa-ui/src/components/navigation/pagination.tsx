@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import {
   Left as ChevronLeftIcon,
   Default as ChevronIcon,
@@ -86,7 +85,7 @@ function Pagination({
             aria-label={previousLabel}
             className={stepControl}
           >
-            <Icon source={ChevronLeftIcon} />
+            <ChevronLeftIcon />
           </Button>
           {pageRange(current, totalPages).map((page, index) =>
             page === "ellipsis" ? (
@@ -126,7 +125,7 @@ function Pagination({
             aria-label={nextLabel}
             className={stepControl}
           >
-            <Icon source={ChevronIcon} />
+            <ChevronIcon />
           </Button>
         </nav>
       </div>

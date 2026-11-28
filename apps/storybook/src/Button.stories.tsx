@@ -3,7 +3,6 @@ import type { ComponentProps } from "react"
 
 import { expect, fn, userEvent, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
 import { Default as MenuIcon } from "@/components/icons/generated/menu"
@@ -217,7 +216,7 @@ const fidelityVariant = (nodeId: string) => nodeId.replace(":", "-")
 const actionLabel = () => <span data-fidelity-label>Action</span>
 const kidStar = () => (
   <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-    <Icon source={KidStarIcon} />
+    <KidStarIcon />
   </span>
 )
 
@@ -416,7 +415,7 @@ export const FigmaIconButton: Story = {
       aria-label="Apri menu"
     >
       <span data-fidelity-icon className="pui:inline-flex pui:shrink-0">
-        <Icon source={MenuIcon} />
+        <MenuIcon />
       </span>
     </Button>
   ),
@@ -466,15 +465,15 @@ export const WithIcons: Story = {
   render: () => (
     <div className="pui:flex pui:flex-wrap pui:gap-4">
       <Button>
-        <Icon source={KidStarIcon} aria-hidden="true" />
+        <KidStarIcon aria-hidden="true" />
         Preferiti
       </Button>
       <Button variant="outline">
         Continua
-        <Icon source={ArrowIcon} aria-hidden="true" />
+        <ArrowIcon aria-hidden="true" />
       </Button>
       <Button size="icon" aria-label="Aggiungi ai preferiti">
-        <Icon source={KidStarIcon} aria-hidden="true" />
+        <KidStarIcon aria-hidden="true" />
       </Button>
     </div>
   ),

@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, within } from "storybook/test"
 
 import { figmaEmbedUrl } from "@/catalog/figma/file"
-import { Icon } from "@/components/icons/icon"
 import { Default as CreditCardIcon } from "@/components/icons/generated/credit-card"
 import { Default as InfoIcon } from "@/components/icons/generated/info"
 import { Chip } from "@/components/inputs/chips"
@@ -15,7 +14,7 @@ const meta = {
   title: "Components/Navigation/SectionHeader",
   component: SectionHeader,
   args: {
-    icon: <Icon source={CreditCardIcon} />,
+    icon: <CreditCardIcon />,
     title: "Servizi per cittadini e imprese",
     status: (
       <Chip variant="neutral" size="compact">
@@ -24,7 +23,7 @@ const meta = {
     ),
     actions: (
       <Button variant="ghost" size="icon" aria-label="Informazioni sulla sezione">
-        <Icon source={InfoIcon} />
+        <InfoIcon />
       </Button>
     ),
   },
@@ -71,7 +70,7 @@ export const Levels: Story = {
     <div className="pui:grid pui:w-[min(42rem,calc(100vw-2rem))] pui:gap-8">
       <SectionHeader
         level={1}
-        icon={<Icon source={CreditCardIcon} />}
+        icon={<CreditCardIcon />}
         title="Servizi per cittadini e imprese"
         status={
           <Chip variant="neutral" size="compact">
@@ -82,13 +81,13 @@ export const Levels: Story = {
       <SectionHeader
         level={2}
         titleAs="h3"
-        icon={<Icon source={CreditCardIcon} />}
+        icon={<CreditCardIcon />}
         title="Documenti e pagamenti"
       />
       <SectionHeader
         level={3}
         titleAs="h4"
-        icon={<Icon source={CreditCardIcon} />}
+        icon={<CreditCardIcon />}
         title="Ultimo aggiornamento"
       />
     </div>

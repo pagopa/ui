@@ -6,21 +6,19 @@ import { Filled as InfoFilledIcon } from "@/components/icons/generated/info"
 import { Default as KidStarIcon } from "@/components/icons/generated/kid-star"
 import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { Default as WarningIcon } from "@/components/icons/generated/warning"
-import { Icon, type IconSource } from "@/components/icons/icon"
+import type { Glyph } from "@/components/icons/icon"
 
 type TagStatus = "default" | "info" | "warning" | "success" | "error" | "counter"
 
 // The status artwork as component references: a tag imports the five status
-// glyphs it can render, not the whole pinned set.
-const statusIcons: Record<
-  Exclude<TagStatus, "counter">,
-  { source: IconSource; className: string }
-> = {
-  default: { source: KidStarIcon, className: "pui:text-primary" },
-  info: { source: InfoFilledIcon, className: "pui:text-info" },
-  warning: { source: WarningIcon, className: "pui:text-warning" },
-  success: { source: CheckCircleIcon, className: "pui:text-success" },
-  error: { source: ReportIcon, className: "pui:text-destructive" },
+// glyphs it can render, not the whole pinned set. A published glyph is already
+// boxed, so it renders as a component rather than as an `Icon` source.
+const statusIcons: Record<Exclude<TagStatus, "counter">, { glyph: Glyph; className: string }> = {
+  default: { glyph: KidStarIcon, className: "pui:text-primary" },
+  info: { glyph: InfoFilledIcon, className: "pui:text-info" },
+  warning: { glyph: WarningIcon, className: "pui:text-warning" },
+  success: { glyph: CheckCircleIcon, className: "pui:text-success" },
+  error: { glyph: ReportIcon, className: "pui:text-destructive" },
 }
 
 export type TagProps = React.ComponentProps<"span"> & {
@@ -39,6 +37,7 @@ export type TagProps = React.ComponentProps<"span"> & {
 
 function Tag({ status = "default", icon, iconLabel, children, className, ...props }: TagProps) {
   const artwork = status === "counter" ? undefined : statusIcons[status]
+  const ArtworkIcon = artwork?.glyph
   return (
     <span
       {...props}
@@ -49,10 +48,9 @@ function Tag({ status = "default", icon, iconLabel, children, className, ...prop
         className,
       )}
     >
-      {artwork
+      {artwork && ArtworkIcon
         ? (icon ?? (
-            <Icon
-              source={artwork.source}
+            <ArtworkIcon
               size={16}
               className={artwork.className}
               decorative={!iconLabel}

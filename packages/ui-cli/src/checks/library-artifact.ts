@@ -206,8 +206,8 @@ function customProperties(styles: string): Set<string> {
 // stylesheet or a module carries the `var(--…)` reference or the `w-(--…)`
 // utility, and prose does not, so a guide mentioning a name cannot suppress a
 // finding.
-function readSources(root: string, directory: string): string[] {
-  return walkRelative(root, directory, (file) => /\.(?:css|ts|tsx)$/.test(file)).map((file) =>
+function readSources(root: string, directory: string, source = /\.(?:css|ts|tsx)$/): string[] {
+  return walkRelative(root, directory, (file) => source.test(file)).map((file) =>
     fs.readFileSync(path.join(root, file), "utf8"),
   )
 }
@@ -249,7 +249,11 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
   assert.deepEqual(
     demoGeometryProblems(styles, {
       demo: readSources(workspace.storiesRoot, "src"),
-      library: readSources(root, "src/components"),
+      // A component block is not the only library reader: the package's own
+      // stylesheets resolve the published properties they derive from, so a
+      // theme hook a story overrides (`--pui-primary` on the provider root) is a
+      // value the library already owns, not geometry the demo invents.
+      library: [...readSources(root, "src/components"), ...readSources(root, "src", /\.css$/)],
     }),
     [],
     "the published stylesheet must not declare demo or artboard geometry — it belongs in apps/storybook/src/preview.css",
@@ -332,6 +336,28 @@ export function verifyArtifactContract(workspace: Workspace): ArtifactContract {
     withoutDirective,
     [],
     'a client module reached the artifact without its "use client" directive',
+  )
+  // The built-in illustrations are drawn one pictogram at a time (#205): a
+  // component that reaches the generated catalogue pulls every illustration into
+  // the chunk that draws one, and no single story shows the difference — only
+  // the import the build emitted does. `PagoPAPictogram` draws one by name, so it
+  // is the one component allowed to know the catalogue.
+  const catalogue = distModules.filter(
+    (file) =>
+      !file.startsWith(`dist${path.sep}artwork${path.sep}`) &&
+      file !== path.join("dist", "components", "icons", "PagoPAPictogram.js") &&
+      fs.readFileSync(at(file), "utf8").includes("icons/pictogram-assets"),
+  )
+  assert.deepEqual(
+    catalogue,
+    [],
+    "a component imported the whole pictogram catalogue instead of the illustration it draws",
+  )
+  const tableModule = path.join("dist", "components", "data-display", "table.js")
+  assert.match(
+    fs.readFileSync(at(tableModule), "utf8"),
+    /icons\/pictograms\/[a-z-]+\.js/,
+    "the table's built-in illustrations must name the pictograms they draw",
   )
   assert.deepEqual(
     [

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ContentCopyIcon } from "@/components/icons/generated/content-copy"
 import { PictogramFigure } from "@/components/icons/pictogram-figure"
 import { cn } from "@/lib/cn"
@@ -95,7 +94,7 @@ function ErrorState({
               data-slot="ko-error-code-copy"
               className="pui:grid pui:size-11 pui:shrink-0 pui:place-items-center pui:rounded-md pui:text-primary pui:focus-visible:outline-2 pui:focus-visible:outline-solid pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
             >
-              <Icon source={ContentCopyIcon} />
+              <ContentCopyIcon />
             </button>
             <output aria-live="polite" className="pui:sr-only">
               {copyState === "copied" ? copiedLabel : ""}

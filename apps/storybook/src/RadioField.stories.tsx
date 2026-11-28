@@ -2,7 +2,6 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as NotificationsActiveIcon } from "@/components/icons/generated/notifications-active"
 import { RadioField } from "@/components/inputs/radio-field"
 import { RadioGroup } from "@/components/inputs/radio-group"
@@ -72,9 +71,7 @@ export const RichRadioOptions: Story = {
       <RadioField
         value="email"
         label="Email"
-        leadingIcon={
-          <Icon source={NotificationsActiveIcon} decorative={false} label="Icona promemoria" />
-        }
+        leadingIcon={<NotificationsActiveIcon decorative={false} label="Icona promemoria" />}
         indicatorPlacement="end"
         description="Ricevi i documenti via email."
       />
@@ -229,7 +226,7 @@ export const RadioLoadingStates: Story = {
   render: function RadioLoadingForm() {
     const [loading, setLoading] = React.useState(true)
     const [submitted, setSubmitted] = React.useState("")
-    const icon = <Icon source={NotificationsActiveIcon} />
+    const icon = <NotificationsActiveIcon />
 
     return (
       <form
@@ -400,9 +397,7 @@ export const RadioSourceStateMatrix: Story = {
                 value="contact"
                 label="Canale di contatto"
                 indicatorPlacement={placement}
-                leadingIcon={
-                  placement === "end" ? <Icon source={NotificationsActiveIcon} /> : undefined
-                }
+                leadingIcon={placement === "end" ? <NotificationsActiveIcon /> : undefined}
                 description={placement === "end" ? "Testo descrittivo." : undefined}
                 disabled={state.disabled}
                 error={state.error}
@@ -420,9 +415,7 @@ export const RadioSourceStateMatrix: Story = {
             <RadioField
               value="loading"
               label="Canale in caricamento"
-              leadingIcon={
-                state.leadingIcon ? <Icon source={NotificationsActiveIcon} /> : undefined
-              }
+              leadingIcon={state.leadingIcon ? <NotificationsActiveIcon /> : undefined}
               description={state.description ? "Informazioni sul canale." : undefined}
               indicatorPlacement="end"
               loading

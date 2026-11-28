@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckCircleIcon } from "@/components/icons/generated/check-circle"
 import { Default as ReportIcon } from "@/components/icons/generated/report"
 import { useFieldIds, type FieldStateProps } from "./field-utils"
@@ -168,7 +167,7 @@ function FieldMessages({
             errorIcon && "pui:flex pui:items-start pui:gap-1.5",
           )}
         >
-          {errorIcon ? <Icon source={ReportIcon} size={16} className="pui:mt-0.5" /> : null}
+          {errorIcon ? <ReportIcon size={16} className="pui:mt-0.5" /> : null}
           {error}
         </p>
       ) : null}
@@ -177,7 +176,7 @@ function FieldMessages({
           id={ids.successId}
           className="pui:flex pui:items-start pui:gap-1.5 pui:text-caption pui:text-success"
         >
-          <Icon source={CheckCircleIcon} className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
+          <CheckCircleIcon className="pui:mt-0.5 pui:size-4 pui:shrink-0" />
           {success}
         </p>
       ) : null}

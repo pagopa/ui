@@ -196,6 +196,57 @@ export { List, type ListProps }
   hasProblem(result, /list\.tsx: List: ref is declared but never forwarded/)
 })
 
+test("destructuring the props inside the body does not stand in for applying them", () => {
+  const source = `"use client"
+
+import * as React from "react"
+
+interface BadgeProps extends Omit<React.ComponentProps<"span">, "className"> {
+  className?: string
+  ref?: React.Ref<HTMLSpanElement>
+  label: string
+}
+
+function Badge(props: BadgeProps) {
+  const { className, label, ref, ...rest } = props
+  return <span {...rest}>{label}</span>
+}
+
+export { Badge, type BadgeProps }
+`
+  const result = check({
+    "src/pagopa-ui.ts": `export * from "./components/badge"\n`,
+    "src/components/badge.tsx": source,
+  })
+  hasProblem(result, /badge\.tsx: Badge: className is declared but never applied/)
+  hasProblem(result, /badge\.tsx: Badge: ref is declared but never forwarded/)
+})
+
+test("the same component that applies them is accepted", () => {
+  const source = `"use client"
+
+import * as React from "react"
+
+interface BadgeProps extends Omit<React.ComponentProps<"span">, "className"> {
+  className?: string
+  ref?: React.Ref<HTMLSpanElement>
+  label: string
+}
+
+function Badge(props: BadgeProps) {
+  const { className, label, ref, ...rest } = props
+  return <span className={className} ref={ref} {...rest}>{label}</span>
+}
+
+export { Badge, type BadgeProps }
+`
+  const result = check({
+    "src/pagopa-ui.ts": `export * from "./components/badge"\n`,
+    "src/components/badge.tsx": source,
+  })
+  assert.deepEqual(result.problems, [])
+})
+
 test("a component outside the public surface is not checked", () => {
   const result = check({
     "src/pagopa-ui.ts": `export { Line } from "./components/line"\n`,

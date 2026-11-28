@@ -5,7 +5,6 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { usePortalHost } from "@/lib/ui-provider"
 import { cn } from "@/lib/cn"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CheckIcon } from "@/components/icons/generated/check"
 import {
   Checked as CheckBoxCheckedIcon,
@@ -59,10 +58,7 @@ function SelectTrigger({
       <SelectPrimitive.Icon
         render={
           icon ?? (
-            <Icon
-              source={ChevronDownIcon}
-              className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground"
-            />
+            <ChevronDownIcon className="pui:pointer-events-none pui:size-4 pui:text-muted-foreground" />
           )
         }
       />
@@ -159,30 +155,32 @@ function SelectItem({
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
         keepMounted={multiple}
-        render={(indicatorProps, { selected }) => (
-          <span
-            {...indicatorProps}
-            className={cn(
-              "pui:pointer-events-none pui:absolute pui:flex pui:items-center pui:justify-center",
-              multiple ? "pui:top-3 pui:right-4 pui:size-6" : "pui:right-2 pui:size-4",
-            )}
-          >
-            {multiple ? (
-              <>
-                {selected ? (
-                  <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
-                ) : null}
-                <Icon
-                  source={selected ? CheckBoxCheckedIcon : CheckBoxIcon}
-                  size={24}
-                  className={cn("pui:relative", selected && "pui:text-primary")}
-                />
-              </>
-            ) : (
-              <Icon source={CheckIcon} size={16} className="pui:pointer-events-none" />
-            )}
-          </span>
-        )}
+        render={(indicatorProps, { selected }) => {
+          const CheckBoxGlyph = selected ? CheckBoxCheckedIcon : CheckBoxIcon
+          return (
+            <span
+              {...indicatorProps}
+              className={cn(
+                "pui:pointer-events-none pui:absolute pui:flex pui:items-center pui:justify-center",
+                multiple ? "pui:top-3 pui:right-4 pui:size-6" : "pui:right-2 pui:size-4",
+              )}
+            >
+              {multiple ? (
+                <>
+                  {selected ? (
+                    <span className="pui:absolute pui:inset-0.75 pui:rounded-2 pui:bg-primary-foreground" />
+                  ) : null}
+                  <CheckBoxGlyph
+                    size={24}
+                    className={cn("pui:relative", selected && "pui:text-primary")}
+                  />
+                </>
+              ) : (
+                <CheckIcon size={16} className="pui:pointer-events-none" />
+              )}
+            </span>
+          )
+        }}
       />
     </SelectPrimitive.Item>
   )
@@ -211,7 +209,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <Icon source={ChevronUpIcon} size={16} />
+      <ChevronUpIcon size={16} />
     </SelectPrimitive.ScrollUpArrow>
   )
 }
@@ -229,7 +227,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <Icon source={ChevronDownIcon} size={16} />
+      <ChevronDownIcon size={16} />
     </SelectPrimitive.ScrollDownArrow>
   )
 }

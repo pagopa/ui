@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ArrowIcon } from "@/components/icons/generated/arrow"
 
 import { Badge } from "@/components/primitives/badge"
@@ -38,7 +37,7 @@ function ServiceCard({ size, variant }: ServiceCardProps) {
       <CardFooter className="pui:justify-end pui:bg-muted">
         <Button variant="ghost">
           Apri il servizio
-          <Icon source={ArrowIcon} aria-hidden="true" />
+          <ArrowIcon aria-hidden="true" />
         </Button>
       </CardFooter>
     </Card>

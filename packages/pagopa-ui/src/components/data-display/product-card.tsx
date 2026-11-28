@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent, useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ArrowRightIcon } from "@/components/icons/generated/arrow"
 import { Button, buttonVariants } from "@/components/primitives/button"
 import {
@@ -86,7 +85,7 @@ function ProductCard({
   const actionContent = (
     <>
       {actionLabel}
-      {!image ? <Icon source={ArrowRightIcon} /> : null}
+      {!image ? <ArrowRightIcon /> : null}
     </>
   )
   return (

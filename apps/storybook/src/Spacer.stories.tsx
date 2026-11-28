@@ -59,7 +59,7 @@ export const Ladder: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText("Scala di spaziatura")).toBeVisible()
-    const spacers = [...canvasElement.querySelectorAll("[data-slot=spacing]")]
+    const spacers = [...canvasElement.querySelectorAll("[data-slot=spacer]")]
     await expect(spacers).toHaveLength(steps.length)
     for (const [index, step] of steps.entries()) {
       const spacer = spacers[index]
@@ -82,7 +82,7 @@ export const Ladder: Story = {
 export const Playground: Story = {
   tags: ["color-pinned"],
   play: async ({ canvasElement }) => {
-    const spacer = canvasElement.querySelector("[data-slot=spacing]")
+    const spacer = canvasElement.querySelector("[data-slot=spacer]")
     if (!(spacer instanceof HTMLElement)) throw new Error("spacer not rendered")
     await expect(Math.round(spacer.getBoundingClientRect().height)).toBe(4)
     const style = getComputedStyle(spacer)

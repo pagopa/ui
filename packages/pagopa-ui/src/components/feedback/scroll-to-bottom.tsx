@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Down as ArrowDownIcon } from "@/components/icons/generated/arrow"
 import { Button } from "@/components/primitives/button"
 
@@ -57,7 +56,7 @@ function ScrollToBottom({
         else window.scrollTo({ top: document.documentElement.scrollHeight, behavior })
       }}
     >
-      <Icon source={ArrowDownIcon} decorative className="pui:size-6" />
+      <ArrowDownIcon decorative className="pui:size-6" />
     </Button>
   )
 }

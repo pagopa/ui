@@ -2,7 +2,6 @@ import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, fn, screen, userEvent, waitFor, within } from "storybook/test"
 
-import { Icon } from "@/components/icons/icon"
 import { Checked as CheckBoxCheckedIcon } from "@/components/icons/generated/check-box"
 import { Default as LocationOnIcon } from "@/components/icons/generated/location-on"
 import { Default as MyLocationIcon } from "@/components/icons/generated/my-location"
@@ -358,7 +357,7 @@ function StaticIndicatorExample() {
             onCheckedChange={setChecked}
             indicator={
               <span data-static-indicator aria-hidden="true">
-                <Icon source={CheckBoxCheckedIcon} />
+                <CheckBoxCheckedIcon />
               </span>
             }
           >
@@ -385,7 +384,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
       id: `option-${index}`,
       label: "Value",
       description: "Description",
-      leading: <Icon source={LocationOnIcon} size={16} />,
+      leading: <LocationOnIcon size={16} />,
       chip: (
         <Chip variant="warning" size="compact" data-slot="chip">
           <span data-slot="chip-label" className="pui:font-medium">
@@ -416,7 +415,7 @@ function SourcePanel({ mode }: { mode: SourcePanelMode }) {
     {
       id: "location",
       label: "Usa posizione attuale",
-      leading: <Icon source={MyLocationIcon} size={24} className="pui:text-primary" />,
+      leading: <MyLocationIcon size={24} className="pui:text-primary" />,
       type: "cta",
       onSelect: () => undefined,
     },

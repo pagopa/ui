@@ -17,7 +17,7 @@ test("keeps the root class alone when the provider is given no theme scope", () 
   const html = renderToStaticMarkup(
     React.createElement(UIProvider, { children: React.createElement("span", null, "Contenuto") }),
   )
-  expect(html).toContain('<div class="pagopa-ui-root" data-slot="ui-provider"')
+  expect(html).toContain('<div class="pagopa-ui-root" data-pagopa-ui=""')
   expect(html).not.toContain("style=")
 })
 

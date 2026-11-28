@@ -44,6 +44,11 @@ const InputSchema = z.strictObject({
 export type DesignRequestInput = z.infer<typeof InputSchema>
 export type IssueCommand = (args: string[], cwd: string) => string
 
+// What the validation-only card pass names in place of the issue URL it cannot
+// know yet: the `.invalid` host keeps the string from ever reading as a real
+// question, and the pass is never written.
+const REQUEST_PLACEHOLDER = "https://placeholder.invalid/issues/0"
+
 function parseInput(source: string): DesignRequestInput {
   const parsed = InputSchema.safeParse(JSON.parse(source))
   if (!parsed.success) throw new UsageError(`invalid design request input: ${parsed.error.message}`)
@@ -261,6 +266,20 @@ export function openDesignRequest(
   if (input.rulesCard) labels.push("source/figma-rules")
   const title = `[${input.type === "design" ? "design" : "dev"}] ${input.title}`
   const body = issueBody(input, config.preview, config.previewBranch)
+  // The card is checked before anything is written: `gh issue create` cannot be
+  // undone, and a stale or placeholder `--rules-card` would otherwise leave an
+  // open issue, a registry note pointing at it and an unmarked card, with the
+  // duplicate guard refusing every re-run. The URL the card will name is only
+  // known after the create, so the dry run carries a placeholder — every other
+  // check (the card exists, is not a placeholder, the snapshot and the ledger
+  // are readable) runs here.
+  if (input.rulesCard)
+    markRule(workspace, {
+      cardId: input.rulesCard,
+      disposition: "conflict",
+      request: REQUEST_PLACEHOLDER,
+      dryRun: true,
+    })
   const existing = openQuestion(workspace, title, gh)
   if (existing)
     throw new UsageError(`${existing} already asks this question — answer it, or open a new slug`)

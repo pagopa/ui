@@ -5,6 +5,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { z } from "zod"
 
+import { lineOf } from "../lib/ast.ts"
 import { readJson } from "../lib/json.ts"
 import { walkFiles } from "../lib/fs.ts"
 import type { Workspace } from "../adapters/workspace.ts"
@@ -175,10 +176,6 @@ function stringLiterals(
   }
   visit(parsed.program)
   return { source, literals, program: parsed.program }
-}
-
-function lineOf(source: string, offset: number): number {
-  return source.slice(0, offset).split("\n").length
 }
 
 function allowedSpacing(manifest: FoundationManifest): Set<number> {

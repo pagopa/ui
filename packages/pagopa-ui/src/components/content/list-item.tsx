@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useLinkComponent } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as ChevronRightIcon } from "@/components/icons/generated/chevron"
 import { Default as HowToRegIcon } from "@/components/icons/generated/how-to-reg"
 import { Button } from "@/components/primitives/button"
@@ -153,7 +152,7 @@ function ListItem({
         {suggestion ? (
           <span className="pui:flex pui:items-center pui:gap-1 pui:text-label-mini pui:text-han-purple">
             <span aria-hidden="true" className="pui:shrink-0">
-              {suggestion.icon ?? <Icon source={HowToRegIcon} size={16} />}
+              {suggestion.icon ?? <HowToRegIcon size={16} />}
             </span>
             {suggestion.label}
           </span>
@@ -186,11 +185,7 @@ function ListItem({
         </span>
       ) : null}
       {showChevron ? (
-        <Icon
-          source={ChevronRightIcon}
-          className="pui:size-6 pui:shrink-0 pui:text-primary"
-          aria-hidden="true"
-        />
+        <ChevronRightIcon className="pui:size-6 pui:shrink-0 pui:text-primary" aria-hidden="true" />
       ) : null}
     </>
   )

@@ -4,7 +4,6 @@ import * as React from "react"
 
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 
@@ -64,7 +63,7 @@ function Cookies({
       onClick={onDismiss}
       className="pui:flex pui:size-11 pui:shrink-0 pui:items-center pui:justify-center pui:rounded-md pui:hover:bg-muted pui:focus-visible:outline-2 pui:focus-visible:outline-offset-2 pui:focus-visible:outline-ring"
     >
-      <Icon source={CloseIcon} />
+      <CloseIcon />
     </button>
   ) : null
 

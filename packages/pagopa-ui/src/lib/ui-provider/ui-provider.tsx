@@ -184,7 +184,6 @@ function UIProvider({
       <div
         className={cn(HOST_CLASS, className)}
         style={style}
-        data-slot="ui-provider"
         data-pagopa-ui=""
         data-pagopa-ui-root=""
       >

@@ -1186,10 +1186,11 @@ function Consumer() {
         }}
       >
         {/* The icon family ships on its own entry, so a consumer that names one
-            icon bundles that component and no other artwork. */}
+            icon bundles that component and no other artwork. The glyph owns the
+            drawing and the shell owns the box, so the box is `size`. */}
         <div style={{ display: "flex", gap: 8, color: "var(--pui-primary)" }}>
-          <Feedback aria-hidden width={24} height={24} />
-          <EntryFeedback aria-hidden width={24} height={24} />
+          <Feedback aria-hidden size={24} />
+          <EntryFeedback aria-hidden size={24} />
         </div>
         {iconCases.map(({ name, variant }) => (
           <div

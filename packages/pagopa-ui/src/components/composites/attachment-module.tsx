@@ -4,7 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/cn"
 import { useMessages } from "@/lib/ui-provider"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as DownloadIcon } from "@/components/icons/generated/download"
 import { Button } from "@/components/primitives/button"
 
@@ -73,7 +72,7 @@ function AttachmentModule({
           // the >=44px pointer target comes from the invisible ::after expansion.
           className="pui:relative pui:size-6 pui:p-0 pui:after:absolute pui:after:-inset-2.5"
         >
-          <Icon source={DownloadIcon} className="pui:size-6" />
+          <DownloadIcon className="pui:size-6" />
         </Button>
       ) : null}
     </section>

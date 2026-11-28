@@ -2,7 +2,6 @@
 
 import { useId, type ComponentProps, type ReactNode } from "react"
 
-import { Icon } from "@/components/icons/icon"
 import { Default as CloseIcon } from "@/components/icons/generated/close"
 import { Button } from "@/components/primitives/button"
 import { Heading, type HeadingTag } from "@/components/primitives/heading"
@@ -139,7 +138,7 @@ function IdentityProviderPickerView({
           type="button"
           variant="ghost"
         >
-          <Icon source={CloseIcon} size={24} />
+          <CloseIcon size={24} />
         </Button>
       </header>
       <ul

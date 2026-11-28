@@ -13,6 +13,7 @@ import fs from "node:fs"
 import { z } from "zod"
 
 import type { Workspace } from "../adapters/workspace.ts"
+import { asNode, isFunctionNode, nodes, walkOwn, type Ast } from "../lib/ast.ts"
 import { readJson } from "../lib/json.ts"
 import { createSourceModules } from "../lib/source-modules.ts"
 import { parseSchema } from "../lib/validate.ts"
@@ -25,46 +26,6 @@ const MAX_DEPTH = 8
 // Only source under the package is readable: a package identity (`@x/y#Name`)
 // re-exported through the entry declares nothing this gate can judge.
 const SOURCE = /^src\/.+\.tsx?$/
-
-// An oxc node without its union: the reader walks by `type` and by the keys a
-// node kind carries.
-interface Ast {
-  type: string
-  start: number
-  end: number
-  [key: string]: unknown
-}
-
-const isNode = (value: unknown): value is Ast =>
-  typeof value === "object" && value !== null && typeof Reflect.get(value, "type") === "string"
-
-const asNode = (value: unknown): Ast | null => (isNode(value) ? value : null)
-
-const nodes = (value: unknown): Ast[] =>
-  Array.isArray(value) ? value.map(asNode).filter((entry): entry is Ast => entry !== null) : []
-
-const FUNCTION_NODES = new Set([
-  "FunctionDeclaration",
-  "FunctionExpression",
-  "ArrowFunctionExpression",
-])
-
-// The same walk, but the node's own body: a return inside a callback is the
-// callback's, not the component's.
-function walkOwn(node: Ast, visit: (node: Ast) => void): void {
-  visit(node)
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "type" || key === "start" || key === "end") continue
-    const child = asNode(value)
-    if (child) {
-      if (!FUNCTION_NODES.has(child.type)) walkOwn(child, visit)
-      continue
-    }
-    for (const entry of nodes(value)) {
-      if (!FUNCTION_NODES.has(entry.type)) walkOwn(entry, visit)
-    }
-  }
-}
 
 // The slot names an attribute spells. `data-slot="x"` is one; a conditional
 // whose branches are both literals (`secondary ? "a" : "b"`) is the anatomy
@@ -323,7 +284,7 @@ function createComponentReader(workspace: Workspace) {
   function resolve(file: string, name: string, depth: number): Ast | null {
     if (depth > MAX_DEPTH) return null
     const init = bodyLocals.get(name) ?? localsOf(file).get(name)
-    return init && !FUNCTION_NODES.has(init.type) ? init : null
+    return init && !isFunctionNode(init) ? init : null
   }
 
   function componentOf(identity: string): Component | null {
@@ -341,7 +302,7 @@ function createComponentReader(workspace: Workspace) {
       for (const declarator of nodes(declaration.declarations)) {
         if (keyName(declarator.id) !== local) continue
         const init = asNode(declarator.init)
-        if (init && FUNCTION_NODES.has(init.type)) {
+        if (init && isFunctionNode(init)) {
           return { name: local, file, functionNode: init }
         }
       }

@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Avatar } from "@/components/content/avatar"
 import { Chip } from "@/components/inputs/chips"
-import { Icon } from "@/components/icons/icon"
 import { Default as CachedIcon } from "@/components/icons/generated/cached"
 import { Button } from "@/components/primitives/button"
 import { RadioGroup, RadioGroupItem } from "@/components/primitives/radio-group"
@@ -190,7 +189,7 @@ function ProductModule({
                 aria-hidden={legacy || undefined}
                 className="pui:inline-flex pui:size-6 pui:shrink-0 pui:items-center pui:justify-center"
               >
-                {actionIcon ?? <Icon source={CachedIcon} size={24} />}
+                {actionIcon ?? <CachedIcon size={24} />}
               </span>
             </Button>
           ) : null}
